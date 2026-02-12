@@ -1,0 +1,7 @@
+{
+  "item.ascendant_arcana.smithing_template.infusion.applies_to": "Tools, Weapons, and Armor",
+  "item.ascendant_arcana.smithing_template.infusion.ingredients": "Any Relic",
+  "item.ascendant_arcana.smithing_template.infusion.title": "Infusion",
+  "item.ascendant_arcana.smithing_template.infusion.base_slot_description": "Add Gear",
+  "item.ascendant_arcana.smithing_template.infusion.additions_slot_description": "Add Relic"
+}

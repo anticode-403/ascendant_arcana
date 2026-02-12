@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "ascendant_arcana",
+  "version": "${version}",
+  "name": "Ascendant Arcana",
+  "description": "A mod that overhauls enchanting and some other forms of Minecraft magic.",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/ascendant_arcana/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "me.anticode.ascendant_arcana.client.AscendantArcanaDataGenerator"
+    ],
+    "client": [
+      "me.anticode.ascendant_arcana.client.AscendantArcanaClient"
+    ],
+    "main": [
+      "me.anticode.ascendant_arcana.AscendantArcana"
+    ]
+  },
+  "mixins": [
+    "ascendant_arcana.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
