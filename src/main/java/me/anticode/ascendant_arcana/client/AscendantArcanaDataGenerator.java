@@ -24,6 +24,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
         FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
         pack.addProvider(AATagProvider::new);
         pack.addProvider(AAModelProvider::new);
+        pack.addProvider(AALanguageProvider::new);
     }
 
     public static class AAModelProvider extends FabricModelProvider {
@@ -44,6 +45,8 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             itemModelGenerator.register(AArcanaItems.WAKING_RELIC, Models.GENERATED);
             itemModelGenerator.register(AArcanaItems.STIRRING_RELIC, Models.GENERATED);
             itemModelGenerator.register(AArcanaItems.DORMANT_RELIC, Models.GENERATED);
+            itemModelGenerator.register(AArcanaItems.ENCHANTED_SCRAP, Models.GENERATED);
+            itemModelGenerator.register(AArcanaItems.RESTORINE, Models.GENERATED);
         }
     }
 
