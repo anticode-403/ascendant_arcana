@@ -1,6 +1,7 @@
 package me.anticode.ascendant_arcana.client;
 
 import me.anticode.ascendant_arcana.AscendantArcana;
+import me.anticode.ascendant_arcana.init.AArcanaBlocks;
 import me.anticode.ascendant_arcana.init.AArcanaItems;
 import me.anticode.ascendant_arcana.init.AArcanaTags;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
@@ -9,11 +10,12 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.minecraft.data.client.BlockStateModelGenerator;
-import net.minecraft.data.client.ItemModelGenerator;
-import net.minecraft.data.client.Models;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.data.client.*;
 import net.minecraft.item.Item;
 import net.minecraft.registry.*;
+import net.minecraft.util.Identifier;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -28,25 +30,64 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
     }
 
     public static class AAModelProvider extends FabricModelProvider {
+//        public static final Model RESTORINE_CROSS = new Model(
+//
+//        );
+
         public AAModelProvider(FabricDataOutput output) {
             super(output);
+        }
+
+        public final void registerRestorine(BlockStateModelGenerator blockStateModelGenerator, Block block) {
+            blockStateModelGenerator.excludeFromSimpleItemModelGeneration(block);
+            blockStateModelGenerator.blockStateCollector.accept(
+                    VariantsBlockStateSupplier.create(
+                            block,
+                            BlockStateVariant.create().put(
+                                    VariantSettings.MODEL,
+                                    Models.CROSS.upload(
+                                            block,
+                                            TextureMap.cross(block),
+                                            blockStateModelGenerator.modelCollector
+                                    )
+                            )
+                    ).coordinate(blockStateModelGenerator.createUpDefaultFacingVariantMap())
+            );
         }
 
         @Override
         public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
 
+            blockStateModelGenerator.registerCubeAllModelTexturePool(AArcanaBlocks.BUDDING_RESTORINE);
+
+            // Restorine clusters
+            registerRestorine(blockStateModelGenerator, AArcanaBlocks.SMALL_RESTORINE_BUD);
+            registerRestorine(blockStateModelGenerator, AArcanaBlocks.MEDIUM_RESTORINE_BUD);
+            registerRestorine(blockStateModelGenerator, AArcanaBlocks.LARGE_RESTORINE_BUD);
+            registerRestorine(blockStateModelGenerator, AArcanaBlocks.RESTORINE_CLUSTER);
+            registerRestorine(blockStateModelGenerator, AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER);
         }
 
         @Override
         public void generateItemModels(ItemModelGenerator itemModelGenerator) {
             itemModelGenerator.register(AArcanaItems.INFUSION_SMITHING_TEMPLATE, Models.GENERATED);
+
+            itemModelGenerator.register(AArcanaItems.ENCHANTED_SCRAP, Models.GENERATED);
+            itemModelGenerator.register(AArcanaItems.RESTORINE, Models.GENERATED);
+
+            // Relics
             itemModelGenerator.register(AArcanaItems.ASCENDANT_RELIC, Models.GENERATED);
             itemModelGenerator.register(AArcanaItems.AWAKENED_RELIC, Models.GENERATED);
             itemModelGenerator.register(AArcanaItems.WAKING_RELIC, Models.GENERATED);
             itemModelGenerator.register(AArcanaItems.STIRRING_RELIC, Models.GENERATED);
             itemModelGenerator.register(AArcanaItems.DORMANT_RELIC, Models.GENERATED);
-            itemModelGenerator.register(AArcanaItems.ENCHANTED_SCRAP, Models.GENERATED);
-            itemModelGenerator.register(AArcanaItems.RESTORINE, Models.GENERATED);
+
+            // Restorine Clusters
+//            itemModelGenerator.register(AArcanaBlocks.SMALL_RESTORINE_BUD.asItem(), Models.GENERATED);
+//            itemModelGenerator.register(AArcanaBlocks.MEDIUM_RESTORINE_BUD.asItem(), Models.GENERATED);
+//            itemModelGenerator.register(AArcanaBlocks.LARGE_RESTORINE_BUD.asItem(), Models.GENERATED);
+//            itemModelGenerator.register(AArcanaBlocks.RESTORINE_CLUSTER.asItem(), Models.GENERATED);
+//            itemModelGenerator.register(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER.asItem(), Models.GENERATED);
         }
     }
 
