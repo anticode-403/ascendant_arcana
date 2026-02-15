@@ -7,23 +7,24 @@ import me.anticode.ascendant_arcana.init.AArcanaTags;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.*;
 import net.minecraft.advancement.criterion.InventoryChangedCriterion;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.client.*;
+import net.minecraft.data.server.loottable.BlockLootTableGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.context.LootContextType;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.*;
 import net.minecraft.util.Identifier;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
@@ -51,21 +52,21 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
 
             blockStateModelGenerator.registerCubeAllModelTexturePool(AArcanaBlocks.BUDDING_RESTORINE);
 
-            // Restorine clusters
+            // Restorine Clusters
             blockStateModelGenerator.registerAmethyst(AArcanaBlocks.SMALL_RESTORINE_BUD);
-            blockStateModelGenerator.registerParentedItemModel(AArcanaBlocks.SMALL_RESTORINE_BUD.asItem(), ModelIds.getBlockModelId(AArcanaBlocks.SMALL_RESTORINE_BUD));
+            blockStateModelGenerator.registerItemModel(AArcanaBlocks.SMALL_RESTORINE_BUD);
 
             blockStateModelGenerator.registerAmethyst(AArcanaBlocks.MEDIUM_RESTORINE_BUD);
-            blockStateModelGenerator.registerParentedItemModel(AArcanaBlocks.MEDIUM_RESTORINE_BUD.asItem(), ModelIds.getBlockModelId(AArcanaBlocks.MEDIUM_RESTORINE_BUD));
+            blockStateModelGenerator.registerItemModel(AArcanaBlocks.MEDIUM_RESTORINE_BUD);
 
             blockStateModelGenerator.registerAmethyst(AArcanaBlocks.LARGE_RESTORINE_BUD);
-            blockStateModelGenerator.registerParentedItemModel(AArcanaBlocks.LARGE_RESTORINE_BUD.asItem(), ModelIds.getBlockModelId(AArcanaBlocks.LARGE_RESTORINE_BUD));
+            blockStateModelGenerator.registerItemModel(AArcanaBlocks.LARGE_RESTORINE_BUD);
 
             blockStateModelGenerator.registerAmethyst(AArcanaBlocks.RESTORINE_CLUSTER);
-            blockStateModelGenerator.registerParentedItemModel(AArcanaBlocks.RESTORINE_CLUSTER.asItem(), ModelIds.getBlockModelId(AArcanaBlocks.RESTORINE_CLUSTER));
+            blockStateModelGenerator.registerItemModel(AArcanaBlocks.RESTORINE_CLUSTER);
 
             blockStateModelGenerator.registerAmethyst(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER);
-            blockStateModelGenerator.registerParentedItemModel(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER.asItem(), ModelIds.getBlockModelId(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER));
+            blockStateModelGenerator.registerItemModel(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER);
         }
 
         @Override
@@ -81,6 +82,9 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             itemModelGenerator.register(AArcanaItems.WAKING_RELIC, Models.GENERATED);
             itemModelGenerator.register(AArcanaItems.STIRRING_RELIC, Models.GENERATED);
             itemModelGenerator.register(AArcanaItems.DORMANT_RELIC, Models.GENERATED);
+
+            // Restorine Clusters
+//            itemModelGenerator.register();
         }
     }
 
