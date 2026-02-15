@@ -35,12 +35,12 @@ public class AArcanaBlocks {
             true
     );
     public static final AmethystClusterBlock RESTORINE_CLUSTER = (AmethystClusterBlock) register(
-            new AmethystClusterBlock(7, 3, AbstractBlock.Settings.create().luminance((state) -> 4)),
+            new AmethystClusterBlock(7, 3, AbstractBlock.Settings.copy(SMALL_RESTORINE_BUD).luminance((state) -> 4)),
             "restorine_cluster",
             true
     );
     public static final AmethystClusterBlock MASSIVE_RESTORINE_CLUSTER = (AmethystClusterBlock) register(
-            new AmethystClusterBlock(9, 2, AbstractBlock.Settings.create().luminance((state) -> 5)),
+            new AmethystClusterBlock(9, 2, AbstractBlock.Settings.copy(SMALL_RESTORINE_BUD).luminance((state) -> 5)),
             "massive_restorine_cluster",
             true
     );
