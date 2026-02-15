@@ -9,15 +9,22 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.minecraft.advancement.criterion.InventoryChangedCriterion;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.client.*;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
+import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.*;
 import net.minecraft.util.Identifier;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
 
@@ -27,6 +34,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
         pack.addProvider(AATagProvider::new);
         pack.addProvider(AAModelProvider::new);
         pack.addProvider(AALanguageProvider::new);
+        pack.addProvider(AARecipeProvider::new);
     }
 
     public static class AAModelProvider extends FabricModelProvider {
@@ -125,6 +133,23 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             translationBuilder.add(AArcanaBlocks.LARGE_RESTORINE_BUD, "Large Restore Bud");
             translationBuilder.add(AArcanaBlocks.RESTORINE_CLUSTER, "Restore Cluster");
             translationBuilder.add(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER, "Massive Restore Cluster");
+        }
+    }
+
+    public static class AARecipeProvider extends FabricRecipeProvider {
+        public AARecipeProvider(FabricDataOutput output) {
+            super(output);
+        }
+
+        @Override
+        public void generate(Consumer<RecipeJsonProvider> exporter) {
+            ShapelessRecipeJsonBuilder.create(RecipeCategory.TOOLS, AArcanaItems.ENCHANTED_SCRAP, 1)
+                    .input(Items.LAPIS_LAZULI, 2)
+                    .input(Items.GOLD_NUGGET, 5)
+                    .input(Items.AMETHYST_SHARD, 2)
+                    .criterion("obtain_lapis", InventoryChangedCriterion.Conditions.items(Items.LAPIS_LAZULI))
+                    .offerTo(exporter);
+
         }
     }
 }
