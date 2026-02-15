@@ -38,34 +38,26 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             super(output);
         }
 
-        public final void registerRestorine(BlockStateModelGenerator blockStateModelGenerator, Block block) {
-            blockStateModelGenerator.excludeFromSimpleItemModelGeneration(block);
-            blockStateModelGenerator.blockStateCollector.accept(
-                    VariantsBlockStateSupplier.create(
-                            block,
-                            BlockStateVariant.create().put(
-                                    VariantSettings.MODEL,
-                                    Models.CROSS.upload(
-                                            block,
-                                            TextureMap.cross(block),
-                                            blockStateModelGenerator.modelCollector
-                                    )
-                            )
-                    ).coordinate(blockStateModelGenerator.createUpDefaultFacingVariantMap())
-            );
-        }
-
         @Override
         public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
 
             blockStateModelGenerator.registerCubeAllModelTexturePool(AArcanaBlocks.BUDDING_RESTORINE);
 
             // Restorine clusters
-            registerRestorine(blockStateModelGenerator, AArcanaBlocks.SMALL_RESTORINE_BUD);
-            registerRestorine(blockStateModelGenerator, AArcanaBlocks.MEDIUM_RESTORINE_BUD);
-            registerRestorine(blockStateModelGenerator, AArcanaBlocks.LARGE_RESTORINE_BUD);
-            registerRestorine(blockStateModelGenerator, AArcanaBlocks.RESTORINE_CLUSTER);
-            registerRestorine(blockStateModelGenerator, AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER);
+            blockStateModelGenerator.registerAmethyst(AArcanaBlocks.SMALL_RESTORINE_BUD);
+            blockStateModelGenerator.registerParentedItemModel(AArcanaBlocks.SMALL_RESTORINE_BUD.asItem(), ModelIds.getBlockModelId(AArcanaBlocks.SMALL_RESTORINE_BUD));
+
+            blockStateModelGenerator.registerAmethyst(AArcanaBlocks.MEDIUM_RESTORINE_BUD);
+            blockStateModelGenerator.registerParentedItemModel(AArcanaBlocks.MEDIUM_RESTORINE_BUD.asItem(), ModelIds.getBlockModelId(AArcanaBlocks.MEDIUM_RESTORINE_BUD));
+
+            blockStateModelGenerator.registerAmethyst(AArcanaBlocks.LARGE_RESTORINE_BUD);
+            blockStateModelGenerator.registerParentedItemModel(AArcanaBlocks.LARGE_RESTORINE_BUD.asItem(), ModelIds.getBlockModelId(AArcanaBlocks.LARGE_RESTORINE_BUD));
+
+            blockStateModelGenerator.registerAmethyst(AArcanaBlocks.RESTORINE_CLUSTER);
+            blockStateModelGenerator.registerParentedItemModel(AArcanaBlocks.RESTORINE_CLUSTER.asItem(), ModelIds.getBlockModelId(AArcanaBlocks.RESTORINE_CLUSTER));
+
+            blockStateModelGenerator.registerAmethyst(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER);
+            blockStateModelGenerator.registerParentedItemModel(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER.asItem(), ModelIds.getBlockModelId(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER));
         }
 
         @Override
@@ -81,13 +73,6 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             itemModelGenerator.register(AArcanaItems.WAKING_RELIC, Models.GENERATED);
             itemModelGenerator.register(AArcanaItems.STIRRING_RELIC, Models.GENERATED);
             itemModelGenerator.register(AArcanaItems.DORMANT_RELIC, Models.GENERATED);
-
-            // Restorine Clusters
-//            itemModelGenerator.register(AArcanaBlocks.SMALL_RESTORINE_BUD.asItem(), Models.GENERATED);
-//            itemModelGenerator.register(AArcanaBlocks.MEDIUM_RESTORINE_BUD.asItem(), Models.GENERATED);
-//            itemModelGenerator.register(AArcanaBlocks.LARGE_RESTORINE_BUD.asItem(), Models.GENERATED);
-//            itemModelGenerator.register(AArcanaBlocks.RESTORINE_CLUSTER.asItem(), Models.GENERATED);
-//            itemModelGenerator.register(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER.asItem(), Models.GENERATED);
         }
     }
 
@@ -116,21 +101,30 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
 
         @Override
         public void generateTranslations(TranslationBuilder translationBuilder) {
+            // Smithing Templates
             String template_id = AArcanaItems.INFUSION_SMITHING_TEMPLATE_ID;
             translationBuilder.add("item." + AscendantArcana.modID + "." + template_id + ".applies_to", "Armor, Tools, and Weapons");
             translationBuilder.add("item." + AscendantArcana.modID + "." + template_id + ".ingredients", "Relics");
             translationBuilder.add("item." + AscendantArcana.modID + "." + template_id + ".title", "Infusion");
             translationBuilder.add("item." + AscendantArcana.modID + "." + template_id + ".base_slot_description", "Add Gear");
             translationBuilder.add("item." + AscendantArcana.modID + "." + template_id + ".additions_slot_description", "Add Relic");
-
+            // Items
+            translationBuilder.add(AArcanaItems.ENCHANTED_SCRAP, "Enchanted Scrap");
+            translationBuilder.add(AArcanaItems.RESTORINE, "Restorine");
+            // Relics
             translationBuilder.add(AArcanaItems.ASCENDANT_RELIC, "Ascendant Relic");
             translationBuilder.add(AArcanaItems.AWAKENED_RELIC, "Awakened Relic");
             translationBuilder.add(AArcanaItems.WAKING_RELIC, "Waking Relic");
             translationBuilder.add(AArcanaItems.STIRRING_RELIC, "Stirring Relic");
             translationBuilder.add(AArcanaItems.DORMANT_RELIC, "Dormant Relic");
-
-            translationBuilder.add(AArcanaItems.ENCHANTED_SCRAP, "Enchanted Scrap");
-            translationBuilder.add(AArcanaItems.RESTORINE, "Restorine");
+            // Blocks
+            translationBuilder.add(AArcanaBlocks.BUDDING_RESTORINE, "Budding Restorine");
+            // Restorine Clusters
+            translationBuilder.add(AArcanaBlocks.SMALL_RESTORINE_BUD, "Small Restore Bud");
+            translationBuilder.add(AArcanaBlocks.MEDIUM_RESTORINE_BUD, "Medium Restore Bud");
+            translationBuilder.add(AArcanaBlocks.LARGE_RESTORINE_BUD, "Large Restore Bud");
+            translationBuilder.add(AArcanaBlocks.RESTORINE_CLUSTER, "Restore Cluster");
+            translationBuilder.add(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER, "Massive Restore Cluster");
         }
     }
 }
