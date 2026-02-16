@@ -10,21 +10,21 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.*;
 import net.minecraft.advancement.criterion.InventoryChangedCriterion;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.data.client.*;
-import net.minecraft.data.server.loottable.BlockLootTableGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
-import net.minecraft.loot.context.LootContextType;
+import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.loot.function.SetCountLootFunction;
+import net.minecraft.loot.provider.number.UniformLootNumberProvider;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.*;
-import net.minecraft.util.Identifier;
+import net.minecraft.registry.tag.BlockTags;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
@@ -32,10 +32,47 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
         FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
-        pack.addProvider(AATagProvider::new);
+        pack.addProvider(AAItemTagProvider::new);
+        pack.addProvider(AABlockTagProvider::new);
         pack.addProvider(AAModelProvider::new);
         pack.addProvider(AALanguageProvider::new);
         pack.addProvider(AARecipeProvider::new);
+        pack.addProvider(AABlockLootTableProvider::new);
+    }
+
+    public static class AAItemTagProvider extends FabricTagProvider<Item> {
+
+        public AAItemTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+            super(output, RegistryKeys.ITEM, registriesFuture);
+        }
+
+        @Override
+        protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
+            getOrCreateTagBuilder(AArcanaTags.Items.RELICS)
+                    .add(AArcanaItems.DORMANT_RELIC)
+                    .add(AArcanaItems.STIRRING_RELIC)
+                    .add(AArcanaItems.WAKING_RELIC)
+                    .add(AArcanaItems.AWAKENED_RELIC)
+                    .add(AArcanaItems.ASCENDANT_RELIC);
+        }
+    }
+
+    public static class AABlockTagProvider extends FabricTagProvider<Block> {
+
+        public AABlockTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+            super(output, RegistryKeys.BLOCK, registriesFuture);
+        }
+
+        @Override
+        protected void configure(RegistryWrapper.WrapperLookup arg) {
+            getOrCreateTagBuilder(BlockTags.PICKAXE_MINEABLE)
+                    .add(AArcanaBlocks.SMALL_RESTORINE_BUD)
+                    .add(AArcanaBlocks.MEDIUM_RESTORINE_BUD)
+                    .add(AArcanaBlocks.LARGE_RESTORINE_BUD)
+                    .add(AArcanaBlocks.RESTORINE_CLUSTER)
+                    .add(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER)
+                    .add(AArcanaBlocks.BUDDING_RESTORINE);
+        }
     }
 
     public static class AAModelProvider extends FabricModelProvider {
@@ -82,26 +119,6 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             itemModelGenerator.register(AArcanaItems.WAKING_RELIC, Models.GENERATED);
             itemModelGenerator.register(AArcanaItems.STIRRING_RELIC, Models.GENERATED);
             itemModelGenerator.register(AArcanaItems.DORMANT_RELIC, Models.GENERATED);
-
-            // Restorine Clusters
-//            itemModelGenerator.register();
-        }
-    }
-
-    public static class AATagProvider extends FabricTagProvider<Item> {
-
-        public AATagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-            super(output, RegistryKeys.ITEM, registriesFuture);
-        }
-
-        @Override
-        protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
-            getOrCreateTagBuilder(AArcanaTags.Items.RELICS)
-                    .add(AArcanaItems.DORMANT_RELIC)
-                    .add(AArcanaItems.STIRRING_RELIC)
-                    .add(AArcanaItems.WAKING_RELIC)
-                    .add(AArcanaItems.AWAKENED_RELIC)
-                    .add(AArcanaItems.ASCENDANT_RELIC);
         }
     }
 
@@ -153,6 +170,25 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
                     .input(Items.AMETHYST_SHARD, 2)
                     .criterion("obtain_lapis", InventoryChangedCriterion.Conditions.items(Items.LAPIS_LAZULI))
                     .offerTo(exporter);
+
+        }
+    }
+
+    public static class AABlockLootTableProvider extends FabricBlockLootTableProvider {
+        protected AABlockLootTableProvider(FabricDataOutput dataOutput) {
+            super(dataOutput);
+        }
+
+        @Override
+        public void generate() {
+            // Restorine Clusters
+            dropsWithSilkTouch(AArcanaBlocks.SMALL_RESTORINE_BUD);
+            dropsWithSilkTouch(AArcanaBlocks.MEDIUM_RESTORINE_BUD);
+            dropsWithSilkTouch(AArcanaBlocks.LARGE_RESTORINE_BUD);
+            dropsWithSilkTouch(AArcanaBlocks.RESTORINE_CLUSTER);
+            addDrop(AArcanaBlocks.RESTORINE_CLUSTER, LootTable.builder().pool(LootPool.builder().with(ItemEntry.builder(AArcanaItems.RESTORINE))));
+            dropsWithSilkTouch(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER);
+            addDrop(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER, LootTable.builder().pool(LootPool.builder().with(ItemEntry.builder(AArcanaItems.RESTORINE).apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 4))))));
 
         }
     }
