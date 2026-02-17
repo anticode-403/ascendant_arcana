@@ -24,7 +24,7 @@ public class AArcanaItems {
     private static final Identifier EMPTY_SLOT_SHOVEL_TEXTURE = new Identifier("item/empty_slot_shovel");
     private static final Identifier EMPTY_SLOT_PICKAXE_TEXTURE = new Identifier("item/empty_slot_pickaxe");
 
-    public static final String INFUSION_SMITHING_TEMPLATE_ID = "infusion_smithing_template";
+    public static final String INFUSION_SMITHING_TEMPLATE_ID = "infusion";
     public static final Item INFUSION_SMITHING_TEMPLATE = register(new SmithingTemplateItem(
             Text.translatable("item.ascendant_arcana.smithing_template.infusion.applies_to").formatted(Formatting.BLUE),
             Text.translatable("item.ascendant_arcana.smithing_template.infusion.ingredients").formatted(Formatting.BLUE),
@@ -33,7 +33,7 @@ public class AArcanaItems {
             Text.translatable("item.ascendant_arcana.smithing_template.infusion.additions_slot_description"),
             getGeneralToolSmithingBase(),
             List.of() // TODO: Create empty slot textures for relics
-    ), INFUSION_SMITHING_TEMPLATE_ID);
+    ), "infusion_smithing_template");
 
     public static final Item DORMANT_RELIC = register(new RelicItem(new Item.Settings()), "dormant_relic");
     public static final Item STIRRING_RELIC = register(new RelicItem(new Item.Settings()), "stirring_relic");

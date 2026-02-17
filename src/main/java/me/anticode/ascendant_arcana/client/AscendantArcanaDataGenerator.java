@@ -132,11 +132,11 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
         public void generateTranslations(TranslationBuilder translationBuilder) {
             // Smithing Templates
             String template_id = AArcanaItems.INFUSION_SMITHING_TEMPLATE_ID;
-            translationBuilder.add("item." + AscendantArcana.modID + "." + template_id + ".applies_to", "Armor, Tools, and Weapons");
-            translationBuilder.add("item." + AscendantArcana.modID + "." + template_id + ".ingredients", "Relics");
-            translationBuilder.add("item." + AscendantArcana.modID + "." + template_id + ".title", "Infusion");
-            translationBuilder.add("item." + AscendantArcana.modID + "." + template_id + ".base_slot_description", "Add Gear");
-            translationBuilder.add("item." + AscendantArcana.modID + "." + template_id + ".additions_slot_description", "Add Relic");
+            translationBuilder.add("item." + AscendantArcana.modID + ".smithing_template." + template_id + ".applies_to", "Armor, Tools, and Weapons");
+            translationBuilder.add("item." + AscendantArcana.modID + ".smithing_template." + template_id + ".ingredients", "Relics");
+            translationBuilder.add("item." + AscendantArcana.modID + ".smithing_template." + template_id + ".title", "Infusion");
+            translationBuilder.add("item." + AscendantArcana.modID + ".smithing_template." + template_id + ".base_slot_description", "Add Gear");
+            translationBuilder.add("item." + AscendantArcana.modID + ".smithing_template." + template_id + ".additions_slot_description", "Add Relic");
             // Items
             translationBuilder.add(AArcanaItems.ENCHANTED_SCRAP, "Enchanted Scrap");
             translationBuilder.add(AArcanaItems.RESTORINE, "Restorine");
