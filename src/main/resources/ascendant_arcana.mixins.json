@@ -4,6 +4,7 @@
   "package": "me.anticode.ascendant_arcana.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "AnvilScreenHandlerMixin"
   ],
   "client": [
   ],
