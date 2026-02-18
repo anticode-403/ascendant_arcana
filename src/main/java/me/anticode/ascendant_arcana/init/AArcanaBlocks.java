@@ -1,12 +1,12 @@
 package me.anticode.ascendant_arcana.init;
 
 import me.anticode.ascendant_arcana.AscendantArcana;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.AmethystClusterBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.piston.PistonBehavior;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
+import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
@@ -54,5 +54,18 @@ public class AArcanaBlocks {
         return Registry.register(Registries.BLOCK, id, block);
     }
 
-    public static void initialize() {}
+    private static ItemStack after(Item item) {
+        return new ItemStack(item);
+    }
+
+    public static void initialize() {
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register((itemGroup) -> {
+            itemGroup.addAfter(after(Items.AMETHYST_CLUSTER), AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER);
+            itemGroup.addAfter(after(Items.AMETHYST_CLUSTER), AArcanaBlocks.RESTORINE_CLUSTER);
+            itemGroup.addAfter(after(Items.AMETHYST_CLUSTER), AArcanaBlocks.LARGE_RESTORINE_BUD);
+            itemGroup.addAfter(after(Items.AMETHYST_CLUSTER), AArcanaBlocks.MEDIUM_RESTORINE_BUD);
+            itemGroup.addAfter(after(Items.AMETHYST_CLUSTER), AArcanaBlocks.SMALL_RESTORINE_BUD);
+            itemGroup.addAfter(after(Items.AMETHYST_CLUSTER), AArcanaBlocks.BUDDING_RESTORINE);
+        });
+    }
 }

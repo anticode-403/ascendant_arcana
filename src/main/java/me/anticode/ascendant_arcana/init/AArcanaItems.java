@@ -65,6 +65,7 @@ public class AArcanaItems {
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register((itemGroup) -> {
             itemGroup.addAfter(after(Items.LAPIS_LAZULI), AArcanaItems.ENCHANTED_SCRAP);
             itemGroup.addAfter(after(Items.AMETHYST_SHARD), AArcanaItems.RESTORINE);
+            itemGroup.addAfter(after(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), AArcanaItems.INFUSION_SMITHING_TEMPLATE);
 
             for (int i = 0; i < RelicHelper.Relics.values().length * 5; i++) {
                 int relicId = MathHelper.floor((double) i / 5);
