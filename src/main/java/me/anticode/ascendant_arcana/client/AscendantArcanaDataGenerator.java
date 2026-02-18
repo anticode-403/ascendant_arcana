@@ -170,7 +170,6 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
                     .input(Items.AMETHYST_SHARD, 2)
                     .criterion("obtain_lapis", InventoryChangedCriterion.Conditions.items(Items.LAPIS_LAZULI))
                     .offerTo(exporter);
-
         }
     }
 

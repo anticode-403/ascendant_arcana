@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import me.anticode.ascendant_arcana.init.AArcanaItems;
 import me.anticode.ascendant_arcana.init.AArcanaRecipes;
 import me.anticode.ascendant_arcana.init.AArcanaTags;
+import me.anticode.ascendant_arcana.item.RelicItem;
+import me.anticode.ascendant_arcana.logic.RelicHelper;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -13,6 +15,9 @@ import net.minecraft.recipe.SmithingRecipe;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class InfusionRecipe implements SmithingRecipe {
     private final Identifier id;
@@ -44,7 +49,12 @@ public class InfusionRecipe implements SmithingRecipe {
     @Override
     public ItemStack craft(Inventory inventory, DynamicRegistryManager registryManager) {
         ItemStack newStack = inventory.getStack(1).copy();
-        // TODO: Implement modifying NBT data
+        ItemStack relicStack = inventory.getStack(2).copy();
+        int relicStrength = RelicItem.getRelicStrength(relicStack);
+        RelicHelper.Relics relicType = RelicItem.getRelicType(relicStack);
+        Map<RelicHelper.Relics, Integer> relicsMap = new HashMap<RelicHelper.Relics, Integer>();
+        relicsMap.put(relicType, relicStrength);
+        newStack.getOrCreateNbt().put(RelicHelper.AARELICS_KEY, RelicHelper.toNbt(relicsMap));
         return newStack;
     }
 
