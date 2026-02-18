@@ -150,7 +150,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             translationBuilder.add("item.relics.type.damage", "Damage");
             translationBuilder.add("item.relics.type.durability", "Durability");
             translationBuilder.add("item.relics.type.protection", "Resistance");
-            translationBuilder.add("item.relics.type.haste", "Haste");
+            translationBuilder.add("item.relics.type.haste", "Swiftness");
             translationBuilder.add("item.relics.type.enchantment_capacity", "Enchantment Capacity");
 
             translationBuilder.add("item.relics.tooltip", "+%1$s%3$s %2$s");
