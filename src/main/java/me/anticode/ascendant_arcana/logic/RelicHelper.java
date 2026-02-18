@@ -30,6 +30,10 @@ public class RelicHelper {
             }
             return null;
         }
+
+        public static int toId(Relics relic) {
+            return relic.value;
+        }
     }
 
     public static Map<Relics, Integer> fromNbt(NbtList nbt) {

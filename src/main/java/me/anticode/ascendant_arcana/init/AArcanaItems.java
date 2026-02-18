@@ -3,13 +3,15 @@ package me.anticode.ascendant_arcana.init;
 import me.anticode.ascendant_arcana.AscendantArcana;
 import me.anticode.ascendant_arcana.item.EnchantedScrapItem;
 import me.anticode.ascendant_arcana.item.RelicItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.SmithingTemplateItem;
+import me.anticode.ascendant_arcana.logic.RelicHelper;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.List;
 
@@ -55,5 +57,30 @@ public class AArcanaItems {
         return Registry.register(Registries.ITEM, itemId, item);
     }
 
-    public static void initialize() {}
+    public static ItemStack after(Item item) {
+        return new ItemStack(item);
+    }
+
+    public static void initialize() {
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register((itemGroup) -> {
+            itemGroup.addAfter(after(Items.LAPIS_LAZULI), AArcanaItems.ENCHANTED_SCRAP);
+            itemGroup.addAfter(after(Items.AMETHYST_SHARD), AArcanaItems.RESTORINE);
+
+            for (int i = 0; i < RelicHelper.Relics.values().length * 5; i++) {
+                int relicId = MathHelper.floor((double) i / 5);
+                int strength = i + 1 - (relicId * 5);
+                RelicHelper.Relics relicType = RelicHelper.Relics.fromId(relicId);
+                Item relicItem = switch (strength) {
+                    case 1 -> AArcanaItems.DORMANT_RELIC;
+                    case 2 -> AArcanaItems.STIRRING_RELIC;
+                    case 3 -> AArcanaItems.WAKING_RELIC;
+                    case 4 -> AArcanaItems.AWAKENED_RELIC;
+                    default -> AArcanaItems.ASCENDANT_RELIC;
+                };
+                ItemStack stack = new ItemStack(relicItem);
+                RelicItem.writeRelicData(stack, relicType, strength);
+                itemGroup.add(stack);
+            }
+        });
+    }
 }
