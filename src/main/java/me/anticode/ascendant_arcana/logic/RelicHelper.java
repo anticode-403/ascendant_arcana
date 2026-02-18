@@ -75,4 +75,10 @@ public class RelicHelper {
             case ENCHANTMENT_CAPACITY -> strength;
         };
     }
+
+    public static int getRealStrengthFromNbt(NbtList nbt, Relics relicType) {
+        Map<Relics, Integer> map = fromNbt(nbt);
+        if (map.get(relicType) == null) return 0;
+        return convertStrengthIntoReal(relicType, map.get(relicType));
+    }
 }
