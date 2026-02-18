@@ -68,7 +68,7 @@ public class RelicHelper {
     public static int convertStrengthIntoReal(Relics relicType, int strength) {
         if (strength == 0) return 0;
         return switch (relicType) {
-            case DAMAGE -> strength * 2;
+            case DAMAGE -> strength * 12;
             case DURABILITY -> strength * 600;
             case PROTECTION -> strength * 3;
             case HASTE -> strength * 10;
