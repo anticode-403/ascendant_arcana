@@ -51,6 +51,7 @@ public class RelicItem extends Item {
         else if (relicType == RelicHelper.Relics.HASTE || relicType == RelicHelper.Relics.DAMAGE) {
             appliedToTooltip = "item.relics.tooltip.applied_tool";
         }
+        tooltip.add(Text.empty());
         tooltip.add(Text.translatable(appliedToTooltip).formatted(Formatting.GRAY));
         tooltip.add(line);
     }
