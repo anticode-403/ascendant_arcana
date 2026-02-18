@@ -38,7 +38,7 @@ public class RelicHelper {
 
     public static Map<Relics, Integer> fromNbt(NbtList nbt) {
         Map<Relics, Integer> map = new HashMap<>();
-        if (nbt == null) return null;
+        if (nbt == null) return map;
         for  (int i = 0; i < nbt.size(); ++i) {
             NbtCompound tag = nbt.getCompound(i);
             Relics key = Relics.fromId(tag.getInt("id"));
