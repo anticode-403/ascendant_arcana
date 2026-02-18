@@ -146,6 +146,17 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             translationBuilder.add(AArcanaItems.WAKING_RELIC, "Waking Relic");
             translationBuilder.add(AArcanaItems.STIRRING_RELIC, "Stirring Relic");
             translationBuilder.add(AArcanaItems.DORMANT_RELIC, "Dormant Relic");
+
+            translationBuilder.add("item.relics.type.damage", "Damage");
+            translationBuilder.add("item.relics.type.durability", "Durability");
+            translationBuilder.add("item.relics.type.protection", "Resistance");
+            translationBuilder.add("item.relics.type.haste", "Haste");
+            translationBuilder.add("item.relics.type.enchantment_capacity", "Enchantment Capacity");
+
+            translationBuilder.add("item.relics.tooltip", "+%1$s%3$s %2$s");
+            translationBuilder.add("item.relics.tooltip.applied_any", "When Applied to Item:");
+            translationBuilder.add("item.relics.tooltip.applied_tool", "When Applied to Tool:");
+            translationBuilder.add("item.relics.tooltip.applied_armor", "When Applied to Armor:");
             // Blocks
             translationBuilder.add(AArcanaBlocks.BUDDING_RESTORINE, "Budding Restorine");
             // Restorine Clusters
@@ -188,7 +199,6 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             addDrop(AArcanaBlocks.RESTORINE_CLUSTER, LootTable.builder().pool(LootPool.builder().with(ItemEntry.builder(AArcanaItems.RESTORINE))));
             dropsWithSilkTouch(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER);
             addDrop(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER, LootTable.builder().pool(LootPool.builder().with(ItemEntry.builder(AArcanaItems.RESTORINE).apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 4))))));
-
         }
     }
 }

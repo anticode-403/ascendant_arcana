@@ -64,4 +64,15 @@ public class RelicHelper {
         Map<Relics, Integer> map = fromNbt(nbt);
         return map.get(key) != null ? map.get(key) : 0;
     }
+
+    public static int convertStrengthIntoReal(Relics relicType, int strength) {
+        if (strength == 0) return 0;
+        return switch (relicType) {
+            case DAMAGE -> strength * 2;
+            case DURABILITY -> strength * 300;
+            case PROTECTION -> strength * 3;
+            case HASTE -> strength * 10;
+            case ENCHANTMENT_CAPACITY -> strength;
+        };
+    }
 }

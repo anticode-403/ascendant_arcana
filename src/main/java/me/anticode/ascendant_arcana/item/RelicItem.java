@@ -6,6 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Rarity;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -38,8 +39,20 @@ public class RelicItem extends Item {
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         super.appendTooltip(stack, world, tooltip, context);
-        tooltip.add(Text.of("Relic Type: " + getRelicType(stack)));
-        tooltip.add(Text.of("Relic Strength: " + getRelicStrength(stack)));
+        RelicHelper.Relics relicType = getRelicType(stack);
+        int visualStrength = RelicHelper.convertStrengthIntoReal(relicType, getRelicStrength(stack));
+        Text relicName = Text.translatable("item.relics.type." + relicType.toString().toLowerCase());
+        String hasPercent = (relicType == RelicHelper.Relics.HASTE || relicType == RelicHelper.Relics.PROTECTION) ? "%" : "";
+        Text line = Text.translatable("item.relics.tooltip", visualStrength, relicName, hasPercent).formatted(Formatting.BLUE);
+        String appliedToTooltip = "item.relics.tooltip.applied_any";
+        if (relicType == RelicHelper.Relics.PROTECTION) {
+            appliedToTooltip = "item.relics.tooltip.applied_armor";
+        }
+        else if (relicType == RelicHelper.Relics.HASTE || relicType == RelicHelper.Relics.DAMAGE) {
+            appliedToTooltip = "item.relics.tooltip.applied_tool";
+        }
+        tooltip.add(Text.translatable(appliedToTooltip).formatted(Formatting.GRAY));
+        tooltip.add(line);
     }
 
     public static RelicHelper.Relics getRelicType(ItemStack stack) {
