@@ -1,6 +1,7 @@
 package me.anticode.ascendant_arcana.client;
 
 import me.anticode.ascendant_arcana.AscendantArcana;
+import me.anticode.ascendant_arcana.init.AArcanaAttributes;
 import me.anticode.ascendant_arcana.init.AArcanaBlocks;
 import me.anticode.ascendant_arcana.init.AArcanaItems;
 import me.anticode.ascendant_arcana.init.AArcanaTags;
@@ -149,7 +150,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
 
             translationBuilder.add("item.relics.type.damage", "Damage");
             translationBuilder.add("item.relics.type.durability", "Durability");
-            translationBuilder.add("item.relics.type.protection", "Resistance");
+            translationBuilder.add("item.relics.type.protection", "Protection");
             translationBuilder.add("item.relics.type.haste", "Swiftness");
             translationBuilder.add("item.relics.type.enchantment_capacity", "Enchantment Capacity");
 
@@ -165,6 +166,8 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             translationBuilder.add(AArcanaBlocks.LARGE_RESTORINE_BUD, "Large Restore Bud");
             translationBuilder.add(AArcanaBlocks.RESTORINE_CLUSTER, "Restore Cluster");
             translationBuilder.add(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER, "Massive Restore Cluster");
+            // Attributes
+            translationBuilder.add(AArcanaAttributes.PROTECTION, "Protection");
         }
     }
 
