@@ -7,7 +7,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ItemStack.class)
@@ -17,8 +16,6 @@ public abstract class ItemStackMixin {
 
     @ModifyReturnValue(method = "getMaxDamage", at = @At("RETURN"))
     private int implementDurabilityRelic(int maxDamage) {
-        return maxDamage + RelicHelper.getValueFromNbt((NbtList)getOrCreateNbt().get(RelicHelper.AARELICS_KEY), RelicHelper.Relics.DURABILITY) * 300;
+        return maxDamage + RelicHelper.convertStrengthIntoReal(RelicHelper.Relics.DURABILITY, RelicHelper.getValueFromNbt((NbtList)getOrCreateNbt().get(RelicHelper.AARELICS_KEY), RelicHelper.Relics.DURABILITY));
     }
-
-
 }

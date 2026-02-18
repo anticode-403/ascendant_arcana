@@ -69,7 +69,7 @@ public class RelicHelper {
         if (strength == 0) return 0;
         return switch (relicType) {
             case DAMAGE -> strength * 2;
-            case DURABILITY -> strength * 300;
+            case DURABILITY -> strength * 600;
             case PROTECTION -> strength * 3;
             case HASTE -> strength * 10;
             case ENCHANTMENT_CAPACITY -> strength;
