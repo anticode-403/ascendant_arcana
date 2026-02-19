@@ -55,12 +55,6 @@ public abstract class ItemStackMixin {
             if (slot != EquipmentSlot.MAINHAND) return original;
             Map<RelicHelper.Relics, Integer> relics = RelicHelper.fromNbt((NbtList)getOrCreateNbt().get(RelicHelper.AARELICS_KEY));
             if (relics.isEmpty()) return original;
-            UUID uuid = UUID.fromString("4363a989-2822-4c1a-b74a-07493b9b30a4");
-            if (relics.containsKey(RelicHelper.Relics.HASTE)) {
-                int hasteValue = RelicHelper.convertStrengthIntoReal(RelicHelper.Relics.HASTE, relics.get(RelicHelper.Relics.HASTE));
-                EntityAttributeModifier modifier = new EntityAttributeModifier(uuid, "Haste Relic Bonus", hasteValue * 0.01, EntityAttributeModifier.Operation.MULTIPLY_BASE);
-                original.put(AArcanaAttributes.SWIFTNESS, modifier);
-            }
             if (relics.containsKey(RelicHelper.Relics.DAMAGE)) {
                 int damageValue = RelicHelper.convertStrengthIntoReal(RelicHelper.Relics.DAMAGE, relics.get(RelicHelper.Relics.DAMAGE));
                 List<EntityAttributeModifier> oldDamageModifiers = original.get(EntityAttributes.GENERIC_ATTACK_DAMAGE).stream().toList();
@@ -74,5 +68,13 @@ public abstract class ItemStackMixin {
             }
         }
         return original;
+    }
+
+    @ModifyReturnValue(method = "getMiningSpeedMultiplier", at = @At("RETURN"))
+    private float applySwiftnessMiningSpeedBonus(float miningSpeedMultiplier) {
+        Map<RelicHelper.Relics, Integer> relics = RelicHelper.fromNbt((NbtList)getOrCreateNbt().get(RelicHelper.AARELICS_KEY));
+        if (!relics.containsKey(RelicHelper.Relics.HASTE)) return miningSpeedMultiplier;
+        float hasteValue = (float)RelicHelper.convertStrengthIntoReal(RelicHelper.Relics.HASTE, relics.get(RelicHelper.Relics.HASTE));
+        return miningSpeedMultiplier *  (1 - (hasteValue * 0.01F));
     }
 }
