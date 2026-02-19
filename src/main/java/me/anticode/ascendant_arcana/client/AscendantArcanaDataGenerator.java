@@ -168,7 +168,6 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             translationBuilder.add(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER, "Massive Restore Cluster");
             // Attributes
             translationBuilder.add(AArcanaAttributes.PROTECTION, "Protection");
-            translationBuilder.add(AArcanaAttributes.SWIFTNESS, "Swiftness");
         }
     }
 
