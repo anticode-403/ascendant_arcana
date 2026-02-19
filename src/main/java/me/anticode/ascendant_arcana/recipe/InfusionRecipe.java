@@ -15,6 +15,7 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ToolItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
@@ -42,7 +43,8 @@ public class InfusionRecipe implements SmithingRecipe {
 
             @Override
             public boolean testBase(ItemStack stack) {
-                return stack.isDamageable();
+                if (!(stack.getItem() instanceof ArmorItem || stack.getItem() instanceof ToolItem)) return false;
+                return RelicHelper.fromNbt((NbtList) stack.getOrCreateNbt().get(RelicHelper.AARELICS_KEY)).size() <= 2;
             }
 
             @Override
@@ -52,7 +54,22 @@ public class InfusionRecipe implements SmithingRecipe {
 
             @Override
             public boolean matches(Inventory inventory, World world) {
-                return this.testTemplate(inventory.getStack(0)) && this.testBase(inventory.getStack(1)) && this.testAddition(inventory.getStack(2));
+                if (!(this.testTemplate(inventory.getStack(0)) && this.testBase(inventory.getStack(1)) && this.testAddition(inventory.getStack(2)))) return false;
+                ItemStack baseStack = inventory.getStack(1);
+                Map<RelicHelper.Relics, Integer> relicMap = RelicHelper.fromNbt((NbtList)baseStack.getOrCreateNbt().get(RelicHelper.AARELICS_KEY));
+                ItemStack relicStack = inventory.getStack(2);
+                RelicHelper.Relics relicType = RelicItem.getRelicType(relicStack);
+                if (relicMap.size() < 2) {
+                    if (relicType == RelicHelper.Relics.DURABILITY || relicType == RelicHelper.Relics.ENCHANTMENT_CAPACITY) return true;
+                    else if ((relicType == RelicHelper.Relics.HASTE || relicType == RelicHelper.Relics.DAMAGE) && baseStack.getItem() instanceof ToolItem) return true;
+                    else return relicType == RelicHelper.Relics.PROTECTION && baseStack.getItem() instanceof ArmorItem;
+                }
+                else if (relicStack.getItem() instanceof  RelicItem) {
+                    if (relicMap.containsKey(relicType)) {
+                        return RelicItem.getRelicStrength(relicStack) > relicMap.get(relicType);
+                    }
+                }
+                return false;
             }
 
             @Override
