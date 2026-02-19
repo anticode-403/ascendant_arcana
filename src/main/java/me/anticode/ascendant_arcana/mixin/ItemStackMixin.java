@@ -5,19 +5,26 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import me.anticode.ascendant_arcana.init.AArcanaAttributes;
 import me.anticode.ascendant_arcana.logic.RelicHelper;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.*;
 
@@ -76,5 +83,27 @@ public abstract class ItemStackMixin {
         if (!relics.containsKey(RelicHelper.Relics.HASTE)) return miningSpeedMultiplier;
         float hasteValue = (float)RelicHelper.convertStrengthIntoReal(RelicHelper.Relics.HASTE, relics.get(RelicHelper.Relics.HASTE));
         return miningSpeedMultiplier *  (1 - (hasteValue * 0.01F));
+    }
+
+    @Inject(method = "getTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isSectionVisible(ILnet/minecraft/item/ItemStack$TooltipSection;)Z", ordinal = 1))
+    private void addRelicTooltipInfo(PlayerEntity player, TooltipContext context, CallbackInfoReturnable<List<Text>> cir, @Local List<Text> tooltip) {
+        Map<RelicHelper.Relics, Integer> relics = RelicHelper.fromNbt((NbtList)getOrCreateNbt().get(RelicHelper.AARELICS_KEY));
+        if (relics.isEmpty()) return;
+        tooltip.add(Text.empty());
+        tooltip.add(Text.translatable("item.relics.tooltip.on_tool", relics.size(), 2).formatted(Formatting.GRAY));
+        for (Map.Entry<RelicHelper.Relics, Integer> entry : relics.entrySet()) {
+            int visualStrength = RelicHelper.convertStrengthIntoReal(entry.getKey(), entry.getValue());
+            Text relicName = Text.translatable("item.relics.type." + entry.getKey().toString().toLowerCase());
+            String hasPercent = (entry.getKey() == RelicHelper.Relics.HASTE || entry.getKey() == RelicHelper.Relics.PROTECTION || entry.getKey() == RelicHelper.Relics.DAMAGE) ? "%" : "";
+            Text line = Text.translatable("item.relics.tooltip", visualStrength, relicName, hasPercent).formatted(Formatting.BLUE);
+            tooltip.add(line);
+        }
+    }
+
+    @Redirect(method = "getTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getAttributeModifiers(Lnet/minecraft/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;"))
+    private Multimap<EntityAttribute, EntityAttributeModifier> removeProtectionAttributeFromTooltip(ItemStack instance, EquipmentSlot slot) {
+        Multimap<EntityAttribute, EntityAttributeModifier> modifiers = instance.getAttributeModifiers(slot);
+        modifiers.removeAll(AArcanaAttributes.PROTECTION);
+        return modifiers;
     }
 }

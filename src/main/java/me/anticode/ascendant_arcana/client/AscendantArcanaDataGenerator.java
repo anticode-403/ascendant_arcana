@@ -158,6 +158,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             translationBuilder.add("item.relics.tooltip.applied_any", "When Applied to Item:");
             translationBuilder.add("item.relics.tooltip.applied_tool", "When Applied to Tool:");
             translationBuilder.add("item.relics.tooltip.applied_armor", "When Applied to Armor:");
+            translationBuilder.add("item.relics.tooltip.on_tool", "Applied Relics (%1$s/%2$s):");
             // Blocks
             translationBuilder.add(AArcanaBlocks.BUDDING_RESTORINE, "Budding Restorine");
             // Restorine Clusters
