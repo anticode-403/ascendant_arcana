@@ -40,7 +40,7 @@ public class RelicItem extends Item {
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         super.appendTooltip(stack, world, tooltip, context);
         RelicHelper.Relics relicType = getRelicType(stack);
-        int visualStrength = RelicHelper.convertStrengthIntoReal(relicType, getRelicStrength(stack));
+        int visualStrength = RelicHelper.getTooltipStrength(relicType, getRelicStrength(stack));
         Text relicName = Text.translatable("item.relics.type." + relicType.toString().toLowerCase());
         String hasPercent = (relicType == RelicHelper.Relics.HASTE || relicType == RelicHelper.Relics.PROTECTION || relicType == RelicHelper.Relics.DAMAGE) ? "%" : "";
         Text line = Text.translatable("item.relics.tooltip", visualStrength, relicName, hasPercent).formatted(Formatting.BLUE);

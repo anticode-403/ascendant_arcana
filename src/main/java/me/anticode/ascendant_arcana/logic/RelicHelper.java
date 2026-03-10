@@ -36,11 +36,12 @@ public class RelicHelper {
         }
     }
 
-    public static Map<Relics, Integer> fromNbt(NbtList nbt) {
+    public static Map<Relics, Integer> fromNbt(NbtCompound nbt) {
+        NbtList list = (NbtList) nbt.get(AARELICS_KEY);
         Map<Relics, Integer> map = new HashMap<>();
-        if (nbt == null) return map;
-        for  (int i = 0; i < nbt.size(); ++i) {
-            NbtCompound tag = nbt.getCompound(i);
+        if (list == null) return map;
+        for  (int i = 0; i < list.size(); ++i) {
+            NbtCompound tag = list.getCompound(i);
             Relics key = Relics.fromId(tag.getInt("id"));
             int value = tag.getInt("strength");
             map.put(key, value);
@@ -59,26 +60,20 @@ public class RelicHelper {
         return nbtList;
     }
 
-    public static int getValueFromNbt(NbtList nbt, Relics key) {
+    public static int getValueFromNbt(NbtCompound nbt, Relics key) {
         if (nbt == null) return 0;
         Map<Relics, Integer> map = fromNbt(nbt);
         return map.get(key) != null ? map.get(key) : 0;
     }
 
-    public static int convertStrengthIntoReal(Relics relicType, int strength) {
+    public static int getTooltipStrength(Relics relicType, int strength) {
         if (strength == 0) return 0;
         return switch (relicType) {
-            case DAMAGE -> strength * 12;
+            case DAMAGE -> strength <= 3 ? 8 + strength * 4 : 10 + strength * 4;
             case DURABILITY -> strength * 600;
             case PROTECTION -> strength * 3;
             case HASTE -> strength * 10;
             case ENCHANTMENT_CAPACITY -> strength;
         };
-    }
-
-    public static int getRealStrengthFromNbt(NbtList nbt, Relics relicType) {
-        Map<Relics, Integer> map = fromNbt(nbt);
-        if (map.get(relicType) == null) return 0;
-        return convertStrengthIntoReal(relicType, map.get(relicType));
     }
 }

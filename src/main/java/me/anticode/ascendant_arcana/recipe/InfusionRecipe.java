@@ -35,7 +35,7 @@ public class InfusionRecipe implements SmithingRecipe {
             @Override
             public boolean testBase(ItemStack stack) {
                 if (!(stack.getItem() instanceof ArmorItem || stack.getItem() instanceof ToolItem)) return false;
-                return RelicHelper.fromNbt((NbtList) stack.getOrCreateNbt().get(RelicHelper.AARELICS_KEY)).size() <= 2;
+                return RelicHelper.fromNbt(stack.getOrCreateNbt()).size() <= 2;
             }
 
             @Override
@@ -47,7 +47,7 @@ public class InfusionRecipe implements SmithingRecipe {
             public boolean matches(Inventory inventory, World world) {
                 if (!(this.testTemplate(inventory.getStack(0)) && this.testBase(inventory.getStack(1)) && this.testAddition(inventory.getStack(2)))) return false;
                 ItemStack baseStack = inventory.getStack(1);
-                Map<RelicHelper.Relics, Integer> relicMap = RelicHelper.fromNbt((NbtList)baseStack.getOrCreateNbt().get(RelicHelper.AARELICS_KEY));
+                Map<RelicHelper.Relics, Integer> relicMap = RelicHelper.fromNbt(baseStack.getOrCreateNbt());
                 ItemStack relicStack = inventory.getStack(2);
                 RelicHelper.Relics relicType = RelicItem.getRelicType(relicStack);
                 if (relicMap.size() < 2) {
@@ -69,7 +69,7 @@ public class InfusionRecipe implements SmithingRecipe {
                 ItemStack relicStack = inventory.getStack(2).copy();
                 int relicStrength = RelicItem.getRelicStrength(relicStack);
                 RelicHelper.Relics relicType = RelicItem.getRelicType(relicStack);
-                Map<RelicHelper.Relics, Integer> relicsMap = RelicHelper.fromNbt((NbtList)newStack.getOrCreateNbt().get(RelicHelper.AARELICS_KEY));
+                Map<RelicHelper.Relics, Integer> relicsMap = RelicHelper.fromNbt(newStack.getOrCreateNbt());
                 relicsMap.put(relicType, relicStrength);
                 newStack.getOrCreateNbt().put(RelicHelper.AARELICS_KEY, RelicHelper.toNbt(relicsMap));
                 return newStack;
