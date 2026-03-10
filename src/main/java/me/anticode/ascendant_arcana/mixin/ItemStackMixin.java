@@ -81,7 +81,7 @@ public abstract class ItemStackMixin {
         Map<RelicHelper.Relics, Integer> relics = RelicHelper.fromNbt(getOrCreateNbt());
         if (!relics.containsKey(RelicHelper.Relics.HASTE)) return miningSpeedMultiplier;
         float hasteValue = (float)RelicHelper.getTooltipStrength(RelicHelper.Relics.HASTE, relics.get(RelicHelper.Relics.HASTE));
-        return miningSpeedMultiplier *  (1 - (hasteValue * 0.01F));
+        return miningSpeedMultiplier *  (1 + (hasteValue * 0.01F));
     }
 
     @Inject(method = "getTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isSectionVisible(ILnet/minecraft/item/ItemStack$TooltipSection;)Z", ordinal = 1))
