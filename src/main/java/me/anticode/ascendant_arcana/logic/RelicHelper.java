@@ -3,6 +3,7 @@ package me.anticode.ascendant_arcana.logic;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import org.spongepowered.asm.mixin.Unique;
+import net.minecraft.text.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,33 +12,11 @@ public class RelicHelper {
     @Unique
     public static final String AARELICS_KEY = "AscendantArcanaRelics";
 
-    public enum Relics {
-        DAMAGE(0),
-        DURABILITY(1),
-        PROTECTION(2),
-        HASTE(3),
-        ENCHANTMENT_CAPACITY(4);
-
-        private final int value;
-
-        Relics(int relic) {
-            this.value = relic;
-        }
-
-        public static Relics fromId(int value) {
-            for (Relics r : values()) {
-                if (r.value == value) return r;
-            }
-            return null;
-        }
-
-        public static int toId(Relics relic) {
-            return relic.value;
-        }
+    public static Map<Relics, Integer> fromNbt(NbtCompound nbt) {
+        return fromNbtList((NbtList) nbt.get(AARELICS_KEY));
     }
 
-    public static Map<Relics, Integer> fromNbt(NbtCompound nbt) {
-        NbtList list = (NbtList) nbt.get(AARELICS_KEY);
+    public static Map<Relics, Integer> fromNbtList(NbtList list) {
         Map<Relics, Integer> map = new HashMap<>();
         if (list == null) return map;
         for  (int i = 0; i < list.size(); ++i) {
@@ -53,7 +32,7 @@ public class RelicHelper {
         NbtList nbtList = new NbtList();
         for(Map.Entry<Relics, Integer> entry : map.entrySet()) {
             NbtCompound tag = new NbtCompound();
-            tag.putInt("id", entry.getKey().value);
+            tag.putInt("id", Relics.toId(entry.getKey()));
             tag.putInt("strength", entry.getValue());
             nbtList.add(tag);
         }
@@ -75,5 +54,17 @@ public class RelicHelper {
             case HASTE -> strength * 10;
             case ENCHANTMENT_CAPACITY -> strength;
         };
+    }
+
+    public static Text getRelicTypeText(Relics relicType) {
+        return Text.translatable("item.relics.type." + relicType.toString().toLowerCase());
+    }
+
+    public static Text getRelicStrengthName(int strength) {
+        return Text.translatable("item.relics.strength." + strength);
+    }
+
+    public static Text getRelicTypeName(Relics relicType) {
+        return Text.translatable("item.relics.name." + relicType.toString().toLowerCase());
     }
 }

@@ -3,7 +3,7 @@ package me.anticode.ascendant_arcana.init;
 import me.anticode.ascendant_arcana.AscendantArcana;
 import me.anticode.ascendant_arcana.item.EnchantedScrapItem;
 import me.anticode.ascendant_arcana.item.RelicItem;
-import me.anticode.ascendant_arcana.logic.RelicHelper;
+import me.anticode.ascendant_arcana.logic.Relics;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
@@ -37,11 +37,7 @@ public class AArcanaItems {
             List.of() // TODO: Create empty slot textures for relics
     ), "infusion_smithing_template");
 
-    public static final Item DORMANT_RELIC = register(new RelicItem(new Item.Settings()), "dormant_relic");
-    public static final Item STIRRING_RELIC = register(new RelicItem(new Item.Settings()), "stirring_relic");
-    public static final Item WAKING_RELIC = register(new RelicItem(new Item.Settings()), "waking_relic");
-    public static final Item AWAKENED_RELIC = register(new RelicItem(new Item.Settings()), "awakened_relic");
-    public static final Item ASCENDANT_RELIC = register(new RelicItem(new Item.Settings()), "ascendant_relic");
+    public static final Item RELIC = register(new RelicItem(new Item.Settings()), "relic");
 
     public static final Item ENCHANTED_SCRAP = register(new EnchantedScrapItem(new Item.Settings()), "enchanted_scrap");
     public static final Item RESTORINE = register(new Item(new Item.Settings()), "restorine");
@@ -67,18 +63,11 @@ public class AArcanaItems {
             itemGroup.addAfter(after(Items.AMETHYST_SHARD), AArcanaItems.RESTORINE);
             itemGroup.addAfter(after(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), AArcanaItems.INFUSION_SMITHING_TEMPLATE);
 
-            for (int i = 0; i < RelicHelper.Relics.values().length * 5; i++) {
+            for (int i = 0; i < Relics.values().length * 5; i++) {
                 int relicId = MathHelper.floor((double) i / 5);
                 int strength = i + 1 - (relicId * 5);
-                RelicHelper.Relics relicType = RelicHelper.Relics.fromId(relicId);
-                Item relicItem = switch (strength) {
-                    case 1 -> AArcanaItems.DORMANT_RELIC;
-                    case 2 -> AArcanaItems.STIRRING_RELIC;
-                    case 3 -> AArcanaItems.WAKING_RELIC;
-                    case 4 -> AArcanaItems.AWAKENED_RELIC;
-                    default -> AArcanaItems.ASCENDANT_RELIC;
-                };
-                ItemStack stack = new ItemStack(relicItem);
+                Relics relicType = Relics.fromId(relicId);
+                ItemStack stack = new ItemStack(RELIC);
                 RelicItem.writeRelicData(stack, relicType, strength);
                 itemGroup.add(stack);
             }

@@ -1,10 +1,15 @@
 package me.anticode.ascendant_arcana.client;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import me.anticode.ascendant_arcana.AscendantArcana;
 import me.anticode.ascendant_arcana.init.AArcanaAttributes;
 import me.anticode.ascendant_arcana.init.AArcanaBlocks;
 import me.anticode.ascendant_arcana.init.AArcanaItems;
 import me.anticode.ascendant_arcana.init.AArcanaTags;
+import me.anticode.ascendant_arcana.item.RelicItem;
+import me.anticode.ascendant_arcana.logic.RelicHelper;
+import me.anticode.ascendant_arcana.logic.Relics;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -24,6 +29,8 @@ import net.minecraft.loot.provider.number.UniformLootNumberProvider;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.*;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -50,11 +57,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
         @Override
         protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
             getOrCreateTagBuilder(AArcanaTags.Items.RELICS)
-                    .add(AArcanaItems.DORMANT_RELIC)
-                    .add(AArcanaItems.STIRRING_RELIC)
-                    .add(AArcanaItems.WAKING_RELIC)
-                    .add(AArcanaItems.AWAKENED_RELIC)
-                    .add(AArcanaItems.ASCENDANT_RELIC);
+                    .add(AArcanaItems.RELIC);
         }
     }
 
@@ -115,11 +118,33 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             itemModelGenerator.register(AArcanaItems.RESTORINE, Models.GENERATED);
 
             // Relics
-            itemModelGenerator.register(AArcanaItems.ASCENDANT_RELIC, Models.GENERATED);
-            itemModelGenerator.register(AArcanaItems.AWAKENED_RELIC, Models.GENERATED);
-            itemModelGenerator.register(AArcanaItems.WAKING_RELIC, Models.GENERATED);
-            itemModelGenerator.register(AArcanaItems.STIRRING_RELIC, Models.GENERATED);
-            itemModelGenerator.register(AArcanaItems.DORMANT_RELIC, Models.GENERATED);
+            // We use model predicates here to change the relic texture on the fly while only using one item.
+            JsonObject rootJsonObject = new JsonObject();
+            rootJsonObject.addProperty("parent", "minecraft:item/generated");
+            JsonArray jsonArray = new JsonArray();
+            for (int i = 0; i < Relics.values().length * 5; i++) {
+                int relicId = MathHelper.floor((double) i / 5);
+                int strength = i + 1 - (relicId * 5);
+                String relicName = switch(relicId) {
+                    case 0 -> "damage";
+                    case 1 -> "durability";
+                    case 2 -> "protection";
+                    case 3 -> "haste";
+                    case 4 -> "magic";
+                    default -> "error";
+                };
+                JsonObject overrideObject = new JsonObject();
+                overrideObject.addProperty("model", AscendantArcana.modID + ":item/relics/relic_" + relicName + "_" + strength);
+                JsonObject predicateObject = new JsonObject();
+                predicateObject.addProperty("relic_type", relicId / 5F); // Model Predicates are clamped between 0 and 1 for some reason
+                predicateObject.addProperty("relic_strength", strength / 5F);
+                overrideObject.add("predicate", predicateObject);
+                jsonArray.add(overrideObject);
+
+                Models.GENERATED.upload(new Identifier(AscendantArcana.modID, "item/relics/relic_" + relicName + "_" + strength), TextureMap.layer0(new Identifier(AscendantArcana.modID, "item/relic_" + relicName + "_" + strength)), itemModelGenerator.writer);
+            }
+            rootJsonObject.add("overrides", jsonArray);
+            Models.GENERATED.upload(ModelIds.getItemModelId(AArcanaItems.RELIC), TextureMap.layer0(AArcanaItems.RELIC), itemModelGenerator.writer, (id, textures) -> rootJsonObject);
         }
     }
 
@@ -142,17 +167,26 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             translationBuilder.add(AArcanaItems.ENCHANTED_SCRAP, "Enchanted Scrap");
             translationBuilder.add(AArcanaItems.RESTORINE, "Restorine");
             // Relics
-            translationBuilder.add(AArcanaItems.ASCENDANT_RELIC, "Ascendant Relic");
-            translationBuilder.add(AArcanaItems.AWAKENED_RELIC, "Awakened Relic");
-            translationBuilder.add(AArcanaItems.WAKING_RELIC, "Waking Relic");
-            translationBuilder.add(AArcanaItems.STIRRING_RELIC, "Stirring Relic");
-            translationBuilder.add(AArcanaItems.DORMANT_RELIC, "Dormant Relic");
+            translationBuilder.add(AArcanaItems.RELIC, "%1$s Relic of %2$s");
+            translationBuilder.add("item.relics.empty", "Empty Relic");
+
+            translationBuilder.add("item.relics.strength.1", "Dormant");
+            translationBuilder.add("item.relics.strength.2", "Stirring");
+            translationBuilder.add("item.relics.strength.3", "Waking");
+            translationBuilder.add("item.relics.strength.4", "Awakened");
+            translationBuilder.add("item.relics.strength.5", "Ascendant");
 
             translationBuilder.add("item.relics.type.damage", "Damage");
             translationBuilder.add("item.relics.type.durability", "Durability");
             translationBuilder.add("item.relics.type.protection", "Protection");
             translationBuilder.add("item.relics.type.haste", "Swiftness");
             translationBuilder.add("item.relics.type.enchantment_capacity", "Enchantment Capacity");
+
+            translationBuilder.add("item.relics.name.damage", "Violence");
+            translationBuilder.add("item.relics.name.durability", "Immutability");
+            translationBuilder.add("item.relics.name.protection", "Shielding");
+            translationBuilder.add("item.relics.name.haste", "Haste");
+            translationBuilder.add("item.relics.name.enchantment_capacity", "Magic");
 
             translationBuilder.add("item.relics.tooltip", "+%1$s%3$s %2$s");
             translationBuilder.add("item.relics.tooltip.applied_any", "When Applied to Item:");

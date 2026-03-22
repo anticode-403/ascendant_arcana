@@ -6,6 +6,7 @@ import me.anticode.ascendant_arcana.init.AArcanaRecipes;
 import me.anticode.ascendant_arcana.init.AArcanaTags;
 import me.anticode.ascendant_arcana.item.RelicItem;
 import me.anticode.ascendant_arcana.logic.RelicHelper;
+import me.anticode.ascendant_arcana.logic.Relics;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
@@ -47,13 +48,13 @@ public class InfusionRecipe implements SmithingRecipe {
             public boolean matches(Inventory inventory, World world) {
                 if (!(this.testTemplate(inventory.getStack(0)) && this.testBase(inventory.getStack(1)) && this.testAddition(inventory.getStack(2)))) return false;
                 ItemStack baseStack = inventory.getStack(1);
-                Map<RelicHelper.Relics, Integer> relicMap = RelicHelper.fromNbt(baseStack.getOrCreateNbt());
+                Map<Relics, Integer> relicMap = RelicHelper.fromNbt(baseStack.getOrCreateNbt());
                 ItemStack relicStack = inventory.getStack(2);
-                RelicHelper.Relics relicType = RelicItem.getRelicType(relicStack);
+                Relics relicType = RelicItem.getRelicType(relicStack);
                 if (relicMap.size() < 2) {
-                    if (relicType == RelicHelper.Relics.DURABILITY || relicType == RelicHelper.Relics.ENCHANTMENT_CAPACITY) return true;
-                    else if ((relicType == RelicHelper.Relics.HASTE || relicType == RelicHelper.Relics.DAMAGE) && baseStack.getItem() instanceof ToolItem) return true;
-                    else return relicType == RelicHelper.Relics.PROTECTION && baseStack.getItem() instanceof ArmorItem;
+                    if (relicType == Relics.DURABILITY || relicType == Relics.ENCHANTMENT_CAPACITY) return true;
+                    else if ((relicType == Relics.HASTE || relicType == Relics.DAMAGE) && baseStack.getItem() instanceof ToolItem) return true;
+                    else return relicType == Relics.PROTECTION && baseStack.getItem() instanceof ArmorItem;
                 }
                 else if (relicStack.getItem() instanceof  RelicItem) {
                     if (relicMap.containsKey(relicType)) {
@@ -68,8 +69,8 @@ public class InfusionRecipe implements SmithingRecipe {
                 ItemStack newStack = inventory.getStack(1).copy();
                 ItemStack relicStack = inventory.getStack(2).copy();
                 int relicStrength = RelicItem.getRelicStrength(relicStack);
-                RelicHelper.Relics relicType = RelicItem.getRelicType(relicStack);
-                Map<RelicHelper.Relics, Integer> relicsMap = RelicHelper.fromNbt(newStack.getOrCreateNbt());
+                Relics relicType = RelicItem.getRelicType(relicStack);
+                Map<Relics, Integer> relicsMap = RelicHelper.fromNbt(newStack.getOrCreateNbt());
                 relicsMap.put(relicType, relicStrength);
                 newStack.getOrCreateNbt().put(RelicHelper.AARELICS_KEY, RelicHelper.toNbt(relicsMap));
                 return newStack;
