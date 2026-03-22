@@ -7,8 +7,6 @@ import me.anticode.ascendant_arcana.init.AArcanaAttributes;
 import me.anticode.ascendant_arcana.init.AArcanaBlocks;
 import me.anticode.ascendant_arcana.init.AArcanaItems;
 import me.anticode.ascendant_arcana.init.AArcanaTags;
-import me.anticode.ascendant_arcana.item.RelicItem;
-import me.anticode.ascendant_arcana.logic.RelicHelper;
 import me.anticode.ascendant_arcana.logic.Relics;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;

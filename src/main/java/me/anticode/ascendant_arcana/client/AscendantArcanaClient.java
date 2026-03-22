@@ -1,6 +1,5 @@
 package me.anticode.ascendant_arcana.client;
 
-import me.anticode.ascendant_arcana.AscendantArcana;
 import me.anticode.ascendant_arcana.init.AArcanaBlocks;
 import me.anticode.ascendant_arcana.init.AArcanaItems;
 import me.anticode.ascendant_arcana.item.RelicItem;
