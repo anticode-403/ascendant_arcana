@@ -13,7 +13,6 @@ import net.minecraft.util.Identifier;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class ItemUtil {
     public static void forEachEnchantment(Consumer consumer, ItemStack stack, boolean allowEmpty)
