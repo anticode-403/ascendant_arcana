@@ -90,7 +90,7 @@ public abstract class ItemStackMixin {
         Map<Relics, Integer> relics = RelicHelper.fromNbt(getOrCreateNbt());
         if (relics.isEmpty()) return;
         tooltip.add(Text.empty());
-        tooltip.add(Text.translatable("item.relics.tooltip.on_tool", relics.size(), 2).formatted(Formatting.GRAY));
+        tooltip.add(Text.translatable("item.relics.tooltip.on_tool", relics.size(), RelicHelper.getRelicCapacity((ItemStack)(Object)this)).formatted(Formatting.GRAY));
         for (Map.Entry<Relics, Integer> entry : relics.entrySet()) {
             int visualStrength = RelicHelper.getTooltipStrength(entry.getKey(), entry.getValue());
             Text relicName = Text.translatable("item.relics.type." + entry.getKey().toString().toLowerCase());

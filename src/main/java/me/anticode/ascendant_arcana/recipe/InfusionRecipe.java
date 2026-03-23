@@ -50,7 +50,7 @@ public class InfusionRecipe implements SmithingRecipe {
                 Map<Relics, Integer> relicMap = RelicHelper.fromNbt(baseStack.getOrCreateNbt());
                 ItemStack relicStack = inventory.getStack(2);
                 Relics relicType = RelicItem.getRelicType(relicStack);
-                if (relicMap.size() < 2) {
+                if (relicMap.size() < RelicHelper.getRelicCapacity(baseStack)) {
                     if (relicType == Relics.DURABILITY || relicType == Relics.ENCHANTMENT_CAPACITY) return true;
                     else if ((relicType == Relics.HASTE || relicType == Relics.DAMAGE) && baseStack.getItem() instanceof ToolItem) return true;
                     else return relicType == Relics.PROTECTION && baseStack.getItem() instanceof ArmorItem;
@@ -71,7 +71,7 @@ public class InfusionRecipe implements SmithingRecipe {
                 Relics relicType = RelicItem.getRelicType(relicStack);
                 Map<Relics, Integer> relicsMap = RelicHelper.fromNbt(newStack.getOrCreateNbt());
                 relicsMap.put(relicType, relicStrength);
-                newStack.getOrCreateNbt().put(RelicHelper.AARELICS_KEY, RelicHelper.toNbt(relicsMap));
+                newStack.getOrCreateNbt().put(RelicHelper.RELICS_KEY, RelicHelper.toNbt(relicsMap));
                 return newStack;
     }
 

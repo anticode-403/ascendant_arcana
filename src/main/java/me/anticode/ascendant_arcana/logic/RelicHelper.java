@@ -1,5 +1,7 @@
 package me.anticode.ascendant_arcana.logic;
 
+import me.anticode.ascendant_arcana.AscendantArcana;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.text.Text;
@@ -8,10 +10,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RelicHelper {
-    public static final String AARELICS_KEY = "AscendantArcanaRelics";
+    public static final String RELICS_KEY = "AscendantArcanaRelics";
+
+    public static final String BONUS_RELIC_CAPACITY = "AscendantArcanaRelicCapacity";
+
+    public static int getRelicCapacity(ItemStack stack) {
+        if (!stack.hasNbt()) {
+            return AscendantArcana.config.base_relic_capacity;
+        }
+        return AscendantArcana.config.base_relic_capacity + stack.getOrCreateNbt().getInt(BONUS_RELIC_CAPACITY);
+    }
 
     public static Map<Relics, Integer> fromNbt(NbtCompound nbt) {
-        return fromNbtList((NbtList) nbt.get(AARELICS_KEY));
+        return fromNbtList((NbtList) nbt.get(RELICS_KEY));
     }
 
     public static Map<Relics, Integer> fromNbtList(NbtList list) {
