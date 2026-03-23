@@ -2,14 +2,12 @@ package me.anticode.ascendant_arcana.logic;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
-import org.spongepowered.asm.mixin.Unique;
 import net.minecraft.text.Text;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class RelicHelper {
-    @Unique
     public static final String AARELICS_KEY = "AscendantArcanaRelics";
 
     public static Map<Relics, Integer> fromNbt(NbtCompound nbt) {
