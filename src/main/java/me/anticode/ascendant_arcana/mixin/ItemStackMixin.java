@@ -4,18 +4,17 @@ import com.google.common.collect.Multimap;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import me.anticode.ascendant_arcana.init.AArcanaAttributes;
+import me.anticode.ascendant_arcana.logic.ItemUtil;
 import me.anticode.ascendant_arcana.logic.RelicHelper;
 import me.anticode.ascendant_arcana.logic.Relics;
+import net.fabric_extras.ranged_weapon.api.EntityAttributes_RangedWeapon;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolItem;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -58,20 +57,31 @@ public abstract class ItemStackMixin {
                 original.put(AArcanaAttributes.PROTECTION, modifier);
             }
         }
-        if (getItem() instanceof ToolItem) {
+        else if (getItem() instanceof ToolItem) {
             if (slot != EquipmentSlot.MAINHAND) return original;
             Map<Relics, Integer> relics = RelicHelper.fromNbt(getOrCreateNbt());
             if (relics.isEmpty()) return original;
             if (relics.containsKey(Relics.DAMAGE)) {
-                int damageValue = RelicHelper.getTooltipStrength(Relics.DAMAGE, relics.get(Relics.DAMAGE));
+                double damageValue = RelicHelper.getTooltipStrength(Relics.DAMAGE, relics.get(Relics.DAMAGE))*0.01;
                 List<EntityAttributeModifier> oldDamageModifiers = original.get(EntityAttributes.GENERIC_ATTACK_DAMAGE).stream().toList();
-                List<EntityAttributeModifier> newModifiers = new LinkedList<>();
-                for (EntityAttributeModifier mod : oldDamageModifiers) {
-                    double newValue = mod.getValue() * (1 + (damageValue*0.01));
-                    EntityAttributeModifier newMod = new EntityAttributeModifier(mod.getId(), mod.getName(), newValue, mod.getOperation());
-                    newModifiers.add(newMod);
-                }
+                List<EntityAttributeModifier> newModifiers = ItemUtil.multiplyAttributeList(oldDamageModifiers, damageValue);
                 original.replaceValues(EntityAttributes.GENERIC_ATTACK_DAMAGE, newModifiers);
+            }
+        }
+        else if (getItem() instanceof CrossbowItem || getItem() instanceof BowItem) {
+            if (slot != EquipmentSlot.MAINHAND && slot != EquipmentSlot.OFFHAND) return original;
+            Map<Relics, Integer> relics = RelicHelper.fromNbt(getOrCreateNbt());
+            if (relics.isEmpty()) return original;
+            if (relics.containsKey(Relics.DAMAGE)) {
+                double damageValue = RelicHelper.getTooltipStrength(Relics.DAMAGE, relics.get(Relics.DAMAGE)) * 0.01;
+                List<EntityAttributeModifier> oldDamageModifiers = original.get(EntityAttributes_RangedWeapon.DAMAGE.attribute).stream().toList();
+                List<EntityAttributeModifier> newModifiers = ItemUtil.multiplyAttributeList(oldDamageModifiers, damageValue);
+                original.replaceValues(EntityAttributes_RangedWeapon.DAMAGE.attribute, newModifiers);
+            }
+            if (relics.containsKey(Relics.HASTE)) {
+                double hasteValue = RelicHelper.getTooltipStrength(Relics.HASTE, relics.get(Relics.HASTE)) * 0.01;
+                EntityAttributeModifier modifier = new EntityAttributeModifier(UUID.fromString("f2bb3e62-513f-4804-a194-2965d232c7ad"), "Haste Relic Bonus", hasteValue, EntityAttributeModifier.Operation.MULTIPLY_BASE);
+                original.put(EntityAttributes_RangedWeapon.HASTE.attribute, modifier);
             }
         }
         return original;

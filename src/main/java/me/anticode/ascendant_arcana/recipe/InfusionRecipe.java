@@ -8,9 +8,7 @@ import me.anticode.ascendant_arcana.item.RelicItem;
 import me.anticode.ascendant_arcana.logic.RelicHelper;
 import me.anticode.ascendant_arcana.logic.Relics;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolItem;
+import net.minecraft.item.*;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.SmithingRecipe;
@@ -34,7 +32,7 @@ public class InfusionRecipe implements SmithingRecipe {
 
             @Override
             public boolean testBase(ItemStack stack) {
-                if (!(stack.getItem() instanceof ArmorItem || stack.getItem() instanceof ToolItem)) return false;
+                if (!(stack.getItem() instanceof ArmorItem || stack.getItem() instanceof ToolItem || stack.getItem() instanceof BowItem || stack.getItem() instanceof CrossbowItem)) return false;
                 return RelicHelper.fromNbt(stack.getOrCreateNbt()).size() <= 2;
             }
 
@@ -52,7 +50,7 @@ public class InfusionRecipe implements SmithingRecipe {
                 Relics relicType = RelicItem.getRelicType(relicStack);
                 if (relicMap.size() < RelicHelper.getRelicCapacity(baseStack)) {
                     if (relicType == Relics.DURABILITY || relicType == Relics.ENCHANTMENT_CAPACITY) return true;
-                    else if ((relicType == Relics.HASTE || relicType == Relics.DAMAGE) && baseStack.getItem() instanceof ToolItem) return true;
+                    else if ((relicType == Relics.HASTE || relicType == Relics.DAMAGE) && (baseStack.getItem() instanceof ToolItem || baseStack.getItem() instanceof BowItem || baseStack.getItem() instanceof CrossbowItem)) return true;
                     else return relicType == Relics.PROTECTION && baseStack.getItem() instanceof ArmorItem;
                 }
                 else if (relicStack.getItem() instanceof  RelicItem) {

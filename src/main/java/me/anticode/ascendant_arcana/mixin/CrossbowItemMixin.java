@@ -1,8 +1,8 @@
 package me.anticode.ascendant_arcana.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import me.anticode.ascendant_arcana.api.EnchantedArrow;
 import me.anticode.ascendant_arcana.init.AArcanaEnchantments;
+import me.anticode.ascendant_arcana.logic.ItemUtil;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -18,18 +18,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(CrossbowItem.class)
+@Mixin(value = CrossbowItem.class, priority = 1500)
 public class CrossbowItemMixin {
     @Inject(method = "createArrow", at = @At(value = "RETURN"))
     private static void applyCrossbowEnchantmentLevels(
             World world, LivingEntity entity, ItemStack crossbow, ItemStack arrow,
             CallbackInfoReturnable<PersistentProjectileEntity> cir) {
         if (CrossbowItem.isCharged(crossbow)) {
-            int archersGambitLevel = EnchantmentHelper.getLevel(AArcanaEnchantments.ARCHERS_GAMBIT, crossbow);
-            int evokersWrathLevel = EnchantmentHelper.getLevel(AArcanaEnchantments.EVOKERS_WRATH, crossbow);
-            EnchantedArrow enchantedArrow = (EnchantedArrow) cir.getReturnValue();
-            enchantedArrow.ascendant_arcana$setArchersGambitLevel(archersGambitLevel);
-            enchantedArrow.ascendant_arcana$setEvokersWrathLevel(evokersWrathLevel);
+            ItemUtil.applyPpeRelicsAndEnchantments(cir.getReturnValue(), crossbow);
         }
     }
 

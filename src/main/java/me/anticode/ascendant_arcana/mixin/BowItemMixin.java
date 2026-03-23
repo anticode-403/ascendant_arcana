@@ -1,8 +1,8 @@
 package me.anticode.ascendant_arcana.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import me.anticode.ascendant_arcana.api.EnchantedArrow;
 import me.anticode.ascendant_arcana.init.AArcanaEnchantments;
+import me.anticode.ascendant_arcana.logic.ItemUtil;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -22,11 +22,8 @@ public class BowItemMixin {
     private void applyEnchantmentValues(
             ItemStack stack, World world, LivingEntity user, int remainingUseTicks,
             CallbackInfo ci, @Local PersistentProjectileEntity persistentProjectileEntity, @Local float f) {
-        int archersGambitLevel = EnchantmentHelper.getLevel(AArcanaEnchantments.ARCHERS_GAMBIT, stack);
-        int evokersWrathLevel = EnchantmentHelper.getLevel(AArcanaEnchantments.EVOKERS_WRATH, stack);
-        EnchantedArrow enchantedArrow = (EnchantedArrow) persistentProjectileEntity;
-        enchantedArrow.ascendant_arcana$setArchersGambitLevel(archersGambitLevel);
-        enchantedArrow.ascendant_arcana$setEvokersWrathLevel(evokersWrathLevel);
+
+        ItemUtil.applyPpeRelicsAndEnchantments(persistentProjectileEntity, stack);
 
         Random random = Random.createLocal();
         int inaccuracy = EnchantmentHelper.getLevel(AArcanaEnchantments.INACCURACY_CURSE, stack);
