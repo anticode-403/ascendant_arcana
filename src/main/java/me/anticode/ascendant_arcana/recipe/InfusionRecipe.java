@@ -32,8 +32,10 @@ public class InfusionRecipe implements SmithingRecipe {
 
             @Override
             public boolean testBase(ItemStack stack) {
-                if (!(stack.getItem() instanceof ArmorItem || stack.getItem() instanceof ToolItem || stack.getItem() instanceof BowItem || stack.getItem() instanceof CrossbowItem)) return false;
-                return RelicHelper.fromNbt(stack.getOrCreateNbt()).size() <= 2;
+                if (stack.isEnchantable() || stack.isDamageable() || stack.getItem() instanceof ArmorItem || stack.getItem() instanceof ToolItem || stack.getItem() instanceof BowItem || stack.getItem() instanceof CrossbowItem) {
+                    return RelicHelper.fromNbt(stack.getOrCreateNbt()).size() <= 2;
+                }
+                return false;
             }
 
             @Override
@@ -49,7 +51,8 @@ public class InfusionRecipe implements SmithingRecipe {
                 ItemStack relicStack = inventory.getStack(2);
                 Relics relicType = RelicItem.getRelicType(relicStack);
                 if (relicMap.size() < RelicHelper.getRelicCapacity(baseStack)) {
-                    if (relicType == Relics.DURABILITY || relicType == Relics.ENCHANTMENT_CAPACITY) return true;
+                    if (relicType == Relics.DURABILITY && baseStack.isDamageable()) return true;
+                    if (relicType == Relics.ENCHANTMENT_CAPACITY && baseStack.isEnchantable()) return true;
                     else if ((relicType == Relics.HASTE || relicType == Relics.DAMAGE) && (baseStack.getItem() instanceof ToolItem || baseStack.getItem() instanceof BowItem || baseStack.getItem() instanceof CrossbowItem)) return true;
                     else return relicType == Relics.PROTECTION && baseStack.getItem() instanceof ArmorItem;
                 }
