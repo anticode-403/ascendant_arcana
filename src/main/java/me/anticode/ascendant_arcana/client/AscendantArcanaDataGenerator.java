@@ -229,6 +229,8 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             registerEnchantment(translationBuilder, AArcanaEnchantments.STRAFE, "Strafe", "Allows you to sprint in any direction and reduces movement speed penalties while using an item.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.TURTLE_HEART, "Heart of the Turtle", "Decreases all incoming and outgoing damage.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.WITCH_HEART, "Witch's Heart", "Slightly increases damage dealt by all magic attacks.");
+
+            registerEnchantment(translationBuilder, AArcanaEnchantments.INACCURACY_CURSE, "Curse of Inaccuracy", "Reduces the accuracy of bows and crossbows.");
             // Status Effects
             registerStatusEffect(translationBuilder, AArcanaStatusEffects.ARCHERS_GAMBIT, "Archer's Gambit", "Faster draw speed of bows and crossbows.");
         }

@@ -33,20 +33,20 @@ public class CrossbowItemMixin {
         }
     }
 
-//    @Inject(method = "shoot", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/projectile/ProjectileEntity;setVelocity(DDDFF)V", shift = At.Shift.AFTER))
-//    private static void applyCrossbowEnchantmentLevels(
-//            World world, LivingEntity shooter, Hand hand, ItemStack crossbow, ItemStack projectile,
-//            float soundPitch, boolean creative, float speed, float divergence, float simulated, CallbackInfo ci,
-//            @Local ProjectileEntity projectileEntity) {
-//        Random random = Random.createLocal();
-//
-//        float base_yaw = -projectileEntity.getYaw();
-//        float base_pitch = -projectileEntity.getPitch();
-//        int inaccuracy = EnchantmentHelper.getLevel(AArcanaEnchantments.INACCURACY_CURSE, crossbow);
-//        float rand_pitch = random.nextFloat() * inaccuracy * 2f;
-//        float rand_yaw = random.nextFloat() * inaccuracy * 2f;
-//        float pitch = base_pitch + (random.nextBoolean() ? rand_pitch : -rand_pitch);
-//        float yaw = base_yaw + (random.nextBoolean() ? rand_yaw : -rand_yaw);
-//        projectileEntity.setVelocity(shooter, pitch, yaw, 0.0f, speed, divergence);
-//    }
+    @Inject(method = "shoot", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/projectile/ProjectileEntity;setVelocity(DDDFF)V", shift = At.Shift.AFTER))
+    private static void applyCrossbowEnchantmentLevels(
+            World world, LivingEntity shooter, Hand hand, ItemStack crossbow, ItemStack projectile,
+            float soundPitch, boolean creative, float speed, float divergence, float simulated, CallbackInfo ci,
+            @Local ProjectileEntity projectileEntity) {
+        Random random = Random.createLocal();
+
+        float base_yaw = -projectileEntity.getYaw();
+        float base_pitch = -projectileEntity.getPitch();
+        int inaccuracy = EnchantmentHelper.getLevel(AArcanaEnchantments.INACCURACY_CURSE, crossbow);
+        float rand_pitch = random.nextFloat() * inaccuracy * 2f;
+        float rand_yaw = random.nextFloat() * inaccuracy * 2f;
+        float pitch = base_pitch + (random.nextBoolean() ? rand_pitch : -rand_pitch);
+        float yaw = base_yaw + (random.nextBoolean() ? rand_yaw : -rand_yaw);
+        projectileEntity.setVelocity(shooter, pitch, yaw, 0.0f, speed, divergence);
+    }
 }

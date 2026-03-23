@@ -28,12 +28,12 @@ public class BowItemMixin {
         enchantedArrow.ascendant_arcana$setArchersGambitLevel(archersGambitLevel);
         enchantedArrow.ascendant_arcana$setEvokersWrathLevel(evokersWrathLevel);
 
-//        Random random = Random.createLocal();
-//        int inaccuracy = EnchantmentHelper.getLevel(AArcanaEnchantments.INACCURACY_CURSE, stack);
-//        float rand_pitch = random.nextFloat() * inaccuracy * 2f;
-//        float rand_yaw = random.nextFloat() * inaccuracy * 2f;
-//        float pitch = user.getPitch() + (random.nextBoolean() ? rand_pitch : -rand_pitch);
-//        float yaw = user.getYaw() + (random.nextBoolean() ? rand_yaw : -rand_yaw);
-//        persistentProjectileEntity.setVelocity(user, pitch, yaw, 0.0f, f * 3.0f, 1.0f);
+        Random random = Random.createLocal();
+        int inaccuracy = EnchantmentHelper.getLevel(AArcanaEnchantments.INACCURACY_CURSE, stack);
+        float rand_pitch = random.nextFloat() * inaccuracy * 2f;
+        float rand_yaw = random.nextFloat() * inaccuracy * 2f;
+        float pitch = user.getPitch() + (random.nextBoolean() ? rand_pitch : -rand_pitch);
+        float yaw = user.getYaw() + (random.nextBoolean() ? rand_yaw : -rand_yaw);
+        persistentProjectileEntity.setVelocity(user, pitch, yaw, 0.0f, f * 3.0f, 1.0f);
     }
 }

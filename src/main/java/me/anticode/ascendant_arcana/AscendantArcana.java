@@ -24,6 +24,7 @@ public class AscendantArcana implements ModInitializer {
         AArcanaRecipes.initialize();
         AArcanaAttributes.initialize();
         AArcanaEnchantments.initialize();
+        AArcanaStatusEffects.initialize();
 
         AutoConfig.register(AArcanaServerConfigWrapper.class, PartitioningSerializer.wrap(JanksonConfigSerializer::new));
         config = AutoConfig.getConfigHolder(AArcanaServerConfigWrapper.class).getConfig().server;

@@ -23,6 +23,8 @@ public class AArcanaEnchantments {
     public static Enchantment WITCH_HEART = register(new HeartEnchantment(), "witch_heart");
     public static Enchantment TURTLE_HEART = register(new HeartEnchantment(), "heart_of_the_turtle");
 
+    public static Enchantment INACCURACY_CURSE = register(new InaccuracyCurse(), "inaccuracy_curse");
+
 
     public static Enchantment register(Enchantment enchantment, String id) {
         Identifier enchantmentId = new Identifier(AscendantArcana.modID, id);
