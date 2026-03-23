@@ -117,8 +117,12 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
 
             // Relics
             // We use model predicates here to change the relic texture on the fly while only using one item.
+            // Minecraft doesn't provide us a way to do this easily, so we have to build the JSON file manually.
             JsonObject rootJsonObject = new JsonObject();
             rootJsonObject.addProperty("parent", "minecraft:item/generated");
+            JsonObject textureJsonObject = new JsonObject();
+            textureJsonObject.addProperty("layer0", "ascendant_arcana:item/relic_magic_1");
+            rootJsonObject.add("textures", textureJsonObject);
             JsonArray jsonArray = new JsonArray();
             for (int i = 0; i < Relics.values().length * 5; i++) {
                 int relicId = MathHelper.floor((double) i / 5);
