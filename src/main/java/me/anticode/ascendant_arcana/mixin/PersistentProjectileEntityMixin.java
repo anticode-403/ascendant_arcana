@@ -92,7 +92,7 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
         if (evokersWrathLevel >= 1) {
             BlockPos blockPos = BlockPos.ofFloored(pos);
             boolean bl = false;
-            double d = (double)0.0F;
+            double d = 0.0D;
 
             do {
                 BlockPos blockPos2 = blockPos.down();

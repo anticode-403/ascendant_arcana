@@ -149,12 +149,12 @@ public abstract class LivingEntityMixin {
                     ItemUtil.forEachEnchantment((en, st, lvl)-> {
                         if(en instanceof TickableAttributeEnchantment) {
                             ((TickableAttributeEnchantment) en).onTick((LivingEntity)(Object)this, st, lvl);
-                            if(!hasAttributeStack(st) && ((TickableAttributeEnchantment) en).addAttributes((LivingEntity)(Object)this, st, slot, lvl)) {
+                            if(missingAttributeStack(st) && ((TickableAttributeEnchantment) en).addAttributes((LivingEntity)(Object)this, st, slot, lvl)) {
                                 attributeStacks.add(new Pair<>(slot, st));
                             }
                         }
                         else if (en instanceof TurtleHeart) {
-                            if(!hasAttributeStack(st) && ((TurtleHeart) en).addAttributes((LivingEntity)(Object)this, st, slot, lvl)) {
+                            if(missingAttributeStack(st) && ((TurtleHeart) en).addAttributes((LivingEntity)(Object)this, st, slot, lvl)) {
                                 attributeStacks.add(new Pair<>(slot, st));
                             }
                         }
@@ -170,10 +170,10 @@ public abstract class LivingEntityMixin {
     }
 
     @Unique
-    public boolean hasAttributeStack(ItemStack stack) {
+    public boolean missingAttributeStack(ItemStack stack) {
         for(Pair<EquipmentSlot, ItemStack> pair : attributeStacks) {
-            if(pair.getRight().equals(stack)) return true;
+            if(pair.getRight().equals(stack)) return false;
         }
-        return false;
+        return true;
     }
 }

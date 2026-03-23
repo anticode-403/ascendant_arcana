@@ -10,7 +10,6 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.ItemStack;
 
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 
 public class TurtleHeart extends HeartEnchantment {
