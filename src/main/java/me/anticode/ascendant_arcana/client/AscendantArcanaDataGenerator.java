@@ -3,10 +3,7 @@ package me.anticode.ascendant_arcana.client;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.anticode.ascendant_arcana.AscendantArcana;
-import me.anticode.ascendant_arcana.init.AArcanaAttributes;
-import me.anticode.ascendant_arcana.init.AArcanaBlocks;
-import me.anticode.ascendant_arcana.init.AArcanaItems;
-import me.anticode.ascendant_arcana.init.AArcanaTags;
+import me.anticode.ascendant_arcana.init.*;
 import me.anticode.ascendant_arcana.logic.Relics;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -17,6 +14,8 @@ import net.minecraft.block.Block;
 import net.minecraft.data.client.*;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
@@ -156,6 +155,16 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             super(dataOutput);
         }
 
+        private void registerEnchantment(TranslationBuilder translationBuilder, Enchantment enchantment, String name, String description) {
+            translationBuilder.add(enchantment, name);
+            translationBuilder.add(enchantment.getTranslationKey() + ".description", description);
+        }
+
+        private void registerStatusEffect(TranslationBuilder translationBuilder, StatusEffect statusEffect, String name, String description) {
+            translationBuilder.add(statusEffect, name);
+            translationBuilder.add(statusEffect.getTranslationKey() + ".description", description);
+        }
+
         @Override
         public void generateTranslations(TranslationBuilder translationBuilder) {
             // Smithing Templates
@@ -205,6 +214,23 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             translationBuilder.add(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER, "Massive Restore Cluster");
             // Attributes
             translationBuilder.add(AArcanaAttributes.PROTECTION, "Protection");
+            translationBuilder.add(AArcanaAttributes.DAMAGE_TAKEN, "Damage Taken");
+            // Enchantments
+            registerEnchantment(translationBuilder, AArcanaEnchantments.ARCHERS_GAMBIT, "Archer's Gambit", "Briefly increased draw speed after hitting a target. Stacks 3 times.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.ALCHEMISTS_HEART, "Alchemist's Heart", "Increases the amplifier of all beneficial status effects.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.AMBUSH, "Ambush", "When you hit a mob after throwing this Trident, teleport to it.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.BLADEHEART, "Bladeheart", "Slightly increases all damage dealt by physical attacks.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.COLDHEART, "Coldheart", "Increases damage dealt by all cold attacks.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.EVOKERS_WRATH, "Evoker's Wrath", "Summons an Evoker Fang when the arrow lands.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.GALE, "Gale", "Grants extra mid-air jumps.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.NETHER_HEART, "Heart of the Nether", "Increases damage dealt by all fire attacks.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.SMELTING, "Smelting", "Smelts blocks mined.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.STORM_HEART, "Heart of the Storm", "Increases the damage dealt by all lightning attacks.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.STRAFE, "Strafe", "Allows you to sprint in any direction and reduces movement speed penalties while using an item.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.TURTLE_HEART, "Heart of the Turtle", "Decreases all incoming and outgoing damage.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.WITCH_HEART, "Witch's Heart", "Slightly increases damage dealt by all magic attacks.");
+            // Status Effects
+            registerStatusEffect(translationBuilder, AArcanaStatusEffects.ARCHERS_GAMBIT, "Archer's Gambit", "Faster draw speed of bows and crossbows.");
         }
     }
 
