@@ -7,7 +7,7 @@ import me.anticode.ascendant_arcana.enchantment.TickableAttributeEnchantment;
 import me.anticode.ascendant_arcana.enchantment.TurtleHeart;
 import me.anticode.ascendant_arcana.init.AArcanaAttributes;
 import me.anticode.ascendant_arcana.init.AArcanaEnchantments;
-import me.anticode.ascendant_arcana.logic.ItemUtil;
+import me.anticode.ascendant_arcana.logic.ItemHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -131,7 +131,7 @@ public abstract class LivingEntityMixin {
                 Pair<EquipmentSlot, ItemStack> pair = it.next();
                 ItemStack st = pair.getRight();
                 if(!hasStackEquipInSlot(st, pair.getLeft())) {
-                    ItemUtil.forEachEnchantment((en, stack, lvl)-> {
+                    ItemHelper.forEachEnchantment((en, stack, lvl)-> {
                         if(en instanceof TickableAttributeEnchantment) {
                             ((TickableAttributeEnchantment) en).removeAttributes((LivingEntity)(Object)this, pair.getLeft());
                         }
@@ -146,7 +146,7 @@ public abstract class LivingEntityMixin {
             for(EquipmentSlot slot : EquipmentSlot.values()) {
                 ItemStack stack = getEquippedStack(slot);
                 if(!stack.isEmpty()) {
-                    ItemUtil.forEachEnchantment((en, st, lvl)-> {
+                    ItemHelper.forEachEnchantment((en, st, lvl)-> {
                         if(en instanceof TickableAttributeEnchantment) {
                             ((TickableAttributeEnchantment) en).onTick((LivingEntity)(Object)this, st, lvl);
                             if(missingAttributeStack(st) && ((TickableAttributeEnchantment) en).addAttributes((LivingEntity)(Object)this, st, slot, lvl)) {

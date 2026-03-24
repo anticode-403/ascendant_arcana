@@ -2,7 +2,7 @@ package me.anticode.ascendant_arcana.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import me.anticode.ascendant_arcana.init.AArcanaEnchantments;
-import me.anticode.ascendant_arcana.logic.ItemUtil;
+import me.anticode.ascendant_arcana.logic.ItemHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -23,7 +23,7 @@ public class BowItemMixin {
             ItemStack stack, World world, LivingEntity user, int remainingUseTicks,
             CallbackInfo ci, @Local PersistentProjectileEntity persistentProjectileEntity, @Local float f) {
 
-        ItemUtil.applyPpeRelicsAndEnchantments(persistentProjectileEntity, stack);
+        ItemHelper.applyPpeRelicsAndEnchantments(persistentProjectileEntity, stack);
 
         Random random = Random.createLocal();
         int inaccuracy = EnchantmentHelper.getLevel(AArcanaEnchantments.INACCURACY_CURSE, stack);

@@ -14,7 +14,7 @@ import net.minecraft.util.Identifier;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ItemUtil {
+public class ItemHelper {
     public static void forEachEnchantment(Consumer consumer, ItemStack stack, boolean allowEmpty)
     {
         if(!stack.isEmpty() || allowEmpty)

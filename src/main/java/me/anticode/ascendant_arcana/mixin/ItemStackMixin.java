@@ -4,7 +4,7 @@ import com.google.common.collect.Multimap;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import me.anticode.ascendant_arcana.init.AArcanaAttributes;
-import me.anticode.ascendant_arcana.logic.ItemUtil;
+import me.anticode.ascendant_arcana.logic.ItemHelper;
 import me.anticode.ascendant_arcana.logic.RelicHelper;
 import me.anticode.ascendant_arcana.logic.Relics;
 import net.fabric_extras.ranged_weapon.api.EntityAttributes_RangedWeapon;
@@ -64,7 +64,7 @@ public abstract class ItemStackMixin {
             if (relics.containsKey(Relics.DAMAGE)) {
                 double damageValue = RelicHelper.getTooltipStrength(Relics.DAMAGE, relics.get(Relics.DAMAGE))*0.01;
                 List<EntityAttributeModifier> oldDamageModifiers = original.get(EntityAttributes.GENERIC_ATTACK_DAMAGE).stream().toList();
-                List<EntityAttributeModifier> newModifiers = ItemUtil.multiplyAttributeList(oldDamageModifiers, damageValue);
+                List<EntityAttributeModifier> newModifiers = ItemHelper.multiplyAttributeList(oldDamageModifiers, damageValue);
                 original.replaceValues(EntityAttributes.GENERIC_ATTACK_DAMAGE, newModifiers);
             }
         }
@@ -75,7 +75,7 @@ public abstract class ItemStackMixin {
             if (relics.containsKey(Relics.DAMAGE)) {
                 double damageValue = RelicHelper.getTooltipStrength(Relics.DAMAGE, relics.get(Relics.DAMAGE)) * 0.01;
                 List<EntityAttributeModifier> oldDamageModifiers = original.get(EntityAttributes_RangedWeapon.DAMAGE.attribute).stream().toList();
-                List<EntityAttributeModifier> newModifiers = ItemUtil.multiplyAttributeList(oldDamageModifiers, damageValue);
+                List<EntityAttributeModifier> newModifiers = ItemHelper.multiplyAttributeList(oldDamageModifiers, damageValue);
                 original.replaceValues(EntityAttributes_RangedWeapon.DAMAGE.attribute, newModifiers);
             }
             if (relics.containsKey(Relics.HASTE)) {

@@ -2,7 +2,7 @@ package me.anticode.ascendant_arcana.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import me.anticode.ascendant_arcana.init.AArcanaEnchantments;
-import me.anticode.ascendant_arcana.logic.ItemUtil;
+import me.anticode.ascendant_arcana.logic.ItemHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -25,7 +25,7 @@ public class CrossbowItemMixin {
             World world, LivingEntity entity, ItemStack crossbow, ItemStack arrow,
             CallbackInfoReturnable<PersistentProjectileEntity> cir) {
         if (CrossbowItem.isCharged(crossbow)) {
-            ItemUtil.applyPpeRelicsAndEnchantments(cir.getReturnValue(), crossbow);
+            ItemHelper.applyPpeRelicsAndEnchantments(cir.getReturnValue(), crossbow);
         }
     }
 
