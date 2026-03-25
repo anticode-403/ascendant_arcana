@@ -14,7 +14,6 @@ import java.util.Map;
 
 @Mixin(PlayerEntity.class)
 public class PlayerEntityMixin {
-// TODO: Implement Strafe and Gale
     @ModifyReturnValue(method = "getAttackCooldownProgressPerTick", at = @At("RETURN"))
     private float modifyAttackCooldownProgress(float original) {
         LivingEntity livingEntity = (LivingEntity)(Object)this;
