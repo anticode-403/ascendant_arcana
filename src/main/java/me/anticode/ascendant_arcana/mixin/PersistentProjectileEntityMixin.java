@@ -63,7 +63,7 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
             summonEvokersWrathFangs(owner, projectile, entityHitResult.getPos(), world);
         }
 
-        if (archersGambitLevel >= 1 && (entityHitResult.getEntity() instanceof LivingEntity)) {
+        if (archersGambitLevel >= 1 && (entityHitResult.getEntity() instanceof LivingEntity) && owner != null) {
             StatusEffectInstance archersGambitInstance = owner.getStatusEffect(AArcanaStatusEffects.ARCHERS_GAMBIT);
             int consecutiveShots = MathHelper.clamp(archersGambitInstance != null ? archersGambitInstance.getAmplifier() + 1 : 0, 0, 2);
             StatusEffectInstance newInstance = new StatusEffectInstance(
