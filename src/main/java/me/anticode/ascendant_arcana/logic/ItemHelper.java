@@ -34,9 +34,11 @@ public class ItemHelper {
     public static void applyPpeRelicsAndEnchantments(PersistentProjectileEntity persistentProjectileEntity, ItemStack itemStack) {
         int archersGambitLevel = EnchantmentHelper.getLevel(AArcanaEnchantments.ARCHERS_GAMBIT, itemStack);
         int evokersWrathLevel = EnchantmentHelper.getLevel(AArcanaEnchantments.EVOKERS_WRATH, itemStack);
+        int rejuvenatingShotLevel = EnchantmentHelper.getLevel(AArcanaEnchantments.REJUVENATING_SHOT, itemStack);
         EnchantedArrow enchantedArrow = (EnchantedArrow) persistentProjectileEntity;
         enchantedArrow.ascendant_arcana$setArchersGambitLevel(archersGambitLevel);
         enchantedArrow.ascendant_arcana$setEvokersWrathLevel(evokersWrathLevel);
+        enchantedArrow.ascendant_arcana$setRejuvenatingShotLevel(rejuvenatingShotLevel);
     }
 
     public static List<EntityAttributeModifier> multiplyAttributeList(List<EntityAttributeModifier> attributes, double multiplier) {

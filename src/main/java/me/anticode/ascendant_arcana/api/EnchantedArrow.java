@@ -4,4 +4,6 @@ public interface EnchantedArrow {
     void ascendant_arcana$setArchersGambitLevel(int archersGambitLevel);
 
     void ascendant_arcana$setEvokersWrathLevel(int evokersWrathLevel);
+
+    void ascendant_arcana$setRejuvenatingShotLevel(int rejuvenatingShotLevel);
 }
