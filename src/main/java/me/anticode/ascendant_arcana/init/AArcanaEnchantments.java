@@ -11,7 +11,6 @@ public class AArcanaEnchantments {
     public static Enchantment AMBUSH = register(new Ambush(), "ambush");
     public static Enchantment ARCHERS_GAMBIT = register(new ArchersGambit(), "archers_gambit");
     public static Enchantment EVOKERS_WRATH = register(new EvokersWrath(), "evokers_wrath");
-    public static Enchantment GALE = register(new Gale(), "gale");
     public static Enchantment SMELTING = register(new Smelting(), "smelting");
     public static Enchantment STRAFE = register(new Strafe(), "strafe");
 
