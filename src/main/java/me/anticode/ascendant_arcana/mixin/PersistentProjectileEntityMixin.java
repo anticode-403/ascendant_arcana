@@ -5,19 +5,20 @@ import me.anticode.ascendant_arcana.api.EnchantedArrow;
 import me.anticode.ascendant_arcana.init.AArcanaStatusEffects;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MovementType;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.EvokerFangsEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,11 +26,34 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PersistentProjectileEntity.class)
 public abstract class PersistentProjectileEntityMixin implements EnchantedArrow {
+
+    @Shadow
+    protected boolean inGround;
+
+    @Shadow
+    public abstract void setCritical(boolean critical);
+
+    @Shadow
+    @Nullable
+    private BlockState inBlockState;
     @Unique
     private int archersGambitLevel;
 
     @Unique
     private int evokersWrathLevel;
+
+    @Unique
+    private int ricochetLevel;
+
+    @Unique
+    private int ricochetBounces = 0;
+
+    @Unique
+    private boolean ricochet;
+
+    @Unique
+    @Nullable
+    private Vec3d ricochetVector;
 
     @Override
     public void ascendant_arcana$setArchersGambitLevel(int value) {
@@ -39,6 +63,11 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
     @Override
     public void ascendant_arcana$setEvokersWrathLevel(int value) {
         this.evokersWrathLevel = value;
+    }
+
+    @Override
+    public void ascendant_arcana$setRicochetLevel(int value) {
+        this.ricochetLevel = value;
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
@@ -75,6 +104,48 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
                     true
             );
             owner.addStatusEffect(newInstance);
+        }
+    }
+
+    @Inject(method = "tick", at = @At("TAIL"))
+    private void tick(CallbackInfo ci) {
+        if (ricochet) {
+            // Undo the effects of onBlockHit
+            PersistentProjectileEntity persistentProjectileEntity = (PersistentProjectileEntity)(Object)this;
+            persistentProjectileEntity.shake = 0;
+            inGround = false;
+            setCritical(true);
+            inBlockState = null;
+
+            // Update velocity
+            persistentProjectileEntity.setVelocity(ricochetVector);
+            persistentProjectileEntity.speed -= 0.5F;
+            persistentProjectileEntity.velocityModified = true;
+            persistentProjectileEntity.velocityDirty = true;
+            // We take an extra step to get out of the block onBlockHit lodged us in
+            persistentProjectileEntity.move(MovementType.SELF, ricochetVector.multiply(0.1));
+
+            ricochet = false;
+            ricochetVector = null;
+        }
+    }
+
+    @Inject(method = "onBlockHit", at = @At("HEAD"), cancellable = true)
+    private void onBlockHitHead(BlockHitResult blockHitResult, CallbackInfo ci) {
+        ProjectileEntity projectileEntity = (ProjectileEntity)(Object)this;
+        if (projectileEntity.getWorld().isClient()) return;
+        if (ricochetLevel >= 1 && ricochetBounces < ricochetLevel) {
+            ricochetBounces++;
+
+            // Velocity reflection
+            Vec3d oldVel = projectileEntity.getVelocity();
+            Vec3i tempNormal = blockHitResult.getSide().getVector();
+            Vec3d normal = new Vec3d(tempNormal.getX(), tempNormal.getY(), tempNormal.getZ()).normalize();
+            double dotProduct = oldVel.dotProduct(normal);
+
+            ricochetVector = oldVel.subtract(normal.multiply(2D * dotProduct)).normalize();
+            ricochet = true;
+            ci.cancel();
         }
     }
 
