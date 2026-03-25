@@ -222,7 +222,6 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             registerEnchantment(translationBuilder, AArcanaEnchantments.BLADEHEART, "Bladeheart", "Slightly increases all damage dealt by physical attacks.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.COLDHEART, "Coldheart", "Increases damage dealt by all cold attacks.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.EVOKERS_WRATH, "Evoker's Wrath", "Summons an Evoker Fang when the arrow lands.");
-            registerEnchantment(translationBuilder, AArcanaEnchantments.GALE, "Gale", "Grants extra mid-air jumps.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.NETHER_HEART, "Heart of the Nether", "Increases damage dealt by all fire attacks.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.SMELTING, "Smelting", "Smelts blocks mined.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.STORM_HEART, "Heart of the Storm", "Increases the damage dealt by all lightning attacks.");
