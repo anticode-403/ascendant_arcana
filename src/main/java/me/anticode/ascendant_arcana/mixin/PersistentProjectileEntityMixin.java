@@ -83,8 +83,15 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
         PersistentProjectileEntity projectile = (PersistentProjectileEntity)((Object)this);
         LivingEntity owner = (LivingEntity)projectile.getOwner();
         World world = projectile.getWorld();
-        summonEvokersWrathFangs(owner, projectile, blockHitResult.getPos(), world);
+        if (evokersWrathLevel >= 1) {
+            summonEvokersWrathFangs(owner, projectile, blockHitResult.getPos(), world);
+        }
 
+        if (archersGambitLevel >= 1) {
+            if (owner != null && owner.getStatusEffect(AArcanaStatusEffects.ARCHERS_GAMBIT) != null) {
+                owner.removeStatusEffect(AArcanaStatusEffects.ARCHERS_GAMBIT);
+            }
+        }
     }
 
     @Unique
