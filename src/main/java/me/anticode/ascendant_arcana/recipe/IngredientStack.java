@@ -40,6 +40,7 @@ public class IngredientStack implements Predicate<ItemStack> {
     }
 
     public static IngredientStack fromJson (JsonObject json) {
+        if (json == null || json.isJsonNull()) return null;
         Ingredient ingredient = Ingredient.fromJson(json.get("ingredient"));
         int count = json.get("count").getAsInt();
         return new IngredientStack(ingredient, count);
