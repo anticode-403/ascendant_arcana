@@ -13,8 +13,10 @@ import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.*;
 import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -107,6 +109,31 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
         }
     }
 
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void willRicochet(CallbackInfo ci) {
+        PersistentProjectileEntity projectile = (PersistentProjectileEntity)((Object)this);
+        if (projectile.getWorld().isClient()) return;
+
+        Vec3d vel = projectile.getVelocity();
+        Vec3d pos = projectile.getPos();
+        Vec3d futurePos = pos.add(vel);
+        BlockHitResult hitResult = projectile.getWorld().raycast(new RaycastContext(pos, futurePos, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, projectile));
+
+        if (hitResult.getType() == HitResult.Type.MISS) return;
+
+        if (ricochetLevel >= 1 && ricochetBounces < ricochetLevel) {
+            ricochetBounces++;
+
+            // Velocity reflection
+            Vec3i tempNormal = hitResult.getSide().getVector();
+            Vec3d normal = new Vec3d(tempNormal.getX(), tempNormal.getY(), tempNormal.getZ()).normalize();
+            double dotProduct = vel.dotProduct(normal);
+
+            ricochetVector = vel.subtract(normal.multiply(2D * dotProduct)).normalize();
+            ricochet = true;
+        }
+    }
+
     @Inject(method = "tick", at = @At("TAIL"))
     private void tick(CallbackInfo ci) {
         if (ricochet) {
@@ -130,24 +157,24 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
         }
     }
 
-    @Inject(method = "onBlockHit", at = @At("HEAD"), cancellable = true)
-    private void onBlockHitHead(BlockHitResult blockHitResult, CallbackInfo ci) {
-        ProjectileEntity projectileEntity = (ProjectileEntity)(Object)this;
-        if (projectileEntity.getWorld().isClient()) return;
-        if (ricochetLevel >= 1 && ricochetBounces < ricochetLevel) {
-            ricochetBounces++;
-
-            // Velocity reflection
-            Vec3d oldVel = projectileEntity.getVelocity();
-            Vec3i tempNormal = blockHitResult.getSide().getVector();
-            Vec3d normal = new Vec3d(tempNormal.getX(), tempNormal.getY(), tempNormal.getZ()).normalize();
-            double dotProduct = oldVel.dotProduct(normal);
-
-            ricochetVector = oldVel.subtract(normal.multiply(2D * dotProduct)).normalize();
-            ricochet = true;
-            ci.cancel();
-        }
-    }
+//    @Inject(method = "onBlockHit", at = @At("HEAD"), cancellable = true)
+//    private void onBlockHitHead(BlockHitResult blockHitResult, CallbackInfo ci) {
+//        ProjectileEntity projectileEntity = (ProjectileEntity)(Object)this;
+//        if (projectileEntity.getWorld().isClient()) return;
+//        if (ricochetLevel >= 1 && ricochetBounces < ricochetLevel) {
+//            ricochetBounces++;
+//
+//            // Velocity reflection
+//            Vec3d oldVel = projectileEntity.getVelocity();
+//            Vec3i tempNormal = blockHitResult.getSide().getVector();
+//            Vec3d normal = new Vec3d(tempNormal.getX(), tempNormal.getY(), tempNormal.getZ()).normalize();
+//            double dotProduct = oldVel.dotProduct(normal);
+//
+//            ricochetVector = oldVel.subtract(normal.multiply(2D * dotProduct)).normalize();
+//            ricochet = true;
+//            ci.cancel();
+//        }
+//    }
 
     @Inject(method = "onBlockHit", at = @At("TAIL"))
     private void onBlockHitTail(BlockHitResult blockHitResult, CallbackInfo ci) {
