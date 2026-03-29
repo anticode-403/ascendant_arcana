@@ -6,7 +6,6 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
@@ -18,16 +17,16 @@ import net.minecraft.world.World;
 public class EnchantmentRecipe implements Recipe<Inventory> {
     private final Identifier id;
     final int magicalScrapCost;
-    final Ingredient primaryIngredient;
-    final Ingredient secondaryIngredient;
+    final IngredientStack primaryIngredientStack;
+    final IngredientStack secondaryIngredientStack;
     final int levelCost;
     final Enchantment enchantment;
 
-    EnchantmentRecipe(Identifier id, int magicalScrapCost, Ingredient primaryIngredient, Ingredient secondaryIngredient, int levelCost, Enchantment enchantment) {
+    EnchantmentRecipe(Identifier id, int magicalScrapCost, IngredientStack primaryIngredientStack, IngredientStack secondaryIngredientStack, int levelCost, Enchantment enchantment) {
         this.id = id;
         this.magicalScrapCost = magicalScrapCost;
-        this.primaryIngredient = primaryIngredient;
-        this.secondaryIngredient = secondaryIngredient;
+        this.primaryIngredientStack = primaryIngredientStack;
+        this.secondaryIngredientStack = secondaryIngredientStack;
         this.levelCost = levelCost;
         this.enchantment = enchantment;
     }
@@ -72,28 +71,28 @@ public class EnchantmentRecipe implements Recipe<Inventory> {
         @Override
         public EnchantmentRecipe read(Identifier id, JsonObject json) {
             int magicalScrapCost = json.get("magical_scrap_cost").getAsInt();
-            Ingredient primaryIngredient = Ingredient.fromJson(json.get("primary_ingredient"));
-            Ingredient secondaryIngredient = Ingredient.fromJson(json.get("secondary_ingredient"));
+            IngredientStack primaryIngredientStack = IngredientStack.fromJson((JsonObject) json.get("primary_IngredientStack"));
+            IngredientStack secondaryIngredientStack = IngredientStack.fromJson((JsonObject) json.get("secondary_IngredientStack"));
             int levelCost = json.get("level_cost").getAsInt();
             Enchantment enchantment = Registries.ENCHANTMENT.getOrEmpty(Identifier.tryParse(json.get("enchantment").getAsString())).orElse(null);
-            return new EnchantmentRecipe(id, magicalScrapCost, primaryIngredient, secondaryIngredient, levelCost, enchantment);
+            return new EnchantmentRecipe(id, magicalScrapCost, primaryIngredientStack, secondaryIngredientStack, levelCost, enchantment);
         }
 
         @Override
         public EnchantmentRecipe read(Identifier id, PacketByteBuf buf) {
             int magicalScrapCost = buf.readInt();
-            Ingredient primaryIngredient = Ingredient.fromPacket(buf);
-            Ingredient secondaryIngredient = Ingredient.fromPacket(buf);
+            IngredientStack primaryIngredientStack = IngredientStack.fromPacket(buf);
+            IngredientStack secondaryIngredientStack = IngredientStack.fromPacket(buf);
             int levelCost = buf.readInt();
             Enchantment enchantment = Registries.ENCHANTMENT.getOrEmpty(Identifier.tryParse(buf.readString())).orElse(null);
-            return new EnchantmentRecipe(id, magicalScrapCost, primaryIngredient, secondaryIngredient, levelCost, enchantment);
+            return new EnchantmentRecipe(id, magicalScrapCost, primaryIngredientStack, secondaryIngredientStack, levelCost, enchantment);
         }
 
         @Override
         public void write(PacketByteBuf buf, EnchantmentRecipe recipe) {
             buf.writeInt(recipe.magicalScrapCost);
-            recipe.primaryIngredient.write(buf);
-            recipe.secondaryIngredient.write(buf);
+            recipe.primaryIngredientStack.write(buf);
+            recipe.secondaryIngredientStack.write(buf);
             buf.writeInt(recipe.levelCost);
             buf.writeString(Registries.ENCHANTMENT.getId(recipe.enchantment).toString());
         }

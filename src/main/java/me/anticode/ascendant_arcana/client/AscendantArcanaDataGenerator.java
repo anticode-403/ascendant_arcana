@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import me.anticode.ascendant_arcana.AscendantArcana;
 import me.anticode.ascendant_arcana.init.*;
 import me.anticode.ascendant_arcana.logic.Relics;
+import me.anticode.ascendant_arcana.recipe.IngredientStack;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -17,17 +18,22 @@ import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.SetCountLootFunction;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
+import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.*;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -243,6 +249,82 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             super(output);
         }
 
+        public static class EnchantmentRecipeProvider implements RecipeJsonProvider {
+            private Identifier id;
+            private Enchantment enchantment;
+            private int magicalScrapCost;
+            private IngredientStack primaryIngredient;
+            private IngredientStack secondaryIngredient;
+            private int levelCost;
+
+            EnchantmentRecipeProvider(Enchantment enchantment) {
+                this.id = Registries.ENCHANTMENT.getId(enchantment).withPrefixedPath("enchantments/");
+                this.enchantment = enchantment;
+            }
+
+            EnchantmentRecipeProvider(Enchantment enchantment, int magicalScrapCost, IngredientStack primaryIngredient, IngredientStack secondaryIngredient, int levelCost) {
+                this.id = Registries.ENCHANTMENT.getId(enchantment).withPrefixedPath("enchantments/");
+                this.enchantment = enchantment;
+                this.magicalScrapCost = magicalScrapCost;
+                this.primaryIngredient = primaryIngredient;
+                this.secondaryIngredient = secondaryIngredient;
+                this.levelCost = levelCost;
+            }
+
+            public EnchantmentRecipeProvider scrap(int count) {
+                this.magicalScrapCost = count;
+                return this;
+            }
+
+            public EnchantmentRecipeProvider primary(ItemConvertible itemProvider, int count) {
+                this.primaryIngredient = new IngredientStack(Ingredient.ofItems(itemProvider), count);
+                return this;
+            }
+
+            public EnchantmentRecipeProvider secondary(ItemConvertible itemProvider, int count) {
+                this.secondaryIngredient = new IngredientStack(Ingredient.ofItems(itemProvider), count);
+                return this;
+            }
+
+            public EnchantmentRecipeProvider level(int levels) {
+                this.levelCost = levels;
+                return this;
+            }
+
+            @Override
+            public void serialize(JsonObject json) {
+                Identifier id = Registries.ENCHANTMENT.getId(enchantment);
+                String enchantmentId = id.getPath();
+
+                if (magicalScrapCost != 0) json.addProperty("magical_scrap_cost", magicalScrapCost);
+                else  json.addProperty("magical_scrap_cost", 3);
+                if (primaryIngredient != null) json.add("primary_ingredient", primaryIngredient.toJson());
+                if (secondaryIngredient != null) json.add("secondary_ingredient", secondaryIngredient.toJson());
+                if (levelCost != 0) json.addProperty("level_cost", levelCost);
+                json.addProperty("enchantment", enchantmentId);
+            }
+
+            @Override
+            public Identifier getRecipeId() {
+                return id;
+            }
+
+            @Override
+            public RecipeSerializer<?> getSerializer() {
+                return AArcanaRecipes.ENCHANTMENT_RECIPE_SERIALIZER;
+            }
+
+            @Override
+            public @Nullable JsonObject toAdvancementJson() {
+                return null;
+            }
+
+            @Override
+            public @Nullable Identifier getAdvancementId() {
+                return null;
+            }
+        }
+
         @Override
         public void generate(Consumer<RecipeJsonProvider> exporter) {
             ShapelessRecipeJsonBuilder.create(RecipeCategory.TOOLS, AArcanaItems.ENCHANTED_SCRAP, 1)
@@ -251,6 +333,8 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
                     .input(Items.AMETHYST_SHARD, 2)
                     .criterion("obtain_lapis", InventoryChangedCriterion.Conditions.items(Items.LAPIS_LAZULI))
                     .offerTo(exporter);
+
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.ARCHERS_GAMBIT).primary(Items.GOLD_INGOT, 3).level(7));
         }
     }
 
