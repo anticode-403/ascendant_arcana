@@ -9,7 +9,7 @@ import net.minecraft.item.SwordItem;
 
 public class SoulBurst extends Enchantment {
     public SoulBurst() {
-        super(Rarity.VERY_RARE, EnchantmentTarget.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
+        super(Rarity.UNCOMMON, EnchantmentTarget.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
     }
 
     @Override
