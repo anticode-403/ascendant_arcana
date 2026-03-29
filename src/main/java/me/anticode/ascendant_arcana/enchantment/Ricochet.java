@@ -1,10 +1,11 @@
 package me.anticode.ascendant_arcana.enchantment;
 
+import me.anticode.ascendant_arcana.init.AArcanaEnchantments;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.BowItem;
-import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 
 public class Ricochet extends Enchantment {
