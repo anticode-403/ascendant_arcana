@@ -1,6 +1,7 @@
 package me.anticode.ascendant_arcana.mixin;
 
 
+import com.llamalad7.mixinextras.sugar.Local;
 import me.anticode.ascendant_arcana.api.EnchantedArrow;
 import me.anticode.ascendant_arcana.init.AArcanaStatusEffects;
 import net.minecraft.block.BlockState;
@@ -24,6 +25,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PersistentProjectileEntity.class)
@@ -38,6 +40,10 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
     @Shadow
     @Nullable
     private BlockState inBlockState;
+
+    @Shadow
+    public abstract byte getPierceLevel();
+
     @Unique
     private int archersGambitLevel;
 
@@ -84,6 +90,43 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
         this.evokersWrathLevel = nbt.getInt("evokersWrathLevel");
     }
 
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void willRicochet(CallbackInfo ci) {
+        PersistentProjectileEntity projectile = (PersistentProjectileEntity)((Object)this);
+        if (projectile.getWorld().isClient()) return;
+
+        Vec3d vel = projectile.getVelocity();
+        Vec3d pos = projectile.getPos();
+        Vec3d futurePos = pos.add(vel);
+        BlockHitResult hitResult = projectile.getWorld().raycast(new RaycastContext(pos, futurePos, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, projectile));
+
+        if (hitResult.getType() == HitResult.Type.MISS) return;
+
+        if (ricochetLevel >= 1 && ricochetBounces < ricochetLevel) {
+            // Velocity reflection
+            Vec3i tempNormal = hitResult.getSide().getVector();
+            Vec3d normal = new Vec3d(tempNormal.getX(), tempNormal.getY(), tempNormal.getZ()).normalize();
+            double dotProduct = vel.dotProduct(normal);
+
+            ricochetVector = vel.subtract(normal.multiply(2D * dotProduct)).normalize();
+            ricochet = true;
+        }
+    }
+
+    @Inject(method = "tick", at = @At("TAIL"))
+    private void doRicochet(CallbackInfo ci) {
+        if (ricochet) {
+            // Undo the effects of onBlockHit
+            PersistentProjectileEntity persistentProjectileEntity = (PersistentProjectileEntity)(Object)this;
+            persistentProjectileEntity.shake = 0;
+            inGround = false;
+            setCritical(true);
+            inBlockState = null;
+
+            doRicochet();
+        }
+    }
+
     @Inject(method = "onEntityHit", at = @At("TAIL"))
     private void onEntityHitTail(EntityHitResult entityHitResult, CallbackInfo ci) {
         PersistentProjectileEntity projectile = (PersistentProjectileEntity)((Object)this);
@@ -109,72 +152,20 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
         }
     }
 
-    @Inject(method = "tick", at = @At("HEAD"))
-    private void willRicochet(CallbackInfo ci) {
-        PersistentProjectileEntity projectile = (PersistentProjectileEntity)((Object)this);
-        if (projectile.getWorld().isClient()) return;
-
-        Vec3d vel = projectile.getVelocity();
-        Vec3d pos = projectile.getPos();
-        Vec3d futurePos = pos.add(vel);
-        BlockHitResult hitResult = projectile.getWorld().raycast(new RaycastContext(pos, futurePos, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, projectile));
-
-        if (hitResult.getType() == HitResult.Type.MISS) return;
-
-        if (ricochetLevel >= 1 && ricochetBounces < ricochetLevel) {
-            ricochetBounces++;
-
-            // Velocity reflection
-            Vec3i tempNormal = hitResult.getSide().getVector();
-            Vec3d normal = new Vec3d(tempNormal.getX(), tempNormal.getY(), tempNormal.getZ()).normalize();
-            double dotProduct = vel.dotProduct(normal);
-
-            ricochetVector = vel.subtract(normal.multiply(2D * dotProduct)).normalize();
-            ricochet = true;
+    @Redirect(method = "onEntityHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/projectile/PersistentProjectileEntity;discard()V"))
+    private void ricochetOnEntityHit(PersistentProjectileEntity persistentProjectileEntity, @Local(argsOnly = true) EntityHitResult entityHitResult) {
+        if (ricochetLevel >= 1 && ricochetBounces < ricochetLevel && getPierceLevel() == 0) {
+            if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
+                // Removing the stuck arrow applied by the hit
+                livingEntity.setStuckArrowCount(livingEntity.getStuckArrowCount() - 1);
+            }
+            ricochetVector = persistentProjectileEntity.getVelocity().multiply(-0.8D, 1D, -0.8D);
+            doRicochet();
+        }
+        else {
+            persistentProjectileEntity.discard();
         }
     }
-
-    @Inject(method = "tick", at = @At("TAIL"))
-    private void tick(CallbackInfo ci) {
-        if (ricochet) {
-            // Undo the effects of onBlockHit
-            PersistentProjectileEntity persistentProjectileEntity = (PersistentProjectileEntity)(Object)this;
-            persistentProjectileEntity.shake = 0;
-            inGround = false;
-            setCritical(true);
-            inBlockState = null;
-
-            // Update velocity
-            persistentProjectileEntity.setVelocity(ricochetVector);
-            persistentProjectileEntity.speed -= 0.5F;
-            persistentProjectileEntity.velocityModified = true;
-            persistentProjectileEntity.velocityDirty = true;
-            // We take an extra step to get out of the block onBlockHit lodged us in
-            persistentProjectileEntity.move(MovementType.SELF, ricochetVector.multiply(0.1));
-
-            ricochet = false;
-            ricochetVector = null;
-        }
-    }
-
-//    @Inject(method = "onBlockHit", at = @At("HEAD"), cancellable = true)
-//    private void onBlockHitHead(BlockHitResult blockHitResult, CallbackInfo ci) {
-//        ProjectileEntity projectileEntity = (ProjectileEntity)(Object)this;
-//        if (projectileEntity.getWorld().isClient()) return;
-//        if (ricochetLevel >= 1 && ricochetBounces < ricochetLevel) {
-//            ricochetBounces++;
-//
-//            // Velocity reflection
-//            Vec3d oldVel = projectileEntity.getVelocity();
-//            Vec3i tempNormal = blockHitResult.getSide().getVector();
-//            Vec3d normal = new Vec3d(tempNormal.getX(), tempNormal.getY(), tempNormal.getZ()).normalize();
-//            double dotProduct = oldVel.dotProduct(normal);
-//
-//            ricochetVector = oldVel.subtract(normal.multiply(2D * dotProduct)).normalize();
-//            ricochet = true;
-//            ci.cancel();
-//        }
-//    }
 
     @Inject(method = "onBlockHit", at = @At("TAIL"))
     private void onBlockHitTail(BlockHitResult blockHitResult, CallbackInfo ci) {
@@ -223,5 +214,23 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
                 world.spawnEntity(new EvokerFangsEntity(world, vec3d.getX(), blockPos.getY() + d, vec3d.getZ(), projectile.getYaw(), 0, owner));
             }
         }
+    }
+
+    @Unique
+    private void doRicochet() {
+        ricochetBounces++;
+
+        PersistentProjectileEntity persistentProjectileEntity = (PersistentProjectileEntity)(Object)this;
+
+        // Update velocity
+        persistentProjectileEntity.setVelocity(ricochetVector);
+        persistentProjectileEntity.speed -= 0.5F;
+        persistentProjectileEntity.velocityModified = true;
+        persistentProjectileEntity.velocityDirty = true;
+        // We take an extra step to get out of the block onBlockHit lodged us in
+        persistentProjectileEntity.move(MovementType.SELF, ricochetVector.multiply(0.1));
+
+        ricochet = false;
+        ricochetVector = null;
     }
 }
