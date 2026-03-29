@@ -7,10 +7,13 @@ import me.anticode.ascendant_arcana.init.AArcanaStatusEffects;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MovementType;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.EvokerFangsEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.GameStateChangeS2CPacket;
 import net.minecraft.particle.BlockStateParticleEffect;
@@ -19,32 +22,57 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.*;
 import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PersistentProjectileEntity.class)
 public abstract class PersistentProjectileEntityMixin implements EnchantedArrow {
+
     @Shadow
-    protected abstract void onHit(LivingEntity target);
+    protected boolean inGround;
+
+    @Shadow
+    public abstract void setCritical(boolean critical);
+
+    @Shadow
+    @Nullable
+    private BlockState inBlockState;
 
     @Shadow
     public abstract byte getPierceLevel();
+
+    @Shadow
+    protected abstract void onHit(LivingEntity target);
 
     @Unique
     private int archersGambitLevel;
 
     @Unique
     private int evokersWrathLevel;
+
+    @Unique
+    private int ricochetLevel;
+
+    @Unique
+    private int ricochetBounces = 0;
+
+    @Unique
+    private boolean ricochet;
+
+    @Unique
+    @Nullable
+    private Vec3d ricochetVector;
 
     @Unique
     private int rejuvenatingShotLevel;
@@ -64,11 +92,17 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
         this.rejuvenatingShotLevel = value;
     }
 
+    @Override
+    public void ascendant_arcana$setRicochetLevel(int value) {
+        this.ricochetLevel = value;
+    }
+
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
     private void writeCustomAttributes(NbtCompound nbt, CallbackInfo ci) {
         nbt.putInt("archersGambitLevel", archersGambitLevel);
         nbt.putInt("evokersWrathLevel", evokersWrathLevel);
         nbt.putInt("rejuvenatingShotLevel", rejuvenatingShotLevel);
+        nbt.putInt("ricochetLevel", ricochetLevel);
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("HEAD"))
@@ -76,6 +110,7 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
         this.archersGambitLevel = nbt.getInt("archersGambitLevel");
         this.evokersWrathLevel = nbt.getInt("evokersWrathLevel");
         this.rejuvenatingShotLevel = nbt.getInt("rejuvenatingShotLevel");
+        this.ricochetLevel = nbt.getInt("ricochetLevel");
     }
 
     @Inject(method = "onEntityHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"), cancellable = true)
@@ -105,6 +140,54 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
         ci.cancel();
     }
 
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void willRicochet(CallbackInfo ci) {
+        PersistentProjectileEntity projectile = (PersistentProjectileEntity)((Object)this);
+        if (projectile.getWorld().isClient()) return;
+
+        Vec3d vel = projectile.getVelocity();
+        Vec3d pos = projectile.getPos();
+        Vec3d futurePos = pos.add(vel);
+        BlockHitResult hitResult = projectile.getWorld().raycast(new RaycastContext(pos, futurePos, RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, projectile));
+
+        if (hitResult.getType() == HitResult.Type.MISS) return;
+
+        if (ricochetLevel >= 1 && ricochetBounces < ricochetLevel) {
+            // Velocity reflection
+            Vec3i tempNormal = hitResult.getSide().getVector();
+            Vec3d normal = new Vec3d(tempNormal.getX(), tempNormal.getY(), tempNormal.getZ()).normalize();
+            double dotProduct = vel.dotProduct(normal);
+
+            ricochetVector = vel.subtract(normal.multiply(2D * dotProduct)).normalize();
+            ricochet = true;
+        }
+    }
+
+    @Inject(method = "tick", at = @At("TAIL"))
+    private void doRicochet(CallbackInfo ci) {
+        if (ricochet) {
+            // Undo the effects of onBlockHit
+            PersistentProjectileEntity persistentProjectileEntity = (PersistentProjectileEntity)(Object)this;
+            persistentProjectileEntity.shake = 0;
+            inGround = false;
+            setCritical(true);
+            inBlockState = null;
+
+            doRicochet();
+        }
+    }
+
+    @Redirect(method = "onEntityHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"))
+    private boolean modifyDamageDealt(Entity instance, DamageSource source, float amount) {
+        if (ricochetLevel >= 1 && ricochetBounces == 0) {
+            amount /= 2;
+        }
+        else if (ricochetLevel >= 1 && ricochetBounces > 0) {
+            amount += ricochetBounces * 2;
+        }
+        return instance.damage(source, amount);
+    }
+
     @Inject(method = "onEntityHit", at = @At("TAIL"))
     private void onEntityHitTail(EntityHitResult entityHitResult, CallbackInfo ci) {
         PersistentProjectileEntity projectile = (PersistentProjectileEntity)((Object)this);
@@ -127,6 +210,21 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
                     true
             );
             owner.addStatusEffect(newInstance);
+        }
+    }
+
+    @Redirect(method = "onEntityHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/projectile/PersistentProjectileEntity;discard()V"))
+    private void ricochetOnEntityHit(PersistentProjectileEntity persistentProjectileEntity, @Local(argsOnly = true) EntityHitResult entityHitResult) {
+        if (ricochetLevel >= 1 && ricochetBounces < ricochetLevel && getPierceLevel() == 0) {
+            if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
+                // Removing the stuck arrow applied by the hit
+                livingEntity.setStuckArrowCount(livingEntity.getStuckArrowCount() - 1);
+            }
+            ricochetVector = persistentProjectileEntity.getVelocity().multiply(-0.8D, 1D, -0.8D);
+            doRicochet();
+        }
+        else {
+            persistentProjectileEntity.discard();
         }
     }
 
@@ -177,5 +275,23 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
                 world.spawnEntity(new EvokerFangsEntity(world, vec3d.getX(), blockPos.getY() + d, vec3d.getZ(), projectile.getYaw(), 0, owner));
             }
         }
+    }
+
+    @Unique
+    private void doRicochet() {
+        ricochetBounces++;
+
+        PersistentProjectileEntity persistentProjectileEntity = (PersistentProjectileEntity)(Object)this;
+
+        // Update velocity
+        persistentProjectileEntity.setVelocity(ricochetVector);
+        persistentProjectileEntity.speed -= 0.5F;
+        persistentProjectileEntity.velocityModified = true;
+        persistentProjectileEntity.velocityDirty = true;
+        // We take an extra step to get out of the block onBlockHit lodged us in
+        persistentProjectileEntity.move(MovementType.SELF, ricochetVector.multiply(0.1));
+
+        ricochet = false;
+        ricochetVector = null;
     }
 }
