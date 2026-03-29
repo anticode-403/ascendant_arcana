@@ -293,8 +293,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
 
             @Override
             public void serialize(JsonObject json) {
-                Identifier id = Registries.ENCHANTMENT.getId(enchantment);
-                String enchantmentId = id.getPath();
+                String enchantmentId = Registries.ENCHANTMENT.getId(enchantment).toString();
 
                 if (magicalScrapCost != 0) json.addProperty("magical_scrap_cost", magicalScrapCost);
                 else  json.addProperty("magical_scrap_cost", 3);
