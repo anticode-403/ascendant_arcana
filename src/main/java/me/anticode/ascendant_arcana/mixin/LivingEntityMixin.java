@@ -8,7 +8,9 @@ import me.anticode.ascendant_arcana.enchantment.TurtleHeart;
 import me.anticode.ascendant_arcana.init.AArcanaAttributes;
 import me.anticode.ascendant_arcana.init.AArcanaEnchantments;
 import me.anticode.ascendant_arcana.logic.ItemHelper;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
@@ -17,9 +19,14 @@ import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.DamageTypeTags;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Pair;
+import net.minecraft.util.math.Box;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -27,11 +34,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.awt.geom.Area;
+import java.util.*;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
@@ -43,6 +49,9 @@ public abstract class LivingEntityMixin {
 
     @Shadow
     public abstract AttributeContainer getAttributes();
+
+    @Shadow
+    public abstract boolean damage(DamageSource source, float amount);
 
     @Unique
     private Map<AArcanaEnchantments.IndirectHeartDamageTypes, Integer> heartAttackers = new EnumMap<>(AArcanaEnchantments.IndirectHeartDamageTypes.class);
@@ -113,6 +122,36 @@ public abstract class LivingEntityMixin {
         if (source.isIn(DamageTypeTags.IS_FREEZING) && heartAttackers.containsKey(AArcanaEnchantments.IndirectHeartDamageTypes.COLD))
             damage *= 2;
         return damage;
+    }
+
+    @Inject(method = "onDeath", at = @At("HEAD"))
+    private void onDeathEnchantments(DamageSource damageSource, CallbackInfo ci) {
+        if (damageSource.getAttacker() instanceof LivingEntity attackingEntity) {
+            LivingEntity livingEntity = (LivingEntity) (Object) this;
+
+            int soulBurstLevel = EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.SOUL_BURST, attackingEntity);
+            if (soulBurstLevel > 0) {
+                float soulBurstDamage = livingEntity.getMaxHealth() * 0.2f * soulBurstLevel;
+                float soulBurstRadius = 0.5f * soulBurstDamage;
+
+                AreaEffectCloudEntity areaEffectCloudEntity = new AreaEffectCloudEntity(livingEntity.getWorld(), livingEntity.getX(), livingEntity.getRandomBodyY(), livingEntity.getZ());
+                areaEffectCloudEntity.setOwner(attackingEntity);
+                areaEffectCloudEntity.setParticleType(ParticleTypes.SCULK_SOUL);
+                areaEffectCloudEntity.setRadius(soulBurstRadius);
+                areaEffectCloudEntity.setDuration(0);
+                livingEntity.getWorld().spawnEntity(areaEffectCloudEntity);
+                livingEntity.getWorld().playSound(null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), SoundEvents.ENTITY_EVOKER_CAST_SPELL, attackingEntity.getSoundCategory(), 1.0F, 1.0F);
+
+                List<LivingEntity> targets = livingEntity.getEntityWorld().getEntitiesByClass(LivingEntity.class, new Box(livingEntity.getBlockPos()).expand(soulBurstRadius), (LivingEntity e) -> {
+                    if (e == attackingEntity) return false;
+                    else return !(e instanceof TameableEntity tameableEntity) || !tameableEntity.isOwner(attackingEntity);
+                });
+
+                for (LivingEntity target : targets) {
+                    target.damage(attackingEntity.getDamageSources().explosion(livingEntity, attackingEntity), soulBurstDamage);
+                }
+            }
+        }
     }
 
     @Inject(method = "tick", at = @At("TAIL"))

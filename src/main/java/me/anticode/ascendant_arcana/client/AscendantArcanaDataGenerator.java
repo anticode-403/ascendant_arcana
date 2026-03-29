@@ -226,6 +226,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             registerEnchantment(translationBuilder, AArcanaEnchantments.REJUVENATING_SHOT, "Rejuvenating Shot", "Instead of doing damage, arrows heal for half the damage they would have done.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.RICOCHET, "Ricochet", "Arrows ricochet but deal reduced damage that massively increases after each bounce.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.SMELTING, "Smelting", "Smelts blocks mined.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.SOUL_BURST, "Soul Burst", "Slain enemies deal damage to nearby entities based on their maximum health.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.STORM_HEART, "Heart of the Storm", "Increases the damage dealt by all lightning attacks.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.STRAFE, "Strafe", "Allows you to sprint in any direction and reduces movement speed penalties while using an item.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.TURTLE_HEART, "Heart of the Turtle", "Decreases all incoming and outgoing damage.");
