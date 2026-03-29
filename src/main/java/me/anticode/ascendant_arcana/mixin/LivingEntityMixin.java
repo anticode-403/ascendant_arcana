@@ -21,12 +21,14 @@ import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -149,6 +151,43 @@ public abstract class LivingEntityMixin {
 
                 for (LivingEntity target : targets) {
                     target.damage(attackingEntity.getDamageSources().explosion(livingEntity, attackingEntity), soulBurstDamage);
+                }
+            }
+
+            int debilitatingChainLevel = EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.DEBILITATING_CHAIN, attackingEntity);
+            if (debilitatingChainLevel > 0) {
+                float searchRadius = 2 + 2 * debilitatingChainLevel;
+
+                List<LivingEntity> targets = livingEntity.getEntityWorld().getEntitiesByClass(LivingEntity.class, new Box(livingEntity.getBlockPos()).expand(searchRadius), (LivingEntity e) -> {
+                    if (e == attackingEntity) return false;
+                    else if (e == livingEntity) return false;
+                    else return !(e instanceof TameableEntity tameableEntity) || !tameableEntity.isOwner(attackingEntity);
+                });
+
+                LivingEntity target = null;
+                for (LivingEntity potentialTarget : targets) {
+                    if (target == null) {
+                        target = potentialTarget;
+                        continue;
+                    }
+                    if (livingEntity.getPos().distanceTo(potentialTarget.getPos()) < livingEntity.getPos().distanceTo(target.getPos())) target = potentialTarget;
+                }
+
+                if (target != null) {
+                    for (StatusEffectInstance effect : livingEntity.getStatusEffects()) {
+                        target.addStatusEffect(effect, attackingEntity);
+                    }
+                    if (!livingEntity.getStatusEffects().isEmpty()) {
+                        if (!livingEntity.getWorld().isClient()) {
+                            for (int i = 0; i < livingEntity.getEyePos().distanceTo(target.getEyePos()) * 4; i++) {
+                                double delta = ((double)i) / (livingEntity.getEyePos().distanceTo(target.getEyePos()) * 4);
+                                Vec3d particlePos = livingEntity.getEyePos().lerp(target.getEyePos(), delta);
+                                attackingEntity.getWorld().addImportantParticle(ParticleTypes.ENCHANTED_HIT, particlePos.x, particlePos.y, particlePos.z, 0, 0, 0);
+                            }
+                            Vec3d soundPos = livingEntity.getPos().lerp(target.getPos(), 0.5D);
+                            livingEntity.getWorld().playSound(null, soundPos.getX(), soundPos.getY(), soundPos.getZ(), SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, attackingEntity.getSoundCategory(), 0.8F, 0.1F);
+                        }
+                    }
                 }
             }
         }
