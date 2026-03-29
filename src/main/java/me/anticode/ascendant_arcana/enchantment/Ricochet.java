@@ -24,7 +24,7 @@ public class Ricochet extends Enchantment {
 
     @Override
     protected boolean canAccept(Enchantment other) {
-        return super.canAccept(other);
+        return super.canAccept(other) && other != Enchantments.PIERCING && other != AArcanaEnchantments.REJUVENATING_SHOT;
     }
 
     @Override
