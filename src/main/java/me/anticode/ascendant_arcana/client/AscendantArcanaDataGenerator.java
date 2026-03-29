@@ -216,7 +216,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             translationBuilder.add(AArcanaAttributes.PROTECTION, "Protection");
             translationBuilder.add(AArcanaAttributes.DAMAGE_TAKEN, "Damage Taken");
             // Enchantments
-            registerEnchantment(translationBuilder, AArcanaEnchantments.ARCHERS_GAMBIT, "Archer's Gambit", "Briefly increased draw speed after hitting a target. Stacks 3 times.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.ARCHERS_GAMBIT, "Archer's Gambit", "Briefly increased draw speed after consecutively hitting a target. Stacks 3 times.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.ALCHEMISTS_HEART, "Alchemist's Heart", "Increases the amplifier of all beneficial status effects.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.AMBUSH, "Ambush", "When you hit a mob after throwing this Trident, teleport to it.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.BLADEHEART, "Bladeheart", "Slightly increases all damage dealt by physical attacks.");
