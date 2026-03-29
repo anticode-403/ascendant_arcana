@@ -20,6 +20,9 @@ import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -55,6 +58,8 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
     @Shadow
     protected abstract void onHit(LivingEntity target);
 
+    @Shadow
+    private SoundEvent sound;
     @Unique
     private int archersGambitLevel;
 
@@ -129,6 +134,9 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
                     double f = livingTarget.getRandom().nextGaussian() * 0.02;
                     livingTarget.getWorld().addImportantParticle(ParticleTypes.HEART, livingTarget.offsetX(2 * livingTarget.getRandom().nextDouble() - 1), livingTarget.getRandomBodyY() + (double)1.0F, livingTarget.offsetZ(2 * livingTarget.getRandom().nextDouble() - 1), d, e, f);
                 }
+                SoundCategory soundCategory = SoundCategory.PLAYERS;
+                if (persistentProjectileEntity.getOwner() != null) soundCategory = persistentProjectileEntity.getOwner().getSoundCategory();
+                livingTarget.getWorld().playSound(null, livingTarget.getX(), livingTarget.getY(), livingTarget.getZ(), SoundEvents.ENTITY_ARROW_HIT_PLAYER, soundCategory, 1.0F, 1.0F);
             }
             if (livingTarget instanceof PlayerEntity && owner instanceof ServerPlayerEntity && !persistentProjectileEntity.isSilent()) {
                 ((ServerPlayerEntity)owner).networkHandler.sendPacket(new GameStateChangeS2CPacket(GameStateChangeS2CPacket.PROJECTILE_HIT_PLAYER, 0.0F));
