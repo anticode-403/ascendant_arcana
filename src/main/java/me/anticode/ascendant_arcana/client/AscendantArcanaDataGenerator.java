@@ -27,10 +27,10 @@ import net.minecraft.loot.function.SetCountLootFunction;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.*;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
@@ -61,6 +61,8 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
         protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
             getOrCreateTagBuilder(AArcanaTags.Items.RELICS)
                     .add(AArcanaItems.RELIC);
+            getOrCreateTagBuilder(AArcanaTags.Items.HEARTS)
+                    .add(Items.SCULK_CATALYST);
         }
     }
 
@@ -281,8 +283,18 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
                 return this;
             }
 
+            public EnchantmentRecipeProvider primary(TagKey<Item> items, int count) {
+                this.primaryIngredient = new IngredientStack(Ingredient.fromTag(items), count);
+                return this;
+            }
+
             public EnchantmentRecipeProvider secondary(ItemConvertible itemProvider, int count) {
                 this.secondaryIngredient = new IngredientStack(Ingredient.ofItems(itemProvider), count);
+                return this;
+            }
+
+            public EnchantmentRecipeProvider secondary(TagKey<Item> items, int count) {
+                this.secondaryIngredient = new IngredientStack(Ingredient.fromTag(items), count);
                 return this;
             }
 
@@ -333,7 +345,23 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
                     .criterion("obtain_lapis", InventoryChangedCriterion.Conditions.items(Items.LAPIS_LAZULI))
                     .offerTo(exporter);
 
+            // Enchantments
+            // Replace Sculk Catalysts with some form of Warden Heart
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.ARCHERS_GAMBIT).primary(Items.GOLD_INGOT, 3).level(7));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.ALCHEMISTS_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.GLISTERING_MELON_SLICE, 16).level(15));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.AMBUSH).primary(Items.ENDER_PEARL, 8).secondary(Items.AMETHYST_SHARD, 3).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.BLADEHEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.DIAMOND, 8).level(15));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.COLDHEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.BLUE_ICE, 32).level(15));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.EVOKERS_WRATH).scrap(2).primary(Items.TOTEM_OF_UNDYING, 1).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.NETHER_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.NETHERITE_INGOT, 2).level(15));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.REJUVENATING_SHOT).scrap(6).primary(Items.GHAST_TEAR, 4).level(6));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.RICOCHET).scrap(6).primary(Items.SLIME_BALL, 23).level(6));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.SMELTING).scrap(3).primary(Items.BLAZE_ROD, 2).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.SOUL_BURST).scrap(3).primary(Items.SCULK_CATALYST, 1).secondary(Items.GUNPOWDER, 12).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.STORM_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.LIGHTNING_ROD, 6).level(15));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.STRAFE).scrap(6).primary(Items.FEATHER, 12).level(4));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.TURTLE_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.ANVIL, 1).level(15));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.WITCH_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.CAULDRON, 1).level(15));
         }
     }
 

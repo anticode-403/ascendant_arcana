@@ -9,6 +9,7 @@ import net.minecraft.util.Identifier;
 public class AArcanaTags {
     public static class Items {
         public static final TagKey<Item> RELICS = createItemTag("relics");
+        public static final TagKey<Item> HEARTS = createItemTag("heart_items");
 
         private static TagKey<Item> createItemTag(String name) {
             return TagKey.of(RegistryKeys.ITEM, new Identifier(AscendantArcana.modID, name));
