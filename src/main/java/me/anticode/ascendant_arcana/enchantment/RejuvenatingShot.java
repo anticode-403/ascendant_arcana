@@ -1,7 +1,9 @@
 package me.anticode.ascendant_arcana.enchantment;
 
+import me.anticode.ascendant_arcana.init.AArcanaEnchantments;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.CrossbowItem;
@@ -30,5 +32,10 @@ public class RejuvenatingShot extends Enchantment {
     @Override
     public boolean isAcceptableItem(ItemStack stack) {
         return stack.getItem() instanceof BowItem || stack.getItem() instanceof CrossbowItem;
+    }
+
+    @Override
+    protected boolean canAccept(Enchantment other) {
+        return super.canAccept(other) && other != AArcanaEnchantments.RICOCHET && other != Enchantments.INFINITY;
     }
 }
