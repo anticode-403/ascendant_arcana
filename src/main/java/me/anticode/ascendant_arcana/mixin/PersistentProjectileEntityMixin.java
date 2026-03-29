@@ -5,8 +5,10 @@ import com.llamalad7.mixinextras.sugar.Local;
 import me.anticode.ascendant_arcana.api.EnchantedArrow;
 import me.anticode.ascendant_arcana.init.AArcanaStatusEffects;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.EvokerFangsEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -125,6 +127,17 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
 
             doRicochet();
         }
+    }
+
+    @Redirect(method = "onEntityHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"))
+    private boolean modifyDamageDealt(Entity instance, DamageSource source, float amount) {
+        if (ricochetLevel >= 1 && ricochetBounces == 0) {
+            amount /= 2;
+        }
+        else if (ricochetLevel >= 1 && ricochetBounces > 0) {
+            amount += ricochetBounces * 2;
+        }
+        return instance.damage(source, amount);
     }
 
     @Inject(method = "onEntityHit", at = @At("TAIL"))
