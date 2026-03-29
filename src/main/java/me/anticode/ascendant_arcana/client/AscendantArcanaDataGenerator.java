@@ -362,6 +362,8 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.STRAFE).scrap(6).primary(Items.FEATHER, 12).level(4));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.TURTLE_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.ANVIL, 1).level(15));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.WITCH_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.CAULDRON, 1).level(15));
+
+            // TODO: Vanilla Minecraft enchantments
         }
     }
 
