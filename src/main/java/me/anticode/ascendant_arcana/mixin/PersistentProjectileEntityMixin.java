@@ -2,6 +2,7 @@ package me.anticode.ascendant_arcana.mixin;
 
 
 import com.llamalad7.mixinextras.sugar.Local;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import me.anticode.ascendant_arcana.api.EnchantedArrow;
 import me.anticode.ascendant_arcana.init.AArcanaStatusEffects;
 import net.minecraft.block.BlockState;
@@ -60,6 +61,9 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
 
     @Shadow
     private SoundEvent sound;
+    @Shadow
+    @Nullable
+    private IntOpenHashSet piercedEntities;
     @Unique
     private int archersGambitLevel;
 
@@ -81,6 +85,8 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
 
     @Unique
     private int rejuvenatingShotLevel;
+
+    @Unique private boolean didHitEntity = false;
 
     @Override
     public void ascendant_arcana$setArchersGambitLevel(int value) {
@@ -218,6 +224,7 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
                     true
             );
             owner.addStatusEffect(newInstance);
+            didHitEntity = true;
         }
     }
 
@@ -246,8 +253,8 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
         }
 
         if (archersGambitLevel >= 1) {
-            if (owner != null && owner.getStatusEffect(AArcanaStatusEffects.ARCHERS_GAMBIT) != null) {
-                owner.removeStatusEffect(AArcanaStatusEffects.ARCHERS_GAMBIT);
+            if (owner != null && owner.getStatusEffect(AArcanaStatusEffects.ARCHERS_GAMBIT) != null && (ricochetLevel == 0 || ricochetBounces >= ricochetLevel) && (getPierceLevel() == 0 || (piercedEntities != null && piercedEntities.isEmpty()))) {
+                if (!didHitEntity) owner.removeStatusEffect(AArcanaStatusEffects.ARCHERS_GAMBIT);
             }
         }
     }
