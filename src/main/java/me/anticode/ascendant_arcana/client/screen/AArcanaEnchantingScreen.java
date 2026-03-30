@@ -135,8 +135,8 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
 
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         if (this.scrollerClicked && getScreenHandler().getRecipes() != null && !getScreenHandler().getRecipes().isEmpty()) {
-            int j = this.y + 13;
-            int k = j + 56;
+            int j = this.y + 9;
+            int k = j + 121;
             this.scrollPosition = ((float)mouseY - (float)j - 7.5F) / ((float)(k - j) - 15.0F);
             this.scrollPosition = MathHelper.clamp(this.scrollPosition, 0.0F, 1.0F);
             this.visibleTopRow = Math.max((int)((double)(this.scrollPosition * (float)-getScreenHandler().getRecipes().size()) + (double)0.5F), 0);
