@@ -5,27 +5,38 @@ import me.anticode.ascendant_arcana.AscendantArcana;
 import me.anticode.ascendant_arcana.logic.AArcanaEnchantmentHelper;
 import me.anticode.ascendant_arcana.recipe.EnchantmentRecipe;
 import me.anticode.ascendant_arcana.screenhandler.AArcanaEnchantingScreenHandler;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
+import net.minecraft.client.gui.widget.ScrollableWidget;
 import net.minecraft.client.render.DiffuseLighting;
+import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.LoomScreenHandler;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 
+import java.util.List;
 import java.util.Map;
 
 public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScreenHandler> {
     private static final Identifier TEXTURE = new Identifier(AscendantArcana.modID, "textures/gui/container/enchanting_table.png");
     private static final Identifier OVERLAYS = new Identifier(AscendantArcana.modID, "textures/gui/container/enchanting_table_elements.png");
     private final Random random = Random.createLocal();
+    private List<EnchantmentTile> enchantments;
+    private float scrollPosition;
+    private boolean scrollerClicked;
+    private boolean scrollerVisible;
+    private int visibleTopRow;
 
     public AArcanaEnchantingScreen(AArcanaEnchantingScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -68,8 +79,6 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     @Override
     protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
         super.drawForeground(context, mouseX, mouseY);
-        int x = (width - backgroundWidth) / 2;
-        int y = (height - backgroundHeight) / 2;
 
         ItemStack stack = getScreenHandler().getSlot(0).getStack();
         if (stack != ItemStack.EMPTY) {
@@ -78,7 +87,12 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             float multiplier = (float) usedCapacity / maxCapacity;
             if (multiplier > 1) multiplier = 1;
 
-            context.drawTexture(OVERLAYS, 8, 110, 19, 0, MathHelper.floor(58 * multiplier), 5);
+            context.drawTexture(OVERLAYS, 8, 110, 25, 0, MathHelper.floor(58 * multiplier), 5);
+
+            int k = (int)(41.0F * this.scrollPosition);
+            boolean hasRecipes = getScreenHandler().getRecipes() != null && !getScreenHandler().getRecipes().isEmpty();
+            context.drawTexture(OVERLAYS, 153, 9 + k, (hasRecipes && getScreenHandler().getRecipes().size() > 6 ? 0 : 6), 0, 6, 27);
+
         }
     }
 
@@ -87,6 +101,60 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
         renderBackground(drawContext);
         super.render(drawContext, mouseX, mouseY, delta);
         drawMouseoverTooltip(drawContext, mouseX, mouseY);
+    }
+
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        scrollerClicked = false;
+        if (scrollerVisible) {
+            int i = x + 60;
+            int j = y + 13;
+
+            for(int k = 0; k < 4; ++k) {
+                for(int l = 0; l < 4; ++l) {
+                    double d = mouseX - (double)(i + l * 14);
+                    double e = mouseY - (double)(j + k * 14);
+                    int m = k + visibleTopRow;
+                    int n = m * 4 + l;
+                    if (d >= (double)0.0F && e >= (double)0.0F && d < (double)14.0F && e < (double)14.0F && (getScreenHandler()).onButtonClick(client.player, n)) {
+                        MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_LOOM_SELECT_PATTERN, 1.0F));
+                        this.client.interactionManager.clickButton((getScreenHandler()).syncId, n);
+                        return true;
+                    }
+                }
+            }
+
+            i = this.x + 153;
+            j = this.y + 9;
+            if (mouseX >= (double)i && mouseX < (double)(i + 12) && mouseY >= (double)j && mouseY < (double)(j + 56)) {
+                this.scrollerClicked = true;
+            }
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (this.scrollerClicked && !getScreenHandler().getRecipes().isEmpty()) {
+            int j = this.y + 13;
+            int k = j + 56;
+            this.scrollPosition = ((float)mouseY - (float)j - 7.5F) / ((float)(k - j) - 15.0F);
+            this.scrollPosition = MathHelper.clamp(this.scrollPosition, 0.0F, 1.0F);
+            this.visibleTopRow = Math.max((int)((double)(this.scrollPosition * (float)-getScreenHandler().getRecipes().size()) + (double)0.5F), 0);
+            return true;
+        } else {
+            return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+        }
+    }
+
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+        if (!getScreenHandler().getRecipes().isEmpty()) {
+            int recipeSize = getScreenHandler().getRecipes().size();
+            float f = (float)amount / (float)-recipeSize;
+            this.scrollPosition = MathHelper.clamp(this.scrollPosition - f, 0.0F, 1.0F);
+            this.visibleTopRow = Math.max((int)(this.scrollPosition * (float)-recipeSize + 0.5F), 0);
+        }
+
+        return true;
     }
 
     private class EnchantmentTile extends PressableWidget {
