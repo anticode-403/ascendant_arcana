@@ -35,7 +35,6 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     private List<EnchantmentTile> enchantments;
     private float scrollPosition;
     private boolean scrollerClicked;
-    private boolean scrollerVisible;
     private int visibleTopRow;
 
     public AArcanaEnchantingScreen(AArcanaEnchantingScreenHandler handler, PlayerInventory inventory, Text title) {
@@ -80,6 +79,10 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
         super.drawForeground(context, mouseX, mouseY);
 
+        int k = (int)(41.0F * this.scrollPosition);
+        boolean hasRecipes = getScreenHandler().getRecipes() != null && !getScreenHandler().getRecipes().isEmpty();
+        context.drawTexture(OVERLAYS, 153, 9 + k, (hasRecipes && getScreenHandler().getRecipes().size() > 6 ? 0 : 6), 0, 6, 27);
+
         ItemStack stack = getScreenHandler().getSlot(0).getStack();
         if (stack != ItemStack.EMPTY) {
             int maxCapacity = AArcanaEnchantmentHelper.getEnchantmentCapacity(stack);
@@ -88,11 +91,6 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             if (multiplier > 1) multiplier = 1;
 
             context.drawTexture(OVERLAYS, 8, 110, 25, 0, MathHelper.floor(58 * multiplier), 5);
-
-            int k = (int)(41.0F * this.scrollPosition);
-            boolean hasRecipes = getScreenHandler().getRecipes() != null && !getScreenHandler().getRecipes().isEmpty();
-            context.drawTexture(OVERLAYS, 153, 9 + k, (hasRecipes && getScreenHandler().getRecipes().size() > 6 ? 0 : 6), 0, 6, 27);
-
         }
     }
 
@@ -105,7 +103,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         scrollerClicked = false;
-        if (scrollerVisible) {
+        if (getScreenHandler().getRecipes() != null && getScreenHandler().getRecipes().size() > 6) {
             int i = x + 60;
             int j = y + 13;
 
