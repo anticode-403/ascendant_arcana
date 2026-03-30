@@ -23,9 +23,9 @@ public class AArcanaEnchantmentHelper {
 
     public static int getEnchantmentCost(Enchantment enchantment) {
         return switch (enchantment.getRarity()) {
-            case VERY_RARE -> 10;
-            case RARE -> 5;
-            case UNCOMMON -> 3;
+            case VERY_RARE -> 5;
+            case RARE -> 3;
+            case UNCOMMON -> 2;
             case COMMON -> 1;
         };
     }
