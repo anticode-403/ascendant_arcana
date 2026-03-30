@@ -6,6 +6,7 @@ import me.anticode.ascendant_arcana.logic.AArcanaEnchantmentHelper;
 import me.anticode.ascendant_arcana.recipe.EnchantmentRecipe;
 import me.anticode.ascendant_arcana.screenhandler.AArcanaEnchantingScreenHandler;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -24,6 +25,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
+import org.joml.Matrix4f;
 
 import java.util.List;
 import java.util.Map;
@@ -66,9 +68,16 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                     int strength = enchantInstance.getValue();
                     MutableText text = Text.translatable(enchantment.getTranslationKey());
                     if (enchantment.getMaxLevel() != 1) text.append(" ").append(Text.translatable("enchantment.level." + strength));
+                    if (text.getString().length() > 20) text = Text.literal(text.asTruncatedString(17)).append("...");
                     int color = 5636095;
                     if (strength == enchantment.getMaxLevel()) color = 16755200;
-                    context.drawText(this.textRenderer, text, x + 9, y + 50 + (i * 10), color, false);
+                    if (enchantment.isCursed()) color = 16733525;
+                    context.getMatrices().push();
+                    context.getMatrices().peek().getPositionMatrix().scale(0.5F, 0.5F, 0.5F);
+                    int scaledX = (x + 9) * 2;
+                    int scaledY = (y + 50 + (i * 5)) * 2;
+                    this.textRenderer.draw(text, scaledX, scaledY, color, true, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+                    context.getMatrices().pop();
                     i++;
                 }
             }
