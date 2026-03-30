@@ -52,7 +52,7 @@ public class InfusionRecipe implements SmithingRecipe {
                 Relics relicType = RelicItem.getRelicType(relicStack);
                 if (relicMap.size() < RelicHelper.getRelicCapacity(baseStack)) {
                     if (relicType == Relics.DURABILITY && baseStack.isDamageable()) return true;
-                    if (relicType == Relics.ENCHANTMENT_CAPACITY && baseStack.isEnchantable()) return true;
+                    if (relicType == Relics.ENCHANTMENT_CAPACITY && (baseStack.isEnchantable() || baseStack.hasEnchantments())) return true;
                     else if ((relicType == Relics.HASTE || relicType == Relics.DAMAGE) && (baseStack.getItem() instanceof ToolItem || baseStack.getItem() instanceof BowItem || baseStack.getItem() instanceof CrossbowItem)) return true;
                     else return relicType == Relics.PROTECTION && baseStack.getItem() instanceof ArmorItem;
                 }
