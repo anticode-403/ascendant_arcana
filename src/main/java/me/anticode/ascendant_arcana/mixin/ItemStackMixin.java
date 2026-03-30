@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import me.anticode.ascendant_arcana.init.AArcanaAttributes;
+import me.anticode.ascendant_arcana.logic.AArcanaEnchantmentHelper;
 import me.anticode.ascendant_arcana.logic.ItemHelper;
 import me.anticode.ascendant_arcana.logic.RelicHelper;
 import me.anticode.ascendant_arcana.logic.Relics;
@@ -115,5 +116,13 @@ public abstract class ItemStackMixin {
         Multimap<EntityAttribute, EntityAttributeModifier> modifiers = instance.getAttributeModifiers(slot);
         modifiers.removeAll(AArcanaAttributes.PROTECTION);
         return modifiers;
+    }
+
+    @Inject(method = "getTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getDamage()I", shift = At.Shift.AFTER))
+    private void addEnchantmentCapacityTooltipWhileAdvanced(PlayerEntity player, TooltipContext context, CallbackInfoReturnable<List<Text>> cir, @Local List<Text> tooltip) {
+        if (context.isAdvanced()) {
+            ItemStack itemStack = (ItemStack)(Object)this;
+            tooltip.add(Text.translatable("item.enchantment_capacity", AArcanaEnchantmentHelper.getEnchantmentUsage(itemStack), AArcanaEnchantmentHelper.getEnchantmentCapacity(itemStack)));
+        }
     }
 }
