@@ -44,7 +44,7 @@ public class AArcanaEnchantmentHelper {
             return armorItem.getEnchantability();
         } else if (item instanceof ToolItem toolItem) {
             return toolItem.getEnchantability();
-        } else if (item.getEnchantability() != 0) {
+        } else if (item.getEnchantability() > 10) {
             return item.getEnchantability();
         }
         return 10;
