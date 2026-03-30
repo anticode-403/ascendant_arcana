@@ -56,7 +56,9 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                     int strength = enchantInstance.getValue();
                     MutableText text = Text.translatable(enchantment.getTranslationKey());
                     if (enchantment.getMaxLevel() != 1) text.append(" ").append(Text.translatable("enchantment.level." + strength));
-                    context.drawText(this.textRenderer, text, x + 9, y + 50 + (i * 10), 5636095, false);
+                    int color = 5636095;
+                    if (strength == enchantment.getMaxLevel()) color = 16755200;
+                    context.drawText(this.textRenderer, text, x + 9, y + 50 + (i * 10), color, false);
                     i++;
                 }
             }
