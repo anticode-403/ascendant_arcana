@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.*;
 import net.minecraft.advancement.criterion.InventoryChangedCriterion;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.client.*;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
@@ -81,6 +82,8 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
                     .add(AArcanaBlocks.RESTORINE_CLUSTER)
                     .add(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER)
                     .add(AArcanaBlocks.BUDDING_RESTORINE);
+            getOrCreateTagBuilder(BlockTags.ENCHANTMENT_POWER_PROVIDER)
+                    .add(Blocks.CHISELED_BOOKSHELF);
         }
     }
 
@@ -175,6 +178,8 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
 
         @Override
         public void generateTranslations(TranslationBuilder translationBuilder) {
+            // Enchantment Capacity Tooltip
+            translationBuilder.add("item.enchantment_capacity", "Enchantment Capacity: %1$s/%2$s");
             // Smithing Templates
             String template_id = AArcanaItems.INFUSION_SMITHING_TEMPLATE_ID;
             translationBuilder.add("item." + AscendantArcana.modID + ".smithing_template." + template_id + ".applies_to", "Armor, Tools, and Weapons");

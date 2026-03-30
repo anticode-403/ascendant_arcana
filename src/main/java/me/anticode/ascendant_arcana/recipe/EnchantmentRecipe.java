@@ -16,11 +16,11 @@ import net.minecraft.world.World;
 
 public class EnchantmentRecipe implements Recipe<Inventory> {
     private final Identifier id;
-    final int magicalScrapCost;
-    final IngredientStack primaryIngredientStack;
-    final IngredientStack secondaryIngredientStack;
-    final int levelCost;
-    final Enchantment enchantment;
+    public final int magicalScrapCost;
+    public final IngredientStack primaryIngredientStack;
+    public final IngredientStack secondaryIngredientStack;
+    public final int levelCost;
+    public final Enchantment enchantment;
 
     EnchantmentRecipe(Identifier id, int magicalScrapCost, IngredientStack primaryIngredientStack, IngredientStack secondaryIngredientStack, int levelCost, Enchantment enchantment) {
         this.id = id;
