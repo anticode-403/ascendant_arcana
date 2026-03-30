@@ -56,6 +56,10 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
         }
     }
 
+    public List<EnchantmentRecipe> getRecipes() {
+        return recipes;
+    }
+
     @Override
     public void onContentChanged(Inventory inventory) {
         if (inventory != this.inventory) return;
