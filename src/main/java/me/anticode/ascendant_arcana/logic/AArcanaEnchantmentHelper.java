@@ -18,6 +18,8 @@ import java.util.Random;
 import java.util.UUID;
 
 public class AArcanaEnchantmentHelper {
+    public static String ENCHANTMENT_CAPACITY_KEY = "AArcanaEnchantmentCapacity";
+
     public static int getEnchantmentCost(Enchantment enchantment) {
         return switch (enchantment.getRarity()) {
             case VERY_RARE -> 10;
@@ -32,8 +34,21 @@ public class AArcanaEnchantmentHelper {
             return armorItem.getEnchantability();
         } else if (item instanceof ToolItem toolItem) {
             return toolItem.getEnchantability();
+        } else if (item.getEnchantability() != 0) {
+            return item.getEnchantability();
         }
         return 10;
+    }
+
+    public static int getEnchantmentCapacity(ItemStack stack) {
+        if (stack.getOrCreateNbt().contains(ENCHANTMENT_CAPACITY_KEY)) {
+            return stack.getOrCreateNbt().getInt(ENCHANTMENT_CAPACITY_KEY);
+        }
+        return getBaseEnchantmentCapacity(stack.getItem());
+    }
+
+    public static void setEnchantmentCapacityKey(ItemStack stack, int value) {
+        stack.getOrCreateNbt().putInt(ENCHANTMENT_CAPACITY_KEY, value);
     }
 
     public static boolean isEnchantmentAllowed(Identifier identifier) {
