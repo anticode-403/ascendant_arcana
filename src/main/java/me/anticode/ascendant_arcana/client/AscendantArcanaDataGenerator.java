@@ -214,6 +214,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             translationBuilder.add("item.relics.tooltip.on_tool", "Infused Relics (%1$s/%2$s):");
             // Blocks
             translationBuilder.add(AArcanaBlocks.BUDDING_RESTORINE, "Budding Restorine");
+            translationBuilder.add(AArcanaBlocks.COPPER_ENCHANTING_TABLE, "Copper Enchanting Table");
             // Restorine Clusters
             translationBuilder.add(AArcanaBlocks.SMALL_RESTORINE_BUD, "Small Restore Bud");
             translationBuilder.add(AArcanaBlocks.MEDIUM_RESTORINE_BUD, "Medium Restore Bud");
