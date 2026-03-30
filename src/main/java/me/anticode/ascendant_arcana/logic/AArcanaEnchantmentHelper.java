@@ -1,6 +1,7 @@
 package me.anticode.ascendant_arcana.logic;
 
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
@@ -27,6 +28,15 @@ public class AArcanaEnchantmentHelper {
             case UNCOMMON -> 3;
             case COMMON -> 1;
         };
+    }
+
+    public static int getEnchantmentUsage(ItemStack stack) {
+        if (!stack.hasEnchantments()) return 0;
+        int cost = 0;
+        for (Map.Entry<Enchantment, Integer> enchantInstance : EnchantmentHelper.get(stack).entrySet()) {
+            cost += getEnchantmentCost(enchantInstance.getKey()) * enchantInstance.getValue();
+        }
+        return cost;
     }
 
     public static int getBaseEnchantmentCapacity(Item item) {
