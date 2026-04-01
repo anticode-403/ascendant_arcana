@@ -108,8 +108,6 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
 
         ItemStack stack = getScreenHandler().getSlot(0).getStack();
         if (stack != ItemStack.EMPTY) {
-            int x = (width - backgroundWidth) / 2;
-            int y = (height - backgroundHeight) / 2;
 
             int maxCapacity = AArcanaEnchantmentHelper.getEnchantmentCapacity(stack);
             int usedCapacity = AArcanaEnchantmentHelper.getEnchantmentUsage(stack);
@@ -222,7 +220,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             if (this.locked) v += 18;
             else if (this.maxLevel) v += 36;
 
-            context.drawTexture(OVERLAYS, x, y, 0, v, width, height);
+            context.drawTexture(OVERLAYS, getX(), getY(), 0, v, width, height);
         }
 
         @Override
