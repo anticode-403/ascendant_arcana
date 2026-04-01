@@ -1,7 +1,6 @@
 package me.anticode.ascendant_arcana.screenhandler;
 
 import me.anticode.ascendant_arcana.init.AArcanaItems;
-import me.anticode.ascendant_arcana.init.AArcanaRecipes;
 import me.anticode.ascendant_arcana.init.AArcanaScreenHandlers;
 import me.anticode.ascendant_arcana.recipe.EnchantmentRecipe;
 import net.minecraft.block.EnchantingTableBlock;
@@ -13,19 +12,19 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.Property;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class AArcanaEnchantingScreenHandler extends ScreenHandler {
     private final Inventory inventory;
     private final ScreenHandlerContext context;
-    private int enchantmentPower = 0;
+    private final int[] enchantmentPower = new int[] { 0 };
     private List<EnchantmentRecipe> recipes;
 
     public AArcanaEnchantingScreenHandler(int Id, PlayerInventory playerInventory) {
@@ -37,13 +36,20 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
 
         this.context = context;
 
-        inventory = new SimpleInventory(4);
+        inventory = new SimpleInventory(4) {
+            public void markDirty() {
+                super.markDirty();
+                onContentChanged(this);
+            }
+        };;
         inventory.onOpen(playerInventory.player);
 
         this.addSlot(new EnchantableToolSlot(inventory, 0, 29, 27));
         this.addSlot(new MagicalScrapSlot(inventory, 1, 164, 60));
         this.addSlot(new EnchantmentIngredientSlot(inventory, 2, 164, 78));
         this.addSlot(new EnchantmentIngredientSlot(inventory, 3, 164, 96));
+
+        addProperty(Property.create(enchantmentPower, 0));
 
         int x, y;
         for (y = 0; y < 3; ++y) {
@@ -54,10 +60,6 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
         for (y = 0; y < 9; y++) {
             this.addSlot(new Slot(playerInventory, y, 36 + y * 18, 195));
         }
-    }
-
-    public List<EnchantmentRecipe> getRecipes() {
-        return recipes;
     }
 
     @Override
@@ -87,14 +89,7 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
                 }
             }
 
-            enchantmentPower = i;
-
-            recipes = new ArrayList<>();
-            for (EnchantmentRecipe recipe : world.getServer().getRecipeManager().listAllOfType(AArcanaRecipes.ENCHANTMENT_RECIPE_TYPE)) {
-                if (recipe.enchantment.isAcceptableItem(itemStack) && EnchantmentHelper.isCompatible(EnchantmentHelper.get(itemStack).keySet(), recipe.enchantment)) {
-                    recipes.add(recipe);
-                }
-            }
+            enchantmentPower[0] = i;
         });
     }
 

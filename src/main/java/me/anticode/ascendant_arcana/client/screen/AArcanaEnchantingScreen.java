@@ -2,6 +2,7 @@ package me.anticode.ascendant_arcana.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.anticode.ascendant_arcana.AscendantArcana;
+import me.anticode.ascendant_arcana.init.AArcanaRecipes;
 import me.anticode.ascendant_arcana.logic.AArcanaEnchantmentHelper;
 import me.anticode.ascendant_arcana.recipe.EnchantmentRecipe;
 import me.anticode.ascendant_arcana.screenhandler.AArcanaEnchantingScreenHandler;
@@ -27,6 +28,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import org.joml.Matrix4f;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,10 +36,12 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     private static final Identifier TEXTURE = new Identifier(AscendantArcana.modID, "textures/gui/container/enchanting_table.png");
     private static final Identifier OVERLAYS = new Identifier(AscendantArcana.modID, "textures/gui/container/enchanting_table_elements.png");
     private final Random random = Random.createLocal();
-    private List<EnchantmentTile> enchantments;
+    List<EnchantmentRecipe> recipes = new ArrayList<>();
+    private List<EnchantmentTile> enchantments = new ArrayList<>();
     private float scrollPosition;
     private boolean scrollerClicked;
     private int visibleTopRow;
+    private ItemStack lastItem;
 
     public AArcanaEnchantingScreen(AArcanaEnchantingScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -87,10 +91,20 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     @Override
     protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
         super.drawForeground(context, mouseX, mouseY);
+        ItemStack itemStack = getScreenHandler().getSlot(0).getStack();
+        if (lastItem != null && lastItem != itemStack) {
+            recipes = new ArrayList<>();
+            for (EnchantmentRecipe recipe : client.world.getRecipeManager().listAllOfType(AArcanaRecipes.ENCHANTMENT_RECIPE_TYPE)) {
+                if (recipe.enchantment.isAcceptableItem(itemStack)) {
+                    recipes.add(recipe);
+                }
+            }
+        }
+        lastItem = itemStack;
 
         int k = (int)(41.0F * this.scrollPosition);
-        boolean hasRecipes = getScreenHandler().getRecipes() != null && !getScreenHandler().getRecipes().isEmpty();
-        context.drawTexture(OVERLAYS, 153, 9 + k, (hasRecipes && getScreenHandler().getRecipes().size() > 6 ? 0 : 6), 0, 6, 27);
+        boolean hasRecipes = recipes != null && !recipes.isEmpty();
+        context.drawTexture(OVERLAYS, 153, 9 + k, (hasRecipes && recipes.size() > 6 ? 0 : 6), 0, 6, 27);
 
         ItemStack stack = getScreenHandler().getSlot(0).getStack();
         if (stack != ItemStack.EMPTY) {
@@ -100,7 +114,21 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             if (multiplier > 1) multiplier = 1;
 
             context.drawTexture(OVERLAYS, 8, 110, 25, 0, MathHelper.floor(58 * multiplier), 5);
+
+            if (hasRecipes) {
+                int i = 0;
+                for (EnchantmentRecipe recipe : recipes) {
+                    addEnchantment(recipe, 68, 8 + (i * 18));
+                    i++;
+                }
+            }
         }
+    }
+
+    public void addEnchantment(EnchantmentRecipe recipe, int buttonX, int buttonY) {
+        EnchantmentTile tile = new EnchantmentTile(recipe, buttonX, buttonY, 0, 27);
+        enchantments.add(tile);
+//        addDrawableChild(tile);
     }
 
     @Override
@@ -112,7 +140,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         scrollerClicked = false;
-        if (getScreenHandler().getRecipes() != null && getScreenHandler().getRecipes().size() > 6) {
+        if (recipes != null && recipes.size() > 6) {
             int i = x + 60;
             int j = y + 13;
 
@@ -141,12 +169,12 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     }
 
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (this.scrollerClicked && getScreenHandler().getRecipes() != null && !getScreenHandler().getRecipes().isEmpty()) {
+        if (this.scrollerClicked && recipes != null && !recipes.isEmpty()) {
             int j = this.y + 9;
             int k = j + 121;
             this.scrollPosition = ((float)mouseY - (float)j - 7.5F) / ((float)(k - j) - 15.0F);
             this.scrollPosition = MathHelper.clamp(this.scrollPosition, 0.0F, 1.0F);
-            this.visibleTopRow = Math.max((int)((double)(this.scrollPosition * (float)-getScreenHandler().getRecipes().size()) + (double)0.5F), 0);
+            this.visibleTopRow = Math.max((int)((double)(this.scrollPosition * (float)-recipes.size()) + (double)0.5F), 0);
             return true;
         } else {
             return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
@@ -154,8 +182,8 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     }
 
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        if (getScreenHandler().getRecipes() != null && !getScreenHandler().getRecipes().isEmpty()) {
-            int recipeSize = getScreenHandler().getRecipes().size();
+        if (recipes != null && !recipes.isEmpty()) {
+            int recipeSize = recipes.size();
             float f = (float)amount / (float)-recipeSize;
             this.scrollPosition = MathHelper.clamp(this.scrollPosition - f, 0.0F, 1.0F);
             this.visibleTopRow = Math.max((int)(this.scrollPosition * (float)-recipeSize + 0.5F), 0);
