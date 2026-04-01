@@ -124,14 +124,21 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                     addEnchantment(recipe, x + 68, y + 8 + (i * 18));
                     i++;
                 }
-            }
-        }
+            } else clearEnchantments();
+        } else clearEnchantments();
     }
 
     public void addEnchantment(EnchantmentRecipe recipe, int buttonX, int buttonY) {
         EnchantmentTile tile = new EnchantmentTile(recipe, buttonX, buttonY);
         enchantments.add(tile);
         addDrawableChild(tile);
+    }
+
+    public void clearEnchantments() {
+        for (EnchantmentTile tile : enchantments) {
+            remove(tile);
+        }
+        enchantments.clear();
     }
 
     @Override
