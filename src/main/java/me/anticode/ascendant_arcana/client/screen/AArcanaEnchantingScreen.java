@@ -108,6 +108,9 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
 
         ItemStack stack = getScreenHandler().getSlot(0).getStack();
         if (stack != ItemStack.EMPTY) {
+            int x = (width - backgroundWidth) / 2;
+            int y = (height - backgroundHeight) / 2;
+
             int maxCapacity = AArcanaEnchantmentHelper.getEnchantmentCapacity(stack);
             int usedCapacity = AArcanaEnchantmentHelper.getEnchantmentUsage(stack);
             float multiplier = (float) usedCapacity / maxCapacity;
@@ -118,7 +121,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             if (hasRecipes) {
                 int i = 0;
                 for (EnchantmentRecipe recipe : recipes) {
-                    addEnchantment(recipe, 68, 8 + (i * 18));
+                    addEnchantment(recipe, x + 68, y + 8 + (i * 18));
                     i++;
                 }
             }
@@ -126,9 +129,9 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     }
 
     public void addEnchantment(EnchantmentRecipe recipe, int buttonX, int buttonY) {
-        EnchantmentTile tile = new EnchantmentTile(recipe, buttonX, buttonY, 0, 27);
+        EnchantmentTile tile = new EnchantmentTile(recipe, buttonX, buttonY);
         enchantments.add(tile);
-//        addDrawableChild(tile);
+        addDrawableChild(tile);
     }
 
     @Override
@@ -194,10 +197,25 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
 
     private class EnchantmentTile extends PressableWidget {
         private final EnchantmentRecipe recipe;
+        protected boolean selected = false;
+        protected boolean locked = false;
+        protected boolean maxLevel = false;
 
-        public EnchantmentTile(EnchantmentRecipe recipe, int x, int y, int u, int v) {
-            super(x, y, u, v, Text.translatable(recipe.enchantment.getTranslationKey()));
+        public EnchantmentTile(EnchantmentRecipe recipe, int x, int y) {
+            super(x, y, 0, 27, Text.translatable(recipe.enchantment.getTranslationKey()));
             this.recipe = recipe;
+            this.width = 84;
+            this.height = 18;
+        }
+
+        @Override
+        protected void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
+            int v = 27;
+            if (this.selected) v += 54;
+            if (this.locked) v += 18;
+            else if (this.maxLevel) v += 36;
+
+            context.drawTexture(OVERLAYS, x, y, 0, v, width, height);
         }
 
         @Override
