@@ -228,15 +228,17 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             context.getMatrices().peek().getPositionMatrix().scale(0.5F, 0.5F, 0.5F);
             int scaledX = getX() * 2;
             int scaledY = getY() * 2;
-            textRenderer.draw(Text.translatable(recipe.enchantment.getTranslationKey()), scaledX + 12, scaledY + 4, 5592405, false, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 15728880);
-            MutableText text;
-            if (maxLevel) text = Text.translatable("gui.enchanting.max_level");
+            MutableText enchantText = Text.translatable(recipe.enchantment.getTranslationKey());
+            if (enchantText.getString().length() > 15) enchantText = Text.literal(enchantText.asTruncatedString(14)).append("...");
+            textRenderer.draw(enchantText, scaledX + 12, scaledY + 4, 5592405, false, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+            MutableText levelText;
+            if (maxLevel) levelText = Text.translatable("gui.enchanting.max_level");
             else {
                 int level = 1;
                 if (lastItem.hasEnchantments() && EnchantmentHelper.get(lastItem).containsKey(recipe.enchantment)) level = EnchantmentHelper.get(lastItem).get(recipe.enchantment) + 1;
-                text = Text.translatable("gui.enchanting.level", Text.translatable("enchantment.level." + level), Text.translatable("enchantment.level." + recipe.enchantment.getMaxLevel()));
+                levelText = Text.translatable("gui.enchanting.level", Text.translatable("enchantment.level." + level), Text.translatable("enchantment.level." + recipe.enchantment.getMaxLevel()));
             }
-            textRenderer.draw(text, scaledX + 12, scaledY + 14, 5592405, false, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+            textRenderer.draw(levelText, scaledX + 12, scaledY + 14, 5592405, false, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 15728880);
             context.getMatrices().pop();
         }
 
