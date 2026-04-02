@@ -229,13 +229,13 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             int scaledX = getX() * 2;
             int scaledY = getY() * 2;
             textRenderer.draw(Text.translatable(recipe.enchantment.getTranslationKey()), scaledX + 12, scaledY + 4, 5592405, false, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 15728880);
-            MutableText text = Text.literal("");
-            if (lastItem.hasEnchantments() && EnchantmentHelper.get(lastItem).containsKey(recipe.enchantment) && !maxLevel) {
-                int level = EnchantmentHelper.get(lastItem).get(recipe.enchantment);
-                text.append(Text.translatable("enchantment.level." + (level + 1)));
-            } else if (maxLevel) text.append(Text.translatable("enchantment.level." + recipe.enchantment.getMaxLevel()));
-            else text.append(Text.translatable("enchantment.level.1"));
-            text.append("/").append(Text.translatable("enchantment.level." + recipe.enchantment.getMaxLevel()));
+            MutableText text;
+            if (maxLevel) text = Text.translatable("gui.enchanting.max_level");
+            else {
+                int level = 1;
+                if (lastItem.hasEnchantments() && EnchantmentHelper.get(lastItem).containsKey(recipe.enchantment)) level = EnchantmentHelper.get(lastItem).get(recipe.enchantment) + 1;
+                text = Text.translatable("gui.enchanting.level", Text.translatable("enchantment.level." + level), Text.translatable("enchantment.level." + recipe.enchantment.getMaxLevel()));
+            }
             textRenderer.draw(text, scaledX + 12, scaledY + 14, 5592405, false, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 15728880);
             context.getMatrices().pop();
         }
