@@ -16,6 +16,14 @@ public class IngredientStack implements Predicate<ItemStack> {
         this.count = count;
     }
 
+    public Ingredient getIngredient() {
+        return ingredient;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
     @Override
     public boolean test(ItemStack itemStack) {
         return ingredient.test(itemStack) && count <= itemStack.getCount();

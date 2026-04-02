@@ -71,8 +71,8 @@ public class EnchantmentRecipe implements Recipe<Inventory> {
         @Override
         public EnchantmentRecipe read(Identifier id, JsonObject json) {
             int magicalScrapCost = json.get("magical_scrap_cost").getAsInt();
-            IngredientStack primaryIngredientStack = IngredientStack.fromJson((JsonObject) json.get("primary_IngredientStack"));
-            IngredientStack secondaryIngredientStack = IngredientStack.fromJson((JsonObject) json.get("secondary_IngredientStack"));
+            IngredientStack primaryIngredientStack = IngredientStack.fromJson((JsonObject) json.get("primary_ingredient"));
+            IngredientStack secondaryIngredientStack = IngredientStack.fromJson((JsonObject) json.get("secondary_ingredient"));
             int levelCost = json.get("level_cost").getAsInt();
             Enchantment enchantment = Registries.ENCHANTMENT.getOrEmpty(Identifier.tryParse(json.get("enchantment").getAsString())).orElse(null);
             return new EnchantmentRecipe(id, magicalScrapCost, primaryIngredientStack, secondaryIngredientStack, levelCost, enchantment);
