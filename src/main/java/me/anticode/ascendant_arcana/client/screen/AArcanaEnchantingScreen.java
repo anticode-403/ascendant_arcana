@@ -278,7 +278,11 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                     context.drawItem(secondaryIngredient, itemX + 40, itemY);
                     context.drawItemInSlot(textRenderer, secondaryIngredient, itemX + 40, itemY);
                 }
-                textRenderer.drawWithOutline(Text.literal(String.valueOf(recipe.levelCost)).asOrderedText(), scaledX + 160, scaledY + 28, 5635925, 0, positionMatrix, context.getVertexConsumers(), 15728880);
+                if (recipe.levelCost < 10) {
+                    textRenderer.drawWithOutline(Text.literal(String.valueOf(recipe.levelCost)).asOrderedText(), scaledX + 160, scaledY + 28, 5635925, 0, positionMatrix, context.getVertexConsumers(), 15728880);
+                } else {
+                    textRenderer.drawWithOutline(Text.literal(String.valueOf(recipe.levelCost)).asOrderedText(), scaledX + 154, scaledY + 28, 5635925, 0, positionMatrix, context.getVertexConsumers(), 15728880);
+                }
                 textRenderer.drawWithOutline(Text.literal(String.valueOf(AArcanaEnchantmentHelper.getEnchantmentCost(recipe.enchantment))).asOrderedText(), scaledX + 144, scaledY + 28, 16733525, 0, positionMatrix, context.getVertexConsumers(), 15728880);
             }
 
