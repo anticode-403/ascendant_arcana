@@ -44,6 +44,8 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     private boolean scrollerClicked;
     private int visibleTopRow;
     private ItemStack lastItem;
+    private int lastBackgroundWidth;
+    private int lastBackgroundHeight;
 
     public AArcanaEnchantingScreen(AArcanaEnchantingScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -93,8 +95,10 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     @Override
     protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
         super.drawForeground(context, mouseX, mouseY);
+        boolean update = false;
         ItemStack itemStack = getScreenHandler().getSlot(0).getStack();
         if (lastItem != null && lastItem != itemStack) {
+            update = true;
             recipes = new ArrayList<>();
             for (EnchantmentRecipe recipe : client.world.getRecipeManager().listAllOfType(AArcanaRecipes.ENCHANTMENT_RECIPE_TYPE)) {
                 if (recipe.enchantment.isAcceptableItem(itemStack)) {
@@ -103,6 +107,12 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             }
         }
         lastItem = itemStack;
+
+        if (lastBackgroundHeight != backgroundHeight || lastBackgroundWidth != backgroundWidth) {
+            update = true;
+            lastBackgroundWidth = context.getScaledWindowWidth();
+            lastBackgroundHeight = context.getScaledWindowHeight();
+        }
 
         int k = (int)(41.0F * this.scrollPosition);
         boolean hasRecipes = recipes != null && !recipes.isEmpty();
@@ -118,13 +128,14 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
 
             context.drawTexture(OVERLAYS, 8, 110, 25, 0, MathHelper.floor(58 * multiplier), 5);
 
-            if (hasRecipes) {
+            if (hasRecipes && update) {
+                clearEnchantments();
                 int i = 0;
                 for (EnchantmentRecipe recipe : recipes) {
                     addEnchantment(recipe, x + 68, y + 8 + (i * 19));
                     i++;
                 }
-            } else clearEnchantments();
+            } else if (update) clearEnchantments();
         } else clearEnchantments();
     }
 
@@ -222,9 +233,9 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
         @Override
         protected void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
             int v = 27;
-            if (this.selected) v += 54;
-            if (this.locked) v += 18;
-            else if (this.maxLevel) v += 36;
+            if (this.selected) v += 57;
+            if (this.locked) v += 19;
+            else if (this.maxLevel) v += 38;
 
             context.drawTexture(OVERLAYS, getX(), getY(), 0, v, width, height);
 
@@ -247,24 +258,26 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
 
             ItemStack magicalScraps = new ItemStack(AArcanaItems.ENCHANTED_SCRAP, recipe.magicalScrapCost);
 
-            int itemX = scaledX + 108;
-            int itemY = scaledY + 4;
-            context.drawItem(magicalScraps, itemX, itemY);
-            context.drawItemInSlot(textRenderer, magicalScraps, itemX, itemY);
-            if (recipe.primaryIngredientStack != null) {
-                Item primaryIngredientItem = recipe.primaryIngredientStack.getIngredient().getMatchingStacks()[0].getItem();
-                ItemStack primaryIngredient = new ItemStack(primaryIngredientItem, recipe.primaryIngredientStack.getCount());
-                context.drawItem(primaryIngredient, itemX + 20, itemY);
-                context.drawItemInSlot(textRenderer, primaryIngredient, itemX + 20, itemY);
+            if (!maxLevel && !locked) {
+                int itemX = scaledX + 108;
+                int itemY = scaledY + 4;
+                context.drawItem(magicalScraps, itemX, itemY);
+                context.drawItemInSlot(textRenderer, magicalScraps, itemX, itemY);
+                if (recipe.primaryIngredientStack != null) {
+                    Item primaryIngredientItem = recipe.primaryIngredientStack.getIngredient().getMatchingStacks()[0].getItem();
+                    ItemStack primaryIngredient = new ItemStack(primaryIngredientItem, recipe.primaryIngredientStack.getCount());
+                    context.drawItem(primaryIngredient, itemX + 20, itemY);
+                    context.drawItemInSlot(textRenderer, primaryIngredient, itemX + 20, itemY);
+                }
+                if (recipe.secondaryIngredientStack != null) {
+                    Item secondaryIngredientItem = recipe.secondaryIngredientStack.getIngredient().getMatchingStacks()[0].getItem();
+                    ItemStack secondaryIngredient = new ItemStack(secondaryIngredientItem, recipe.secondaryIngredientStack.getCount());
+                    context.drawItem(secondaryIngredient, itemX + 40, itemY);
+                    context.drawItemInSlot(textRenderer, secondaryIngredient, itemX + 40, itemY);
+                }
+                textRenderer.drawWithOutline(Text.literal(String.valueOf(recipe.levelCost)).asOrderedText(), scaledX + 160, scaledY + 28, 5635925, 0, positionMatrix, context.getVertexConsumers(), 15728880);
+                textRenderer.drawWithOutline(Text.literal(String.valueOf(AArcanaEnchantmentHelper.getEnchantmentCost(recipe.enchantment))).asOrderedText(), scaledX + 144, scaledY + 28, 16733525, 0, positionMatrix, context.getVertexConsumers(), 15728880);
             }
-            if (recipe.secondaryIngredientStack != null) {
-                Item secondaryIngredientItem = recipe.secondaryIngredientStack.getIngredient().getMatchingStacks()[0].getItem();
-                ItemStack secondaryIngredient = new ItemStack(secondaryIngredientItem, recipe.secondaryIngredientStack.getCount());
-                context.drawItem(secondaryIngredient, itemX + 40, itemY);
-                context.drawItemInSlot(textRenderer, secondaryIngredient, itemX + 40, itemY);
-            }
-            textRenderer.drawWithOutline(Text.literal(String.valueOf(recipe.levelCost)).asOrderedText(), scaledX + 160, scaledY + 28, 5635925, 0, positionMatrix, context.getVertexConsumers(), 15728880);
-            textRenderer.drawWithOutline(Text.literal(String.valueOf(AArcanaEnchantmentHelper.getEnchantmentCost(recipe.enchantment))).asOrderedText(), scaledX + 144, scaledY + 28, 16733525, 0, positionMatrix, context.getVertexConsumers(), 15728880);
 
             context.getMatrices().pop();
         }
