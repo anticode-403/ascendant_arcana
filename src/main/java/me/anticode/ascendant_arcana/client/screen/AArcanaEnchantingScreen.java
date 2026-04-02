@@ -108,7 +108,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
         }
         lastItem = itemStack;
 
-        if (lastBackgroundHeight != backgroundHeight || lastBackgroundWidth != backgroundWidth) {
+        if (lastBackgroundHeight != context.getScaledWindowHeight() || lastBackgroundWidth != context.getScaledWindowWidth()) {
             update = true;
             lastBackgroundWidth = context.getScaledWindowWidth();
             lastBackgroundHeight = context.getScaledWindowHeight();
