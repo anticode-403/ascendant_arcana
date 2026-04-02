@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
@@ -114,6 +115,9 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             lastBackgroundHeight = context.getScaledWindowHeight();
         }
 
+        int rightPanelX = 322;
+        int rightPanelY = 18;
+
         int k = (int)(41.0F * this.scrollPosition);
         boolean hasRecipes = recipes != null && !recipes.isEmpty();
         context.drawTexture(OVERLAYS, 153, 9 + k, (hasRecipes && recipes.size() > 6 ? 0 : 6), 0, 6, 27);
@@ -136,7 +140,33 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                     i++;
                 }
             } else if (update) clearEnchantments();
-        } else clearEnchantments();
+
+            context.getMatrices().push();
+            context.getMatrices().peek().getPositionMatrix().scale(0.5F, 0.5F, 0.5F);
+            if (anySelected) {
+                EnchantmentRecipe recipe = recipes.get(selectedTile);
+                context.drawCenteredTextWithShadow(textRenderer, Text.translatable(recipe.enchantment.getTranslationKey()).formatted(Formatting.UNDERLINE), rightPanelX + 60, rightPanelY + 2, 16777215);
+                context.drawTextWrapped(textRenderer, Text.translatable(recipe.enchantment.getTranslationKey() + ".description"), rightPanelX + 2, rightPanelY + 14, 120, 5592405);
+                context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.item_cost", recipe.magicalScrapCost, Text.translatable(AArcanaItems.ENCHANTED_SCRAP.getTranslationKey())), rightPanelX + 42, rightPanelY + 102, 76,16777215);
+                if (recipe.primaryIngredientStack != null) {
+                    context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.item_cost", recipe.primaryIngredientStack.getCount(), Text.translatable(recipe.primaryIngredientStack.getIngredient().getMatchingStacks()[0].getTranslationKey())), rightPanelX + 42, rightPanelY + 138, 76, 16777215);
+                }
+                if (recipe.secondaryIngredientStack != null) {
+                    context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.item_cost", recipe.secondaryIngredientStack.getCount(), Text.translatable(recipe.secondaryIngredientStack.getIngredient().getMatchingStacks()[0].getTranslationKey())), rightPanelX + 42, rightPanelY + 174, 76, 16777215);
+                }
+            } else {
+                context.drawCenteredTextWithShadow(textRenderer, Text.translatable(itemStack.getTranslationKey()).formatted(Formatting.UNDERLINE), rightPanelX + 60, rightPanelY + 2, 16777215);
+                context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.no_selection_body"), rightPanelX + 2, rightPanelY + 14, 120, 5592405);
+            }
+            context.getMatrices().pop();
+        } else {
+            clearEnchantments();
+            context.getMatrices().push();
+            context.getMatrices().peek().getPositionMatrix().scale(0.5F, 0.5F, 0.5F);
+            context.drawCenteredTextWithShadow(textRenderer, Text.translatable("gui.enchanting.no_item_title").formatted(Formatting.UNDERLINE), rightPanelX + 60, rightPanelY + 2, 16777215);
+            context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.no_item_body"), rightPanelX + 2, rightPanelY + 14, 120, 5592405);
+            context.getMatrices().pop();
+        }
     }
 
     public void addEnchantment(EnchantmentRecipe recipe, int buttonX, int buttonY, int i) {
