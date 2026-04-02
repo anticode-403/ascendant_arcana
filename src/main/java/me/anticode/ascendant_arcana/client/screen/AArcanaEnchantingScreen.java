@@ -13,7 +13,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
-import net.minecraft.client.gui.widget.ScrollableWidget;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.enchantment.Enchantment;
@@ -21,7 +20,6 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -46,6 +44,8 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     private ItemStack lastItem;
     private int lastBackgroundWidth;
     private int lastBackgroundHeight;
+    private int selectedTile;
+    private boolean anySelected;
 
     public AArcanaEnchantingScreen(AArcanaEnchantingScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -132,15 +132,15 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                 clearEnchantments();
                 int i = 0;
                 for (EnchantmentRecipe recipe : recipes) {
-                    addEnchantment(recipe, x + 68, y + 8 + (i * 19));
+                    addEnchantment(recipe, x + 68, y + 8 + (i * 19), i);
                     i++;
                 }
             } else if (update) clearEnchantments();
         } else clearEnchantments();
     }
 
-    public void addEnchantment(EnchantmentRecipe recipe, int buttonX, int buttonY) {
-        EnchantmentTile tile = new EnchantmentTile(recipe, buttonX, buttonY, false, false);
+    public void addEnchantment(EnchantmentRecipe recipe, int buttonX, int buttonY, int i) {
+        EnchantmentTile tile = new EnchantmentTile(recipe, buttonX, buttonY, i, false);
         enchantments.add(tile);
         addDrawableChild(tile);
     }
@@ -150,6 +150,8 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             remove(tile);
         }
         enchantments.clear();
+        selectedTile = 0;
+        anySelected = false;
     }
 
     @Override
@@ -215,12 +217,13 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
 
     private class EnchantmentTile extends PressableWidget {
         private final EnchantmentRecipe recipe;
-        protected boolean selected = false;
+        private final int i;
         protected boolean locked = false;
         protected boolean maxLevel = false;
 
-        public EnchantmentTile(EnchantmentRecipe recipe, int x, int y, boolean selected, boolean locked) {
+        public EnchantmentTile(EnchantmentRecipe recipe, int x, int y, int i, boolean locked) {
             super(x, y, 0, 27, Text.translatable(recipe.enchantment.getTranslationKey()));
+            this.i = i;
             this.recipe = recipe;
             this.width = 84;
             this.height = 19;
@@ -233,7 +236,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
         @Override
         protected void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
             int v = 27;
-            if (this.selected) v += 57;
+            if (selectedTile == i && anySelected) v += 57;
             if (this.locked) v += 19;
             else if (this.maxLevel) v += 38;
 
@@ -284,7 +287,13 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
 
         @Override
         public void onPress() {
-
+            if (selectedTile == i && anySelected) {
+                selectedTile = 0;
+                anySelected = false;
+            } else {
+                selectedTile = i;
+                anySelected = true;
+            }
         }
 
         @Override
