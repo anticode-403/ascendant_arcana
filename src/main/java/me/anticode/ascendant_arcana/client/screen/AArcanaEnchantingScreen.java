@@ -19,14 +19,12 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.LoomScreenHandler;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
-import org.joml.Matrix4f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,7 +125,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     }
 
     public void addEnchantment(EnchantmentRecipe recipe, int buttonX, int buttonY) {
-        EnchantmentTile tile = new EnchantmentTile(recipe, buttonX, buttonY);
+        EnchantmentTile tile = new EnchantmentTile(recipe, buttonX, buttonY, false, false);
         enchantments.add(tile);
         addDrawableChild(tile);
     }
@@ -206,11 +204,15 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
         protected boolean locked = false;
         protected boolean maxLevel = false;
 
-        public EnchantmentTile(EnchantmentRecipe recipe, int x, int y) {
+        public EnchantmentTile(EnchantmentRecipe recipe, int x, int y, boolean selected, boolean locked) {
             super(x, y, 0, 27, Text.translatable(recipe.enchantment.getTranslationKey()));
             this.recipe = recipe;
             this.width = 84;
             this.height = 18;
+            if (lastItem.hasEnchantments()) {
+                Map<Enchantment, Integer> enchants = EnchantmentHelper.get(lastItem);
+                if (enchants.containsKey(recipe.enchantment) && enchants.get(recipe.enchantment) == recipe.enchantment.getMaxLevel()) this.maxLevel = true;
+            }
         }
 
         @Override
@@ -221,6 +223,21 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             else if (this.maxLevel) v += 36;
 
             context.drawTexture(OVERLAYS, getX(), getY(), 0, v, width, height);
+
+            context.getMatrices().push();
+            context.getMatrices().peek().getPositionMatrix().scale(0.5F, 0.5F, 0.5F);
+            int scaledX = getX() * 2;
+            int scaledY = getY() * 2;
+            textRenderer.draw(Text.translatable(recipe.enchantment.getTranslationKey()), scaledX + 12, scaledY + 4, 5592405, false, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+            MutableText text = Text.literal("");
+            if (lastItem.hasEnchantments() && EnchantmentHelper.get(lastItem).containsKey(recipe.enchantment) && !maxLevel) {
+                int level = EnchantmentHelper.get(lastItem).get(recipe.enchantment);
+                text.append(Text.translatable("enchantment.level." + (level + 1)));
+            } else if (maxLevel) text.append(Text.translatable("enchantment.level." + recipe.enchantment.getMaxLevel()));
+            else text.append(Text.translatable("enchantment.level.1"));
+            text.append("/").append(Text.translatable("enchantment.level." + recipe.enchantment.getMaxLevel()));
+            textRenderer.draw(text, scaledX + 12, scaledY + 14, 5592405, false, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+            context.getMatrices().pop();
         }
 
         @Override
