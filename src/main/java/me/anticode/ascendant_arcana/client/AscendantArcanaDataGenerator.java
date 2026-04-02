@@ -178,8 +178,6 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
 
         @Override
         public void generateTranslations(TranslationBuilder translationBuilder) {
-            // Enchantment Capacity Tooltip
-            translationBuilder.add("item.enchantment_capacity", "Enchantment Capacity: %1$s/%2$s");
             // Smithing Templates
             String template_id = AArcanaItems.INFUSION_SMITHING_TEMPLATE_ID;
             translationBuilder.add("item." + AscendantArcana.modID + ".smithing_template." + template_id + ".applies_to", "Armor, Tools, and Weapons");
@@ -248,6 +246,13 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             registerEnchantment(translationBuilder, AArcanaEnchantments.WITCH_HEART, "Witch's Heart", "Slightly increases damage dealt by all magic attacks.");
 
             registerEnchantment(translationBuilder, AArcanaEnchantments.INACCURACY_CURSE, "Curse of Inaccuracy", "Reduces the accuracy of bows and crossbows.");
+            // Enchantment Capacity Tooltip
+            translationBuilder.add("item.enchantment_capacity", "Enchantment Capacity: %1$s/%2$s");
+            // Enchantment UI stuff
+            translationBuilder.add("gui.enchanting.level", "Level %1$s/%2$s");
+            translationBuilder.add("gui.enchanting.max_level", "MAX LEVEL");
+            translationBuilder.add("gui.enchanting.max_capacity", "This item cannot support more enchantments!");
+            translationBuilder.add("gui.enchanting.low_level", "This enchanting table does not have enough power to decrypt this enchantment.");
             // Status Effects
             registerStatusEffect(translationBuilder, AArcanaStatusEffects.ARCHERS_GAMBIT, "Archer's Gambit", "Faster draw speed of bows and crossbows.");
         }
