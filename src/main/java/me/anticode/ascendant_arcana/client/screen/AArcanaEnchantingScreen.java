@@ -141,6 +141,10 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                 }
             } else if (update) clearEnchantments();
 
+            if (anySelected && !enchantments.get(selectedTile).locked) {
+                context.drawTexture(OVERLAYS, (rightPanelX + 4)/2, (rightPanelY + 210)/2, 12, 0, 7, 7);
+                context.drawTexture(OVERLAYS, (rightPanelX + 2)/2, (rightPanelY + 226)/2, 12, 8, 9, 7);
+            }
             context.getMatrices().push();
             context.getMatrices().peek().getPositionMatrix().scale(0.5F, 0.5F, 0.5F);
             if (anySelected) {
@@ -154,6 +158,8 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                 if (recipe.secondaryIngredientStack != null) {
                     context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.item_cost", recipe.secondaryIngredientStack.getCount(), Text.translatable(recipe.secondaryIngredientStack.getIngredient().getMatchingStacks()[0].getTranslationKey())), rightPanelX + 42, rightPanelY + 174, 76, 16777215);
                 }
+                textRenderer.drawWithOutline(Text.literal(String.valueOf(recipe.levelCost)).asOrderedText(), rightPanelX + 12, rightPanelY + 216, 5635925, 0, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), 15728880);
+                textRenderer.drawWithOutline(Text.literal(String.valueOf(AArcanaEnchantmentHelper.getEnchantmentCost(recipe.enchantment))).asOrderedText(), rightPanelX + 14, rightPanelY + 232, 16733525, 0, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), 15728880);
             } else {
                 context.drawCenteredTextWithShadow(textRenderer, Text.translatable(itemStack.getTranslationKey()).formatted(Formatting.UNDERLINE), rightPanelX + 60, rightPanelY + 2, 16777215);
                 context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.no_selection_body"), rightPanelX + 2, rightPanelY + 14, 120, 5592405);
