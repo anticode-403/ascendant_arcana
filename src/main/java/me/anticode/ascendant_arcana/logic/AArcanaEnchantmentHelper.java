@@ -61,8 +61,8 @@ public class AArcanaEnchantmentHelper {
         return switch (enchantment.getRarity()) {
             case COMMON -> 0;
             case UNCOMMON -> 22;
-            case RARE -> 45;
-            case VERY_RARE -> 65;
+            case RARE -> 50;
+            case VERY_RARE -> 80;
         };
     }
 
