@@ -57,6 +57,15 @@ public class AArcanaEnchantmentHelper {
         return getBaseEnchantmentCapacity(stack.getItem());
     }
 
+    public static int getRequiredEnchantmentPower(Enchantment enchantment) {
+        return switch (enchantment.getRarity()) {
+            case COMMON -> 0;
+            case UNCOMMON -> 22;
+            case RARE -> 45;
+            case VERY_RARE -> 65;
+        };
+    }
+
     public static void setEnchantmentCapacityKey(ItemStack stack, int value) {
         stack.getOrCreateNbt().putInt(ENCHANTMENT_CAPACITY_KEY, value);
     }

@@ -121,8 +121,10 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             lastPower = getScreenHandler().enchantmentPower[0];
         }
 
-        int rightPanelX = 322;
-        int rightPanelY = 18;
+        int panelX = 161;
+        int panelY = 9;
+        int scaledPanelX = panelX * 2;
+        int scaledPanelY = panelY * 2;
 
         int k = (int)(41.0F * this.scrollPosition);
         boolean hasRecipes = recipes != null && !recipes.isEmpty();
@@ -147,44 +149,59 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                 }
             } else if (update) clearEnchantments();
 
-            if (anySelected && !enchantments.get(selectedTile).locked) {
-                context.drawTexture(OVERLAYS, (rightPanelX + 4)/2, (rightPanelY + 210)/2, 12, 0, 7, 7);
-                context.drawTexture(OVERLAYS, (rightPanelX + 2)/2, (rightPanelY + 226)/2, 12, 8, 9, 7);
+            if (anySelected && !enchantments.get(selectedTile).locked && !enchantments.get(selectedTile).maxLevel) {
+                context.drawTexture(OVERLAYS, panelX + 2, panelY + 105, 12, 0, 7, 7);
+                context.drawTexture(OVERLAYS, panelX + 1, panelY + 113, 12, 8, 9, 7);
+            } else if (anySelected && enchantments.get(selectedTile).locked) {
+                context.drawTexture(OVERLAYS, panelX + 2, panelY + 47, 135, 0, 56, 57);
+                context.getMatrices().push();
+                context.getMatrices().peek().getPositionMatrix().scale(0.5F, 0.5F, 0.5F);
+                MutableText text = Text.empty();
+                if (AArcanaEnchantmentHelper.getRequiredEnchantmentPower(recipes.get(selectedTile).enchantment) > getScreenHandler().enchantmentPower[0]) {
+                    text = Text.translatable("gui.enchanting.low_level");
+                } else if (recipes.get(selectedTile).enchantment.isTreasure()) {
+                    text = Text.translatable("gui.enchanting.treasure");
+                }
+                context.drawTextWrapped(textRenderer, text, scaledPanelX + 4, scaledPanelY + 100, 120, 5592405);
+                context.getMatrices().pop();
+            } else {
+                context.drawTexture(OVERLAYS, panelX + 2, panelY + 47, 191, 0, 56, 57);
             }
             context.getMatrices().push();
             context.getMatrices().peek().getPositionMatrix().scale(0.5F, 0.5F, 0.5F);
             if (anySelected) {
                 EnchantmentRecipe recipe = recipes.get(selectedTile);
                 if (!enchantments.get(selectedTile).locked) {
-                    context.drawCenteredTextWithShadow(textRenderer, Text.translatable(recipe.enchantment.getTranslationKey()).formatted(Formatting.UNDERLINE), rightPanelX + 60, rightPanelY + 2, 16777215);
-                    context.drawTextWrapped(textRenderer, Text.translatable(recipe.enchantment.getTranslationKey() + ".description"), rightPanelX + 2, rightPanelY + 14, 120, 5592405);
+                    context.drawCenteredTextWithShadow(textRenderer, Text.translatable(recipe.enchantment.getTranslationKey()).formatted(Formatting.UNDERLINE), scaledPanelX + 60, scaledPanelY + 2, 16777215);
+                    context.drawTextWrapped(textRenderer, Text.translatable(recipe.enchantment.getTranslationKey() + ".description"), scaledPanelX + 2, scaledPanelY + 14, 120, 5592405);
                 } else {
-                    context.drawCenteredTextWithShadow(textRenderer, Text.translatable(recipe.enchantment.getTranslationKey()).formatted(Formatting.UNDERLINE, Formatting.OBFUSCATED), rightPanelX + 60, rightPanelY + 2, 16777215);
-                    context.drawTextWrapped(textRenderer, Text.translatable(recipe.enchantment.getTranslationKey() + ".description").formatted(Formatting.OBFUSCATED), rightPanelX + 2, rightPanelY + 14, 120, 5592405);
+                    context.drawCenteredTextWithShadow(textRenderer, Text.translatable(recipe.enchantment.getTranslationKey()).formatted(Formatting.UNDERLINE, Formatting.OBFUSCATED), scaledPanelX + 60, scaledPanelY + 2, 16777215);
+                    context.drawTextWrapped(textRenderer, Text.translatable(recipe.enchantment.getTranslationKey() + ".description").formatted(Formatting.OBFUSCATED), scaledPanelX + 2, scaledPanelY + 14, 120, 5592405);
                 }
                 if (!enchantments.get(selectedTile).locked && !enchantments.get(selectedTile).maxLevel) {
-                    context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.item_cost", recipe.magicalScrapCost, Text.translatable(AArcanaItems.ENCHANTED_SCRAP.getTranslationKey())), rightPanelX + 42, rightPanelY + 102, 76,16777215);
+                    context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.item_cost", recipe.magicalScrapCost, Text.translatable(AArcanaItems.ENCHANTED_SCRAP.getTranslationKey())), scaledPanelX + 42, scaledPanelY + 102, 76,16777215);
                     if (recipe.primaryIngredientStack != null) {
-                        context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.item_cost", recipe.primaryIngredientStack.getCount(), Text.translatable(recipe.primaryIngredientStack.getIngredient().getMatchingStacks()[0].getTranslationKey())), rightPanelX + 42, rightPanelY + 138, 76, 16777215);
+                        context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.item_cost", recipe.primaryIngredientStack.getCount(), Text.translatable(recipe.primaryIngredientStack.getIngredient().getMatchingStacks()[0].getTranslationKey())), scaledPanelX + 42, scaledPanelY + 138, 76, 16777215);
                     }
                     if (recipe.secondaryIngredientStack != null) {
-                        context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.item_cost", recipe.secondaryIngredientStack.getCount(), Text.translatable(recipe.secondaryIngredientStack.getIngredient().getMatchingStacks()[0].getTranslationKey())), rightPanelX + 42, rightPanelY + 174, 76, 16777215);
+                        context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.item_cost", recipe.secondaryIngredientStack.getCount(), Text.translatable(recipe.secondaryIngredientStack.getIngredient().getMatchingStacks()[0].getTranslationKey())), scaledPanelX + 42, scaledPanelY + 174, 76, 16777215);
                     }
-                    textRenderer.drawWithOutline(Text.literal(String.valueOf(recipe.levelCost)).asOrderedText(), rightPanelX + 12, rightPanelY + 216, 5635925, 0, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), 15728880);
-                    textRenderer.drawWithOutline(Text.literal(String.valueOf(AArcanaEnchantmentHelper.getEnchantmentCost(recipe.enchantment))).asOrderedText(), rightPanelX + 14, rightPanelY + 232, 16733525, 0, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), 15728880);
+                    textRenderer.drawWithOutline(Text.literal(String.valueOf(recipe.levelCost)).asOrderedText(), scaledPanelX + 12, scaledPanelY + 216, 5635925, 0, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), 15728880);
+                    textRenderer.drawWithOutline(Text.literal(String.valueOf(AArcanaEnchantmentHelper.getEnchantmentCost(recipe.enchantment))).asOrderedText(), scaledPanelX + 14, scaledPanelY + 232, 16733525, 0, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), 15728880);
 
                 }
             } else {
-                context.drawCenteredTextWithShadow(textRenderer, Text.translatable(itemStack.getTranslationKey()).formatted(Formatting.UNDERLINE), rightPanelX + 60, rightPanelY + 2, 16777215);
-                context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.no_selection_body"), rightPanelX + 2, rightPanelY + 14, 120, 5592405);
+                context.drawCenteredTextWithShadow(textRenderer, Text.translatable(itemStack.getTranslationKey()).formatted(Formatting.UNDERLINE), scaledPanelX + 60, scaledPanelY + 2, 16777215);
+                context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.no_selection_body"), scaledPanelX + 2, scaledPanelY + 14, 120, 5592405);
             }
             context.getMatrices().pop();
         } else {
             clearEnchantments();
+            context.drawTexture(OVERLAYS, panelX + 2, panelY + 47, 191, 0, 56, 57);
             context.getMatrices().push();
             context.getMatrices().peek().getPositionMatrix().scale(0.5F, 0.5F, 0.5F);
-            context.drawCenteredTextWithShadow(textRenderer, Text.translatable("gui.enchanting.no_item_title").formatted(Formatting.UNDERLINE), rightPanelX + 60, rightPanelY + 2, 16777215);
-            context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.no_item_body"), rightPanelX + 2, rightPanelY + 14, 120, 5592405);
+            context.drawCenteredTextWithShadow(textRenderer, Text.translatable("gui.enchanting.no_item_title").formatted(Formatting.UNDERLINE), scaledPanelX + 60, scaledPanelY + 2, 16777215);
+            context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.no_item_body"), scaledPanelX + 2, scaledPanelY + 14, 120, 5592405);
             context.getMatrices().pop();
         }
     }
@@ -192,12 +209,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     public void addEnchantment(EnchantmentRecipe recipe, int buttonX, int buttonY, int i) {
         boolean locked = true;
         int power = getScreenHandler().enchantmentPower[0];
-        int requiredPower = switch (recipe.enchantment.getRarity()) {
-            case COMMON -> 0;
-            case UNCOMMON -> 22;
-            case RARE -> 45;
-            case VERY_RARE -> 65;
-        };
+        int requiredPower = AArcanaEnchantmentHelper.getRequiredEnchantmentPower(recipe.enchantment);
         if (power >= requiredPower) locked = false;
         EnchantmentTile tile = new EnchantmentTile(recipe, buttonX, buttonY, i, locked);
         enchantments.add(tile);
