@@ -4,6 +4,7 @@ import me.anticode.ascendant_arcana.init.AArcanaItems;
 import me.anticode.ascendant_arcana.init.AArcanaScreenHandlers;
 import me.anticode.ascendant_arcana.recipe.EnchantmentRecipe;
 import net.minecraft.block.EnchantingTableBlock;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.ChiseledBookshelfBlockEntity;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -24,7 +25,7 @@ import java.util.Map;
 public class AArcanaEnchantingScreenHandler extends ScreenHandler {
     private final Inventory inventory;
     private final ScreenHandlerContext context;
-    private final int[] enchantmentPower = new int[] { 0 };
+    public final int[] enchantmentPower = new int[] { 0 };
     private List<EnchantmentRecipe> recipes;
 
     public AArcanaEnchantingScreenHandler(int Id, PlayerInventory playerInventory) {
@@ -72,7 +73,8 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
 
             for (BlockPos blockPos : EnchantingTableBlock.POWER_PROVIDER_OFFSETS) {
                 if (EnchantingTableBlock.canAccessPowerProvider(world, pos, blockPos)) {
-                    if (world.getBlockEntity(blockPos) instanceof ChiseledBookshelfBlockEntity chiseledBookshelf) {
+                    if (world.getBlockEntity(pos.add(blockPos), BlockEntityType.CHISELED_BOOKSHELF).isPresent()) {
+                        ChiseledBookshelfBlockEntity chiseledBookshelf = (ChiseledBookshelfBlockEntity) world.getBlockEntity(pos.add(blockPos));
                         for (int j = 0; j < chiseledBookshelf.size(); j++) {
                             ItemStack itemStack1 = chiseledBookshelf.getStack(j);
                             for (Map.Entry<Enchantment, Integer> enchantInstance : EnchantmentHelper.get(itemStack1).entrySet()) {
