@@ -17,6 +17,7 @@ import net.minecraft.data.client.*;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
@@ -381,7 +382,30 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.TURTLE_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.ANVIL, 1).level(15));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.WITCH_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.CAULDRON, 1).level(15));
 
-            // TODO: Vanilla Minecraft enchantments
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.AQUA_AFFINITY).scrap(3).primary(Items.PRISMARINE_CRYSTALS, 4).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.CHANNELING).scrap(5).primary(Items.LIGHTNING_ROD, 1).secondary(Items.GOLD_INGOT, 3).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.DEPTH_STRIDER).scrap(6).primary(Items.SCUTE, 4).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.FIRE_ASPECT).scrap(6).primary(Items.BLAZE_POWDER, 9).secondary(Items.FLINT, 2).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.FLAME).scrap(6).primary(Items.BLAZE_POWDER, 12).secondary(Items.FLINT, 2).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.FORTUNE).scrap(12).primary(Items.DIAMOND, 3).secondary(Items.ECHO_SHARD, 1).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.FROST_WALKER).scrap(6).primary(Items.BLUE_ICE, 2).secondary(Items.ECHO_SHARD, 1).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.FEATHER_FALLING).scrap(2).primary(Items.FEATHER, 5).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.INFINITY).scrap(12).primary(Items.ECHO_SHARD, 2).secondary(Items.ARROW, 1).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.THORNS).scrap(3).primary(Items.PRISMARINE, 3).secondary(Items.PRISMARINE_CRYSTALS, 1).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.KNOCKBACK).scrap(3).primary(Items.PISTON, 2).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.SOUL_SPEED).scrap(6).primary(Items.SCULK_CATALYST, 1).secondary(Items.FEATHER, 2).level(6));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.SWIFT_SNEAK).scrap(6).primary(Items.FEATHER, 5).secondary(Items.ECHO_SHARD, 1).level(6));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.LOOTING).scrap(12).primary(Items.ENDER_PEARL, 3).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.RESPIRATION).scrap(3).primary(Items.GLASS_BOTTLE, 2).secondary(Items.BAMBOO, 1).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.RIPTIDE).scrap(12).primary(Items.NAUTILUS_SHELL, 2).secondary(Items.PRISMARINE_CRYSTALS, 3).level(9));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.LOYALTY).scrap(4).primary(Items.COPPER_INGOT, 6).secondary(Items.SALMON, 1).level(5));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.SWEEPING).scrap(3).primary(Items.ECHO_SHARD, 1).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.PIERCING).scrap(3).primary(Items.STONE, 3).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.SILK_TOUCH).scrap(6).primary(Items.STRING, 6).level(5));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.PUNCH).scrap(5).primary(Items.PISTON, 2).secondary(Items.REDSTONE, 4).level(4));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.MULTISHOT).scrap(6).primary(Items.ECHO_SHARD, 2).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.LURE).scrap(3).primary(Items.IRON_NUGGET, 1).secondary(Items.COD, 3).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.LUCK_OF_THE_SEA).scrap(3).primary(Items.RABBIT_FOOT, 1).level(3));
         }
     }
 
