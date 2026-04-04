@@ -11,6 +11,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Rarity;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.List;
@@ -41,6 +42,8 @@ public class AArcanaItems {
 
     public static final Item ENCHANTED_SCRAP = register(new EnchantedScrapItem(new Item.Settings()), "enchanted_scrap");
     public static final Item RESTORINE = register(new Item(new Item.Settings()), "restorine");
+
+    public static final Item WARDEN_HEART = register(new Item(new Item.Settings().rarity(Rarity.RARE).maxCount(1).fireproof()), "warden_heart");
 
     private static List<Identifier> getGeneralToolSmithingBase() {
         return List.of(EMPTY_SLOT_AXE_TEXTURE, EMPTY_SLOT_HOE_TEXTURE, EMPTY_SLOT_PICKAXE_TEXTURE,

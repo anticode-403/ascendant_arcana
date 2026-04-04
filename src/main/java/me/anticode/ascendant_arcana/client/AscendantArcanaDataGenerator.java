@@ -64,7 +64,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             getOrCreateTagBuilder(AArcanaTags.Items.RELICS)
                     .add(AArcanaItems.RELIC);
             getOrCreateTagBuilder(AArcanaTags.Items.HEARTS)
-                    .add(Items.SCULK_CATALYST);
+                    .add(AArcanaItems.WARDEN_HEART);
         }
     }
 
@@ -125,6 +125,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
 
             itemModelGenerator.register(AArcanaItems.ENCHANTED_SCRAP, Models.GENERATED);
             itemModelGenerator.register(AArcanaItems.RESTORINE, Models.GENERATED);
+            itemModelGenerator.register(AArcanaItems.WARDEN_HEART, Models.GENERATED);
 
             // Relics
             // We use model predicates here to change the relic texture on the fly while only using one item.
@@ -189,6 +190,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             // Items
             translationBuilder.add(AArcanaItems.ENCHANTED_SCRAP, "Enchanted Scrap");
             translationBuilder.add(AArcanaItems.RESTORINE, "Restorine");
+            translationBuilder.add(AArcanaItems.WARDEN_HEART, "Warden Heart");
             // Relics
             translationBuilder.add(AArcanaItems.RELIC, "%1$s Relic of %2$s");
             translationBuilder.add("item.relics.empty", "Empty Relic");

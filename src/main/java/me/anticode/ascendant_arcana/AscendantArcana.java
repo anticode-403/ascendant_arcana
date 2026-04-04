@@ -7,6 +7,10 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,5 +33,14 @@ public class AscendantArcana implements ModInitializer {
 
         AutoConfig.register(AArcanaServerConfigWrapper.class, PartitioningSerializer.wrap(JanksonConfigSerializer::new));
         config = AutoConfig.getConfigHolder(AArcanaServerConfigWrapper.class).getConfig().server;
+
+        LootTableEvents.MODIFY.register(((resourceManager, lootManager, identifier, builder, lootTableSource) -> {
+            if (lootTableSource.isBuiltin()) {
+                if (identifier.equals(Identifier.of("minecraft", "entities/warden"))) {
+                    LootPool.Builder poolBuilder = LootPool.builder().with(ItemEntry.builder(AArcanaItems.WARDEN_HEART));
+                    builder.pool(poolBuilder.build());
+                }
+            }
+        }));
     }
 }
