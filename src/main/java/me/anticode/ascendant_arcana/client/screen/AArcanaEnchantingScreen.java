@@ -281,25 +281,9 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         scrollerClicked = false;
         if (recipes != null && recipes.size() > 6) {
-            int i = x + 60;
-            int j = y + 13;
+            int i = this.x + 153;
+            int j = this.y + 9;
 
-            for(int k = 0; k < 4; ++k) {
-                for(int l = 0; l < 4; ++l) {
-                    double d = mouseX - (double)(i + l * 14);
-                    double e = mouseY - (double)(j + k * 14);
-                    int m = k + visibleTopRow;
-                    int n = m * 4 + l;
-                    if (d >= (double)0.0F && e >= (double)0.0F && d < (double)14.0F && e < (double)14.0F && (getScreenHandler()).onButtonClick(client.player, n)) {
-                        MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_LOOM_SELECT_PATTERN, 1.0F));
-                        this.client.interactionManager.clickButton((getScreenHandler()).syncId, n);
-                        return true;
-                    }
-                }
-            }
-
-            i = this.x + 153;
-            j = this.y + 9;
             if (mouseX >= (double)i && mouseX < (double)(i + 12) && mouseY >= (double)j && mouseY < (double)(j + 121)) {
                 this.scrollerClicked = true;
             }
