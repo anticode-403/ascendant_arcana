@@ -155,6 +155,11 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
         public boolean canInsert(ItemStack stack) {
             return stack.isEnchantable() || stack.hasEnchantments();
         }
+
+        @Override
+        public int getMaxItemCount() {
+            return 1;
+        }
     }
 
     private static class MagicalScrapSlot extends Slot {
