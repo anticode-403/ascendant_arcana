@@ -135,10 +135,6 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
 
         ItemStack stack = getScreenHandler().getSlot(0).getStack();
 
-        if (!getScreenHandler().unlockedTreasures.isEmpty()) {
-            AscendantArcana.LOGGER.debug("Unlocked treasure!");
-        }
-
         if (stack != ItemStack.EMPTY) {
 
             int maxCapacity = AArcanaEnchantmentHelper.getEnchantmentCapacity(stack);
