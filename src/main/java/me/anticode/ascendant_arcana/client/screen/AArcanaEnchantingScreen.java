@@ -130,7 +130,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
         int scaledPanelY = panelY * 2;
         int scaledPanelWidth = 112;
 
-        int k = (int)(41.0F * this.scrollPosition);
+        int k = (int)(94.0F * this.scrollPosition);
         boolean hasRecipes = recipes != null && !recipes.isEmpty();
         context.drawTexture(OVERLAYS, 153, 9 + k, (hasRecipes && recipes.size() > 6 ? 0 : 6), 0, 6, 27);
 
@@ -300,7 +300,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
 
             i = this.x + 153;
             j = this.y + 9;
-            if (mouseX >= (double)i && mouseX < (double)(i + 12) && mouseY >= (double)j && mouseY < (double)(j + 56)) {
+            if (mouseX >= (double)i && mouseX < (double)(i + 12) && mouseY >= (double)j && mouseY < (double)(j + 121)) {
                 this.scrollerClicked = true;
             }
         }
