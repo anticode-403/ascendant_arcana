@@ -3,11 +3,14 @@ package me.anticode.ascendant_arcana;
 import me.anticode.ascendant_arcana.config.AArcanaServerConfig;
 import me.anticode.ascendant_arcana.config.AArcanaServerConfigWrapper;
 import me.anticode.ascendant_arcana.init.*;
+import me.anticode.ascendant_arcana.networking.EnchantingScreenSendRecipe;
+import me.anticode.ascendant_arcana.screenhandler.AArcanaEnchantingScreenHandler;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.util.Identifier;
@@ -30,6 +33,13 @@ public class AscendantArcana implements ModInitializer {
         AArcanaEnchantments.initialize();
         AArcanaStatusEffects.initialize();
         AArcanaScreenHandlers.initialize();
+
+        ServerPlayNetworking.registerGlobalReceiver(EnchantingScreenSendRecipe.Id, (server, player, handler, buf, responseSender) -> {
+            EnchantingScreenSendRecipe packet = EnchantingScreenSendRecipe.read(buf, player.getWorld().getRecipeManager());
+            if (player.currentScreenHandler.syncId != packet.syncId()) return;
+            AArcanaEnchantingScreenHandler screenHandler = (AArcanaEnchantingScreenHandler) player.currentScreenHandler;
+            screenHandler.recipe = packet.recipe();
+        });
 
         AutoConfig.register(AArcanaServerConfigWrapper.class, PartitioningSerializer.wrap(JanksonConfigSerializer::new));
         config = AutoConfig.getConfigHolder(AArcanaServerConfigWrapper.class).getConfig().server;

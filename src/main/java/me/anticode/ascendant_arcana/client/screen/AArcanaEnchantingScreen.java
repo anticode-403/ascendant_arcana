@@ -5,8 +5,11 @@ import me.anticode.ascendant_arcana.AscendantArcana;
 import me.anticode.ascendant_arcana.init.AArcanaItems;
 import me.anticode.ascendant_arcana.init.AArcanaRecipes;
 import me.anticode.ascendant_arcana.logic.AArcanaEnchantmentHelper;
+import me.anticode.ascendant_arcana.networking.EnchantingScreenSendRecipe;
+import me.anticode.ascendant_arcana.networking.EnchantingScreenSync;
 import me.anticode.ascendant_arcana.recipe.EnchantmentRecipe;
 import me.anticode.ascendant_arcana.screenhandler.AArcanaEnchantingScreenHandler;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -26,7 +29,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.random.Random;
 import org.joml.Matrix4f;
 
 import java.util.ArrayList;
@@ -36,7 +38,6 @@ import java.util.Map;
 public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScreenHandler> {
     private static final Identifier TEXTURE = new Identifier(AscendantArcana.modID, "textures/gui/container/enchanting_table.png");
     private static final Identifier OVERLAYS = new Identifier(AscendantArcana.modID, "textures/gui/container/enchanting_table_elements.png");
-    private final Random random = Random.createLocal();
     List<EnchantmentRecipe> recipes = new ArrayList<>();
     private List<EnchantmentTile> enchantments = new ArrayList<>();
     private LetsGoEnchantingButton enchantingButton;
@@ -223,7 +224,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                     if (enchantingButton == null) {
                         enchantingButtonEnabled = buttonEnabled;
                         enchantingButton = new LetsGoEnchantingButton(x + 193, y + 116, buttonEnabled);
-                        addDrawable(enchantingButton);
+                        addDrawableChild(enchantingButton);
                     }
                 } else {
                     remove(enchantingButton);
@@ -415,6 +416,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             } else {
                 selectedTile = i;
                 anySelected = true;
+                ClientPlayNetworking.send(EnchantingScreenSendRecipe.Id, new EnchantingScreenSendRecipe(getScreenHandler().syncId, recipe).write());
             }
         }
 
@@ -425,7 +427,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     }
 
     private class LetsGoEnchantingButton extends PressableWidget {
-        private boolean enabled;
+        private final boolean enabled;
 
         public LetsGoEnchantingButton(int x, int y, boolean enabled) {
             super(x, y, 26, 12, Text.translatable("gui.enchanting.enchant"));
@@ -446,6 +448,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
         @Override
         public void onPress() {
             if (!enabled) return;
+            client.interactionManager.clickButton(getScreenHandler().syncId, 0);
         }
 
         @Override

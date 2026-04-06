@@ -1,9 +1,13 @@
 package me.anticode.ascendant_arcana.screenhandler;
 
 import me.anticode.ascendant_arcana.init.AArcanaItems;
+import me.anticode.ascendant_arcana.init.AArcanaRecipes;
 import me.anticode.ascendant_arcana.init.AArcanaScreenHandlers;
+import me.anticode.ascendant_arcana.logic.AArcanaEnchantmentHelper;
 import me.anticode.ascendant_arcana.networking.EnchantingScreenSync;
+import me.anticode.ascendant_arcana.recipe.EnchantmentRecipe;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.EnchantingTableBlock;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.ChiseledBookshelfBlockEntity;
@@ -14,14 +18,19 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.screen.Property;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.stat.Stats;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.compress.utils.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +40,7 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
     public final int[] enchantmentPower = new int[] { 0 };
     public List<Enchantment> unlockedTreasures = Lists.newArrayList();
     public PlayerEntity player;
+    public EnchantmentRecipe recipe;
 
     public AArcanaEnchantingScreenHandler(int Id, PlayerInventory playerInventory) {
         this(Id, playerInventory, ScreenHandlerContext.EMPTY);
@@ -144,6 +154,76 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
                 if (!this.insertItem(itemStack, 4, 40, true)) player.dropItem(itemStack, true);
             }
         }
+    }
+
+    @Override
+    public boolean onButtonClick(PlayerEntity player, int id) {
+        ItemStack itemStack = inventory.getStack(0);
+        if (recipe == null) return false;
+        if (!recipe.enchantment.isAcceptableItem(itemStack)) return false;
+        ItemStack scrapStack = inventory.getStack(1);
+        ItemStack primaryStack = inventory.getStack(2);
+        ItemStack secondaryStack = inventory.getStack(3);
+
+        // Verifying
+        if (recipe.levelCost > player.experienceLevel) return false;
+        int capacityCost = AArcanaEnchantmentHelper.getEnchantmentCost(recipe.enchantment);
+        if (AArcanaEnchantmentHelper.getEnchantmentUsage(itemStack) + capacityCost > AArcanaEnchantmentHelper.getEnchantmentCapacity(itemStack)) return false;
+        if (!scrapStack.isOf(AArcanaItems.ENCHANTED_SCRAP)) return false;
+        if (scrapStack.getCount() < recipe.magicalScrapCost) return false;
+        if (recipe.primaryIngredientStack != null) {
+            if (!recipe.primaryIngredientStack.getIngredient().test(primaryStack)) return false;
+            if (recipe.primaryIngredientStack.getCount() > primaryStack.getCount()) return false;
+        }
+        if (recipe.secondaryIngredientStack != null) {
+            if (!recipe.secondaryIngredientStack.getIngredient().test(secondaryStack)) return false;
+            if (recipe.secondaryIngredientStack.getCount() > secondaryStack.getCount()) return false;
+        }
+        Map<Enchantment, Integer> itemEnchants = EnchantmentHelper.get(itemStack);
+        if (itemEnchants.containsKey(recipe.enchantment)) {
+            if (itemEnchants.get(recipe.enchantment) + 1 > recipe.enchantment.getMaxLevel()) return false;
+        } else if (!EnchantmentHelper.isCompatible(itemEnchants.keySet(), recipe.enchantment)) return false;
+
+        context.run((world, pos) -> {
+            player.applyEnchantmentCosts(itemStack, recipe.levelCost);
+            scrapStack.decrement(recipe.magicalScrapCost);
+            ItemStack newStack = itemStack;
+            if (itemStack.isOf(Items.BOOK)) {
+                getSlot(0).setStack(new ItemStack(Items.ENCHANTED_BOOK));
+                newStack = getSlot(0).getStack();
+            }
+            if (scrapStack.isEmpty()) {
+                inventory.setStack(1, ItemStack.EMPTY);
+            }
+            if (recipe.primaryIngredientStack != null) {
+                primaryStack.decrement(recipe.primaryIngredientStack.getCount());
+                if (primaryStack.isEmpty()) {
+                    inventory.setStack(2, ItemStack.EMPTY);
+                }
+            }
+            if (recipe.secondaryIngredientStack != null) {
+                secondaryStack.decrement(recipe.secondaryIngredientStack.getCount());
+                if (secondaryStack.isEmpty()) {
+                    inventory.setStack(3, ItemStack.EMPTY);
+                }
+            }
+            if (itemEnchants.containsKey(recipe.enchantment)) {
+                itemEnchants.put(recipe.enchantment, itemEnchants.get(recipe.enchantment) + 1);
+                EnchantmentHelper.set(itemEnchants, newStack);
+            } else {
+                newStack.addEnchantment(recipe.enchantment, 1);
+            }
+            player.incrementStat(Stats.ENCHANT_ITEM);
+            if (player instanceof ServerPlayerEntity) {
+                Criteria.ENCHANTED_ITEM.trigger((ServerPlayerEntity)player, newStack, recipe.levelCost);
+            }
+
+            inventory.markDirty();
+            onContentChanged(inventory);
+            world.playSound(null, pos, SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, SoundCategory.BLOCKS, 1.0F, world.random.nextFloat() * 0.1F + 0.9F);
+        });
+
+        return true;
     }
 
     private static class EnchantableToolSlot extends Slot {
