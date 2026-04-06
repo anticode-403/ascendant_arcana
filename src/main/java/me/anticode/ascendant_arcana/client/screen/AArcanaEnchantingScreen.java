@@ -125,7 +125,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
         int panelY = 9;
         int scaledPanelX = panelX * 2;
         int scaledPanelY = panelY * 2;
-        int scaledPanelWidth = 118;
+        int scaledPanelWidth = 112;
 
         int k = (int)(41.0F * this.scrollPosition);
         boolean hasRecipes = recipes != null && !recipes.isEmpty();
