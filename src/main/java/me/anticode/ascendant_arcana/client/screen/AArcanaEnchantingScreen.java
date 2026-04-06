@@ -125,6 +125,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
         int panelY = 9;
         int scaledPanelX = panelX * 2;
         int scaledPanelY = panelY * 2;
+        int scaledPanelWidth = 118;
 
         int k = (int)(41.0F * this.scrollPosition);
         boolean hasRecipes = recipes != null && !recipes.isEmpty();
@@ -167,7 +168,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                 } else if (recipes.get(selectedTile).enchantment.isTreasure()) {
                     text = Text.translatable("gui.enchanting.treasure");
                 }
-                context.drawTextWrapped(textRenderer, text, scaledPanelX + 4, scaledPanelY + 100, 120, 5592405);
+                context.drawTextWrapped(textRenderer, text, scaledPanelX + 4, scaledPanelY + 100, scaledPanelWidth, 5592405);
                 context.getMatrices().pop();
             } else {
                 context.drawTexture(OVERLAYS, panelX + 2, panelY + 47, 191, 0, 56, 57);
@@ -183,7 +184,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                     enchantmentDescription.formatted(Formatting.OBFUSCATED);
                 }
                 context.drawCenteredTextWithShadow(textRenderer, enchantmentTitle, scaledPanelX + 60, scaledPanelY + 2, 16777215);
-                context.drawTextWrapped(textRenderer, enchantmentDescription, scaledPanelX + 2, scaledPanelY + 14, 120, 5592405);
+                context.drawTextWrapped(textRenderer, enchantmentDescription, scaledPanelX + 2, scaledPanelY + 14, scaledPanelWidth, 5592405);
                 if (!enchantments.get(selectedTile).locked && !enchantments.get(selectedTile).maxLevel) {
                     context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.item_cost", recipe.magicalScrapCost, Text.translatable(AArcanaItems.ENCHANTED_SCRAP.getTranslationKey())), scaledPanelX + 42, scaledPanelY + 102, 76,16777215);
                     if (recipe.primaryIngredientStack != null) {
@@ -198,7 +199,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                 }
             } else {
                 context.drawCenteredTextWithShadow(textRenderer, Text.translatable(itemStack.getTranslationKey()).formatted(Formatting.UNDERLINE), scaledPanelX + 60, scaledPanelY + 2, 16777215);
-                context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.no_selection_body"), scaledPanelX + 2, scaledPanelY + 14, 120, 5592405);
+                context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.no_selection_body"), scaledPanelX + 2, scaledPanelY + 14, scaledPanelWidth, 5592405);
             }
             context.getMatrices().pop();
         } else {
@@ -207,7 +208,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             context.getMatrices().push();
             context.getMatrices().peek().getPositionMatrix().scale(0.5F, 0.5F, 0.5F);
             context.drawCenteredTextWithShadow(textRenderer, Text.translatable("gui.enchanting.no_item_title").formatted(Formatting.UNDERLINE), scaledPanelX + 60, scaledPanelY + 2, 16777215);
-            context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.no_item_body"), scaledPanelX + 2, scaledPanelY + 14, 120, 5592405);
+            context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.no_item_body"), scaledPanelX + 2, scaledPanelY + 14, scaledPanelWidth, 5592405);
             context.getMatrices().pop();
         }
     }
