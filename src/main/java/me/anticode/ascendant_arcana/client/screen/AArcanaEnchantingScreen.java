@@ -39,6 +39,8 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     private final Random random = Random.createLocal();
     List<EnchantmentRecipe> recipes = new ArrayList<>();
     private List<EnchantmentTile> enchantments = new ArrayList<>();
+    private LetsGoEnchantingButton enchantingButton;
+    private boolean enchantingButtonEnabled = false;
     private float scrollPosition;
     private boolean scrollerClicked;
     private int visibleTopRow;
@@ -200,14 +202,48 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                     }
                     textRenderer.drawWithOutline(Text.literal(String.valueOf(recipe.levelCost)).asOrderedText(), scaledPanelX + 12, scaledPanelY + 216, 5635925, 0, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), 15728880);
                     textRenderer.drawWithOutline(Text.literal(String.valueOf(AArcanaEnchantmentHelper.getEnchantmentCost(recipe.enchantment))).asOrderedText(), scaledPanelX + 14, scaledPanelY + 232, 16733525, 0, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), 15728880);
+                    context.getMatrices().pop();
 
+                    boolean buttonEnabled = recipe.levelCost <= getScreenHandler().player.experienceLevel;
+                    if (recipe.magicalScrapCost > 0) {
+                        ItemStack scrapStack = getScreenHandler().getSlot(1).getStack();
+                        if (!scrapStack.isOf(AArcanaItems.ENCHANTED_SCRAP) || recipe.magicalScrapCost > scrapStack.getCount()) buttonEnabled = false;
+                    }
+                    if (recipe.primaryIngredientStack != null) {
+                        ItemStack ingredientStack = getScreenHandler().getSlot(2).getStack();
+                        if (!recipe.primaryIngredientStack.getIngredient().test(ingredientStack)) buttonEnabled = false;
+                        else if (recipe.primaryIngredientStack.getCount() > ingredientStack.getCount()) buttonEnabled = false;
+                    }
+                    if (recipe.secondaryIngredientStack != null) {
+                        ItemStack ingredientStack = getScreenHandler().getSlot(3).getStack();
+                        if (!recipe.secondaryIngredientStack.getIngredient().test(ingredientStack)) buttonEnabled = false;
+                        else if (recipe.secondaryIngredientStack.getCount() > ingredientStack.getCount()) buttonEnabled = false;
+                    }
+
+                    if (update || enchantingButtonEnabled != buttonEnabled) {
+                        remove(enchantingButton);
+                        enchantingButton = null;
+                    }
+                    if (enchantingButton == null) {
+                        enchantingButtonEnabled = buttonEnabled;
+                        enchantingButton = new LetsGoEnchantingButton(x + 193, y + 116, buttonEnabled);
+                        addDrawable(enchantingButton);
+                    }
+                } else {
+                    remove(enchantingButton);
+                    enchantingButton = null;
+                    context.getMatrices().pop();
                 }
             } else {
+                remove(enchantingButton);
+                enchantingButton = null;
                 context.drawCenteredTextWithShadow(textRenderer, Text.translatable(itemStack.getTranslationKey()).formatted(Formatting.UNDERLINE), scaledPanelX + 60, scaledPanelY + 2, 16777215);
                 context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.no_selection_body"), scaledPanelX + 2, scaledPanelY + 14, scaledPanelWidth, 5592405);
+                context.getMatrices().pop();
             }
-            context.getMatrices().pop();
         } else {
+            remove(enchantingButton);
+            enchantingButton = null;
             clearEnchantments();
             context.drawTexture(OVERLAYS, panelX + 2, panelY + 47, 191, 0, 56, 57);
             context.getMatrices().push();
@@ -384,6 +420,36 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                 selectedTile = i;
                 anySelected = true;
             }
+        }
+
+        @Override
+        protected void appendClickableNarrations(NarrationMessageBuilder builder) {
+
+        }
+    }
+
+    private class LetsGoEnchantingButton extends PressableWidget {
+        private boolean enabled;
+
+        public LetsGoEnchantingButton(int x, int y, boolean enabled) {
+            super(x, y, 26, 12, Text.translatable("gui.enchanting.enchant"));
+            this.enabled = enabled;
+        }
+
+        @Override
+        protected void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
+            int u = 83;
+            if (!enabled) u = 109;
+            context.drawTexture(OVERLAYS, getX(), getY(), u, 0, getWidth(), getHeight());
+            context.getMatrices().push();
+            context.getMatrices().peek().getPositionMatrix().scale(0.5F);
+            context.drawCenteredTextWithShadow(textRenderer, getTitle(), (getX() + 13) * 2, (getY() + 4) * 2, 16777215);
+            context.getMatrices().pop();
+        }
+
+        @Override
+        public void onPress() {
+            if (!enabled) return;
         }
 
         @Override

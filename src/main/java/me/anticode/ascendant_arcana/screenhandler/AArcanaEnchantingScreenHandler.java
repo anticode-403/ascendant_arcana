@@ -30,7 +30,7 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
     private final ScreenHandlerContext context;
     public final int[] enchantmentPower = new int[] { 0 };
     public List<Enchantment> unlockedTreasures = Lists.newArrayList();
-    private PlayerEntity player;
+    public PlayerEntity player;
 
     public AArcanaEnchantingScreenHandler(int Id, PlayerInventory playerInventory) {
         this(Id, playerInventory, ScreenHandlerContext.EMPTY);

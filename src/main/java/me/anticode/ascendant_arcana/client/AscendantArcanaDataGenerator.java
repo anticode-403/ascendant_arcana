@@ -263,6 +263,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             translationBuilder.add("gui.enchanting.no_item_body", "Enchanting has been completely overhauled. Each item has an enchantment capacity which can be increased here by pressing the capacity button to the left of the item.");
             translationBuilder.add("gui.enchanting.no_selection_body", "Select an enchantment and place the costs below. Click the button to the left of your item to increase its capacity.");
             translationBuilder.add("gui.enchanting.item_cost", "x%1$s %2$s");
+            translationBuilder.add("gui.enchanting.enchant", "Enchant!");
             // Status Effects
             registerStatusEffect(translationBuilder, AArcanaStatusEffects.ARCHERS_GAMBIT, "Archer's Gambit", "Faster draw speed of bows and crossbows.");
         }
