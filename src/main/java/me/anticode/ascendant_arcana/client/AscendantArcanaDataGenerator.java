@@ -260,7 +260,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             translationBuilder.add("gui.enchanting.low_level", "This Enchanting Table does not have enough power to decrypt this enchantment.");
             translationBuilder.add("gui.enchanting.treasure", "This enchantment is too exotic to decrypt without a copy nearby.");
             translationBuilder.add("gui.enchanting.no_item_title", "Ascendant Arcana");
-            translationBuilder.add("gui.enchanting.no_item_body", "Enchanting has been completely overhauled. Each item has an enchantment capacity which cannot be exceeded and each enchantment requires various ingredients.");
+            translationBuilder.add("gui.enchanting.no_item_body", "Enchanting has been completely overhauled. Each item has an enchantment capacity which cannot be exceeded and each enchantment requires various ingredients.\n\nTreasure enchantments can be unlocked by placing them in a nearby Chiseled Bookshelf.");
             translationBuilder.add("gui.enchanting.no_selection_body", "Select an enchantment and place the ingredients below. Capacity can be increased with relics.");
             translationBuilder.add("gui.enchanting.item_cost", "x%1$s %2$s");
             translationBuilder.add("gui.enchanting.enchant", "Enchant!");
