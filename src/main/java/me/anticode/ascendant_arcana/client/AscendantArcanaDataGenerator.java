@@ -249,7 +249,9 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             registerEnchantment(translationBuilder, AArcanaEnchantments.WITCH_HEART, "Witch's Heart", "Slightly increases damage dealt by all magic attacks.");
 
             registerEnchantment(translationBuilder, AArcanaEnchantments.INACCURACY_CURSE, "Curse of Inaccuracy", "Reduces the accuracy of bows and crossbows.");
-            // Enchantment Capacity Tooltip
+            // Tooltips
+            translationBuilder.add("item.book_contains_treasure_title", "Treasure Enchantment");
+            translationBuilder.add("item.book_contains_treasure_body", "Store in Chiseled Bookshelves to unlock!");
             translationBuilder.add("item.enchantment_capacity", "Enchantment Capacity: %1$s/%2$s");
             // Enchantment UI stuff
             translationBuilder.add("gui.enchanting.level", "Level %1$s/%2$s");

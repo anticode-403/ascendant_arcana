@@ -10,6 +10,8 @@ import me.anticode.ascendant_arcana.logic.RelicHelper;
 import me.anticode.ascendant_arcana.logic.Relics;
 import net.fabric_extras.ranged_weapon.api.EntityAttributes_RangedWeapon;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -123,6 +125,21 @@ public abstract class ItemStackMixin {
         if (context.isAdvanced()) {
             ItemStack itemStack = (ItemStack)(Object)this;
             tooltip.add(Text.translatable("item.enchantment_capacity", AArcanaEnchantmentHelper.getEnchantmentUsage(itemStack), AArcanaEnchantmentHelper.getEnchantmentCapacity(itemStack)));
+        }
+    }
+
+    @Inject(method = "getTooltip", at = @At(value = "TAIL"))
+    private void addTreasureEnchantmentInfo(PlayerEntity player, TooltipContext context, CallbackInfoReturnable<List<Text>> cir, @Local List<Text> tooltip) {
+        if (getItem() instanceof EnchantedBookItem) {
+            Map<Enchantment, Integer> enchantments = EnchantmentHelper.get((ItemStack)(Object) this);
+            boolean hasTreasure = false;
+            for (Enchantment enchantment : enchantments.keySet()) {
+                if (enchantment.isTreasure()) hasTreasure = true;
+            }
+            if (hasTreasure) {
+                tooltip.add(Text.translatable("item.book_contains_treasure_title").formatted(Formatting.GOLD));
+                tooltip.add(Text.translatable("item.book_contains_treasure_body").formatted(Formatting.GOLD));
+            }
         }
     }
 }
