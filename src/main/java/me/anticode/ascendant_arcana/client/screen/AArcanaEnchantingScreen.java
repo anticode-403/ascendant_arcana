@@ -157,7 +157,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
 
             EnchantmentTile tile = enchantments.get(selectedTile);
             EnchantmentRecipe recipe = recipes.get(selectedTile);
-            boolean willExceedCapacity = AArcanaEnchantmentHelper.getRequiredEnchantmentPower(recipe.enchantment) + usedCapacity > maxCapacity;
+            boolean willExceedCapacity = AArcanaEnchantmentHelper.getEnchantmentCost(recipe.enchantment) + usedCapacity > maxCapacity;
 
             if (anySelected && !tile.locked && !tile.maxLevel && !willExceedCapacity) {
                 context.drawTexture(OVERLAYS, panelX + 2, panelY + 105, 12, 0, 7, 7);
