@@ -155,18 +155,24 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                 }
             } else if (update) clearEnchantments();
 
-            if (anySelected && !enchantments.get(selectedTile).locked && !enchantments.get(selectedTile).maxLevel) {
+            EnchantmentTile tile = enchantments.get(selectedTile);
+            EnchantmentRecipe recipe = recipes.get(selectedTile);
+            boolean willExceedCapacity = AArcanaEnchantmentHelper.getRequiredEnchantmentPower(recipe.enchantment) + usedCapacity > maxCapacity;
+
+            if (anySelected && !tile.locked && !tile.maxLevel && !willExceedCapacity) {
                 context.drawTexture(OVERLAYS, panelX + 2, panelY + 105, 12, 0, 7, 7);
                 context.drawTexture(OVERLAYS, panelX + 1, panelY + 113, 12, 8, 9, 7);
-            } else if (anySelected && enchantments.get(selectedTile).locked) {
+            } else if (anySelected && (tile.locked || willExceedCapacity)) {
                 context.drawTexture(OVERLAYS, panelX + 2, panelY + 47, 135, 0, 56, 57);
                 context.getMatrices().push();
                 context.getMatrices().peek().getPositionMatrix().scale(0.5F, 0.5F, 0.5F);
                 MutableText text = Text.empty();
-                if (AArcanaEnchantmentHelper.getRequiredEnchantmentPower(recipes.get(selectedTile).enchantment) > getScreenHandler().enchantmentPower[0]) {
+                if (AArcanaEnchantmentHelper.getRequiredEnchantmentPower(recipe.enchantment) > getScreenHandler().enchantmentPower[0] && tile.locked) {
                     text = Text.translatable("gui.enchanting.low_level");
-                } else if (recipes.get(selectedTile).enchantment.isTreasure()) {
+                } else if (recipe.enchantment.isTreasure() && tile.locked) {
                     text = Text.translatable("gui.enchanting.treasure");
+                } else if (willExceedCapacity) {
+                    text = Text.translatable("gui.enchanting.max_capacity");
                 }
                 context.drawTextWrapped(textRenderer, text, scaledPanelX + 4, scaledPanelY + 100, scaledPanelWidth, 5592405);
                 context.getMatrices().pop();
@@ -176,16 +182,15 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             context.getMatrices().push();
             context.getMatrices().peek().getPositionMatrix().scale(0.5F, 0.5F, 0.5F);
             if (anySelected) {
-                EnchantmentRecipe recipe = recipes.get(selectedTile);
                 MutableText enchantmentTitle = Text.translatable(recipe.enchantment.getTranslationKey()).formatted(Formatting.UNDERLINE);
                 MutableText enchantmentDescription = Text.translatable(recipe.enchantment.getTranslationKey() + ".description");
-                if (enchantments.get(selectedTile).locked) {
+                if (tile.locked) {
                     enchantmentTitle.formatted(Formatting.OBFUSCATED);
                     enchantmentDescription.formatted(Formatting.OBFUSCATED);
                 }
                 context.drawCenteredTextWithShadow(textRenderer, enchantmentTitle, scaledPanelX + 60, scaledPanelY + 2, 16777215);
                 context.drawTextWrapped(textRenderer, enchantmentDescription, scaledPanelX + 2, scaledPanelY + 14, scaledPanelWidth, 5592405);
-                if (!enchantments.get(selectedTile).locked && !enchantments.get(selectedTile).maxLevel) {
+                if (!tile.locked && !tile.maxLevel && !willExceedCapacity) {
                     context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.item_cost", recipe.magicalScrapCost, Text.translatable(AArcanaItems.ENCHANTED_SCRAP.getTranslationKey())), scaledPanelX + 42, scaledPanelY + 102, 76,16777215);
                     if (recipe.primaryIngredientStack != null) {
                         context.drawTextWrapped(textRenderer, Text.translatable("gui.enchanting.item_cost", recipe.primaryIngredientStack.getCount(), Text.translatable(recipe.primaryIngredientStack.getIngredient().getMatchingStacks()[0].getTranslationKey())), scaledPanelX + 42, scaledPanelY + 138, 76, 16777215);
