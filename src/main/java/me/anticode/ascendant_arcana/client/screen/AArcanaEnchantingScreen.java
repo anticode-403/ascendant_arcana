@@ -337,6 +337,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
         private final int i;
         protected boolean locked;
         protected boolean maxLevel = false;
+        private int offset = 0;
 
         public EnchantmentTile(EnchantmentRecipe recipe, int x, int y, int i, boolean locked) {
             super(x, y, 0, 27, Text.translatable(recipe.enchantment.getTranslationKey()));
@@ -358,8 +359,10 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             if (this.locked) v += 19;
             else if (this.maxLevel) v += 38;
 
-            context.drawTexture(OVERLAYS, getX(), getY(), 0, v, width, height);
 
+            context.drawTexture(OVERLAYS, getX(), getY(), 0, v + offset, width, getHeight());
+
+            if (getHeight() == 0) return;
             context.getMatrices().push();
             context.getMatrices().peek().getPositionMatrix().scale(0.5F, 0.5F, 0.5F);
             Matrix4f positionMatrix = context.getMatrices().peek().getPositionMatrix();
@@ -371,7 +374,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             textRenderer.draw(enchantText, scaledX + 12, scaledY + 4, 5592405, false, positionMatrix, context.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 15728880);
             MutableText levelText = null;
             if (maxLevel && !locked) levelText = Text.translatable("gui.enchanting.max_level");
-            else if (!locked) {
+            else if (!locked && height == getHeight()) {
                 int level = 1;
                 if (lastItem.hasEnchantments() && EnchantmentHelper.get(lastItem).containsKey(recipe.enchantment)) level = EnchantmentHelper.get(lastItem).get(recipe.enchantment) + 1;
                 levelText = Text.translatable("gui.enchanting.level", Text.translatable("enchantment.level." + level), Text.translatable("enchantment.level." + recipe.enchantment.getMaxLevel()));
@@ -380,7 +383,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
 
             ItemStack magicalScraps = new ItemStack(AArcanaItems.ENCHANTED_SCRAP, recipe.magicalScrapCost);
 
-            if (!maxLevel && !locked) {
+            if (!maxLevel && !locked && (getHeight() > 10 && offset == 0)) {
                 int itemX = scaledX + 108;
                 int itemY = scaledY + 4;
                 context.drawItem(magicalScraps, itemX, itemY);
@@ -397,19 +400,53 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                     context.drawItem(secondaryIngredient, itemX + 40, itemY);
                     context.drawItemInSlot(textRenderer, secondaryIngredient, itemX + 40, itemY);
                 }
-                if (recipe.levelCost < 10) {
-                    textRenderer.drawWithOutline(Text.literal(String.valueOf(recipe.levelCost)).asOrderedText(), scaledX + 160, scaledY + 28, 5635925, 0, positionMatrix, context.getVertexConsumers(), 15728880);
-                } else {
-                    textRenderer.drawWithOutline(Text.literal(String.valueOf(recipe.levelCost)).asOrderedText(), scaledX + 154, scaledY + 28, 5635925, 0, positionMatrix, context.getVertexConsumers(), 15728880);
+                if (getHeight() == height) {
+                    if (recipe.levelCost < 10) {
+                        textRenderer.drawWithOutline(Text.literal(String.valueOf(recipe.levelCost)).asOrderedText(), scaledX + 160, scaledY + 28, 5635925, 0, positionMatrix, context.getVertexConsumers(), 15728880);
+                    } else {
+                        textRenderer.drawWithOutline(Text.literal(String.valueOf(recipe.levelCost)).asOrderedText(), scaledX + 154, scaledY + 28, 5635925, 0, positionMatrix, context.getVertexConsumers(), 15728880);
+                    }
+                    textRenderer.drawWithOutline(Text.literal(String.valueOf(AArcanaEnchantmentHelper.getEnchantmentCost(recipe.enchantment))).asOrderedText(), scaledX + 144, scaledY + 28, 16733525, 0, positionMatrix, context.getVertexConsumers(), 15728880);
                 }
-                textRenderer.drawWithOutline(Text.literal(String.valueOf(AArcanaEnchantmentHelper.getEnchantmentCost(recipe.enchantment))).asOrderedText(), scaledX + 144, scaledY + 28, 16733525, 0, positionMatrix, context.getVertexConsumers(), 15728880);
             }
 
             context.getMatrices().pop();
         }
 
         @Override
+        public int getHeight() {
+            if (recipes.size() < 6) return super.getHeight();
+            int height = super.getHeight();
+            int absolutePositionTop = i * height;
+            int absolutePositionBottom = i * height + height;
+            int absoluteMax = recipes.size() * height;
+            int absoluteScrollPositionTop = (int) ((absoluteMax * scrollPosition) - (122 * scrollPosition));
+            int absoluteScrollPositionBottom = absoluteScrollPositionTop + 122;
+            if (absoluteScrollPositionTop > absolutePositionTop) {
+                int difference = absoluteScrollPositionTop - absolutePositionTop;
+                AscendantArcana.LOGGER.debug("Difference: " + difference);
+                height -= difference;
+                offset = difference;
+            } else if (absoluteScrollPositionBottom < absolutePositionBottom) {
+                int difference = absolutePositionBottom - absoluteScrollPositionBottom;
+                height -= difference;
+                offset = 0;
+            } else {
+                offset = 0;
+            }
+            return Math.max(height, 0);
+        }
+
+        @Override
+        public int getY() {
+            int absoluteMax = recipes.size() * height;
+            int absoluteScrollPositionTop = (int) ((absoluteMax * scrollPosition) - (122 * scrollPosition));
+            return super.getY() + offset - absoluteScrollPositionTop;
+        }
+
+        @Override
         public void onPress() {
+            if (getHeight() == 0) return;
             if (selectedTile == i && anySelected) {
                 selectedTile = 0;
                 anySelected = false;
