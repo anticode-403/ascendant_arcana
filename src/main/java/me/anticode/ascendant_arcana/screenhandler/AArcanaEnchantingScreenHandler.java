@@ -2,7 +2,8 @@ package me.anticode.ascendant_arcana.screenhandler;
 
 import me.anticode.ascendant_arcana.init.AArcanaItems;
 import me.anticode.ascendant_arcana.init.AArcanaScreenHandlers;
-import me.anticode.ascendant_arcana.recipe.EnchantmentRecipe;
+import me.anticode.ascendant_arcana.networking.EnchantingScreenSync;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.EnchantingTableBlock;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.ChiseledBookshelfBlockEntity;
@@ -17,7 +18,9 @@ import net.minecraft.screen.Property;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
+import org.apache.commons.compress.utils.Lists;
 
 import java.util.List;
 import java.util.Map;
@@ -26,7 +29,8 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
     private final Inventory inventory;
     private final ScreenHandlerContext context;
     public final int[] enchantmentPower = new int[] { 0 };
-    private List<EnchantmentRecipe> recipes;
+    public List<Enchantment> unlockedTreasures = Lists.newArrayList();
+    private PlayerEntity player;
 
     public AArcanaEnchantingScreenHandler(int Id, PlayerInventory playerInventory) {
         this(Id, playerInventory, ScreenHandlerContext.EMPTY);
@@ -42,13 +46,14 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
                 super.markDirty();
                 onContentChanged(this);
             }
-        };;
-        inventory.onOpen(playerInventory.player);
+        };
+        player = playerInventory.player;
+        inventory.onOpen(player);
 
-        this.addSlot(new EnchantableToolSlot(inventory, 0, 29, 27));
-        this.addSlot(new MagicalScrapSlot(inventory, 1, 164, 60));
-        this.addSlot(new EnchantmentIngredientSlot(inventory, 2, 164, 78));
-        this.addSlot(new EnchantmentIngredientSlot(inventory, 3, 164, 96));
+        addSlot(new EnchantableToolSlot(inventory, 0, 29, 27));
+        addSlot(new MagicalScrapSlot(inventory, 1, 164, 60));
+        addSlot(new EnchantmentIngredientSlot(inventory, 2, 164, 78));
+        addSlot(new EnchantmentIngredientSlot(inventory, 3, 164, 96));
 
         addProperty(Property.create(enchantmentPower, 0));
 
@@ -85,12 +90,15 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
                                     default -> 1;
                                 };
                                 i += enchantInstance.getValue() * rarityMultiplier;
+                                if (enchantInstance.getKey().isTreasure()) {
+                                    unlockedTreasures.add(enchantInstance.getKey());
+                                }
                             }
                         }
                     } else i++;
                 }
             }
-
+            ServerPlayNetworking.send((ServerPlayerEntity) player, EnchantingScreenSync.Id, new EnchantingScreenSync(syncId, unlockedTreasures).write());
             enchantmentPower[0] = i;
         });
     }

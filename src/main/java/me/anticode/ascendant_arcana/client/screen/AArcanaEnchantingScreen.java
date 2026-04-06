@@ -131,6 +131,11 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
         context.drawTexture(OVERLAYS, 153, 9 + k, (hasRecipes && recipes.size() > 6 ? 0 : 6), 0, 6, 27);
 
         ItemStack stack = getScreenHandler().getSlot(0).getStack();
+
+        if (!getScreenHandler().unlockedTreasures.isEmpty()) {
+            AscendantArcana.LOGGER.debug("Unlocked treasure!");
+        }
+
         if (stack != ItemStack.EMPTY) {
 
             int maxCapacity = AArcanaEnchantmentHelper.getEnchantmentCapacity(stack);
@@ -208,10 +213,11 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     }
 
     public void addEnchantment(EnchantmentRecipe recipe, int buttonX, int buttonY, int i) {
-        boolean locked = true;
+        boolean locked = false;
         int power = getScreenHandler().enchantmentPower[0];
         int requiredPower = AArcanaEnchantmentHelper.getRequiredEnchantmentPower(recipe.enchantment);
-        if (power >= requiredPower) locked = false;
+        if (power < requiredPower) locked = true;
+        if (recipe.enchantment.isTreasure() && !getScreenHandler().unlockedTreasures.contains(recipe.enchantment)) locked = true;
         EnchantmentTile tile = new EnchantmentTile(recipe, buttonX, buttonY, i, locked);
         enchantments.add(tile);
         addDrawableChild(tile);
