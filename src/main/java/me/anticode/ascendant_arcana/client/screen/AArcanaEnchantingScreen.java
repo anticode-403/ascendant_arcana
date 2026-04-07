@@ -141,14 +141,17 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
 
             context.drawTexture(OVERLAYS, 8, 110, 25, 0, MathHelper.floor(58 * multiplier), 5);
 
-            if (hasRecipes && update) {
+            if (update) {
                 clearEnchantments();
+                scrollPosition = 0;
+            }
+            if (hasRecipes && update) {
                 int i = 0;
                 for (EnchantmentRecipe recipe : recipes) {
                     addEnchantment(recipe, x + 68, y + 8 + (i * 19), i);
                     i++;
                 }
-            } else if (update) clearEnchantments();
+            }
 
             EnchantmentTile tile = enchantments.get(selectedTile);
             EnchantmentRecipe recipe = recipes.get(selectedTile);
