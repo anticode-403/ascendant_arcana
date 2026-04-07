@@ -15,6 +15,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.client.*;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
@@ -366,6 +367,14 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
                     .input(Items.GOLD_NUGGET, 5)
                     .input(Items.AMETHYST_SHARD, 2)
                     .criterion("obtain_lapis", InventoryChangedCriterion.Conditions.items(Items.LAPIS_LAZULI))
+                    .offerTo(exporter);
+
+            ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, AArcanaBlocks.COPPER_ENCHANTING_TABLE, 1)
+                    .input('b', Items.BOOK)
+                    .input('c', Items.CUT_COPPER)
+                    .input('g', Items.CYAN_CARPET)
+                    .pattern(" b ").pattern("gcg").pattern("ccc")
+                    .criterion("obtain_copper", InventoryChangedCriterion.Conditions.items(Items.COPPER_INGOT))
                     .offerTo(exporter);
 
             // Enchantments
