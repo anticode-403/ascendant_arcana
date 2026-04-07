@@ -355,7 +355,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             MutableText enchantText = Text.translatable(recipe.enchantment.getTranslationKey());
             if (enchantText.getString().length() > 15) enchantText = Text.literal(enchantText.asTruncatedString(14)).append("...");
             if (locked) enchantText.formatted(Formatting.OBFUSCATED);
-            textRenderer.draw(enchantText, scaledX + 12, scaledY + 4, 5592405, false, positionMatrix, context.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+            if (getHeight() > 6) textRenderer.draw(enchantText, scaledX + 12, scaledY + 4, 5592405, false, positionMatrix, context.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 15728880);
             MutableText levelText = null;
             if (maxLevel && !locked) levelText = Text.translatable("gui.enchanting.max_level");
             else if (!locked && height == getHeight()) {
