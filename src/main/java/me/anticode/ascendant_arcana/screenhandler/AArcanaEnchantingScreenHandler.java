@@ -1,5 +1,6 @@
 package me.anticode.ascendant_arcana.screenhandler;
 
+import me.anticode.ascendant_arcana.init.AArcanaBlocks;
 import me.anticode.ascendant_arcana.init.AArcanaItems;
 import me.anticode.ascendant_arcana.init.AArcanaScreenHandlers;
 import me.anticode.ascendant_arcana.logic.AArcanaEnchantmentHelper;
@@ -107,6 +108,9 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
                 }
             }
             ServerPlayNetworking.send((ServerPlayerEntity) player, EnchantingScreenSync.Id, new EnchantingScreenSync(syncId, unlockedTreasures).write());
+            if (world.getBlockState(pos).getBlock().getDefaultState().isOf(AArcanaBlocks.COPPER_ENCHANTING_TABLE)) {
+                if (i > 30) i = 30;
+            }
             enchantmentPower[0] = i;
         });
     }
