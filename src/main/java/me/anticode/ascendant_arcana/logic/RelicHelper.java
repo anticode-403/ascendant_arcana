@@ -48,6 +48,19 @@ public class RelicHelper {
         return nbtList;
     }
 
+    public static boolean canApplyRelic (ItemStack stack, Relics relic, int strength) {
+        Map<Relics, Integer> relics = fromNbt(stack.getOrCreateNbt());
+        if (relics.containsKey(relic) && strength > relics.get(relic)) return true;
+        else return getRelicCapacity(stack) > relics.keySet().size();
+    }
+
+    public static ItemStack applyRelic(ItemStack stack, Relics relicType, int strength) {
+        Map<Relics, Integer> relics = fromNbt(stack.getOrCreateNbt());
+        relics.put(relicType, strength);
+        stack.getOrCreateNbt().putInt(RELICS_KEY, relics.size());
+        return stack;
+    }
+
     public static int getValueFromNbt(NbtCompound nbt, Relics key) {
         if (nbt == null) return 0;
         Map<Relics, Integer> map = fromNbt(nbt);
