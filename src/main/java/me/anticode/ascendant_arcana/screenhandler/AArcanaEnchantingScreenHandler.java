@@ -29,7 +29,6 @@ import net.minecraft.stat.Stats;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.compress.utils.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
