@@ -428,6 +428,12 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             return super.getY() + offset - absoluteScrollPositionTop;
         }
 
+
+        @Override
+        protected boolean clicked(double mouseX, double mouseY) {
+            return this.active && this.visible && mouseX >= (double)this.getX() && mouseY >= (double)this.getY() && mouseX < (double)(this.getX() + this.width) && mouseY < (double)(this.getY() + this.getHeight());
+        }
+
         @Override
         public void onPress() {
             if (getHeight() == 0) return;
