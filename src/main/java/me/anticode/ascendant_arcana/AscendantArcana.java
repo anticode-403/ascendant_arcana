@@ -87,7 +87,7 @@ public class AscendantArcana implements ModInitializer {
                                 entryBuilder.weight(((LeafEntryAccess) entry).ascendantArcana$getWeight());
                                 entryBuilder.quality(((LeafEntryAccess) entry).ascendantArcana$getQuality());
                                 entryBuilder.apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(1, !bonus ? 3 : 4), new int[]{0, 1, 2, 4}));
-                                // I can't figure out how to replicate conditions, so in the off change the enchanted book has a conditional drop, we will unfortunately ignore it
+                                // I can't figure out how to replicate conditions, so in the off chance the enchanted book has a conditional drop, we will unfortunately ignore it
                                 poolBuilder.with(entryBuilder.build());
                             }
                         }
