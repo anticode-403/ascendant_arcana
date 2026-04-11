@@ -61,6 +61,11 @@ public class AscendantArcana implements ModInitializer {
                     LootPool.Builder poolBuilder = LootPool.builder().with(ItemEntry.builder(AArcanaItems.WARDEN_HEART));
                     builder.pool(poolBuilder.build());
                 }
+                else if (identifier.equals(Identifier.of("minecraft", "gameplay/piglin_bartering"))) {
+                    builder.modifyPools((poolBuilder) -> {
+                        poolBuilder.with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(2,4), new int[]{3})).weight(13));
+                    });
+                }
             }
             if (identifier.getPath().contains("chests")) {
                 builder.modifyPools((poolBuilder) -> {
@@ -81,7 +86,7 @@ public class AscendantArcana implements ModInitializer {
                                 LeafEntry.Builder<?> entryBuilder = ItemEntry.builder(AArcanaItems.RELIC);
                                 entryBuilder.weight(((LeafEntryAccess) entry).ascendantArcana$getWeight());
                                 entryBuilder.quality(((LeafEntryAccess) entry).ascendantArcana$getQuality());
-                                entryBuilder.apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(1, !bonus ? 3 : 4), new int[]{0, 1, 2, 3, 4}));
+                                entryBuilder.apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(1, !bonus ? 3 : 4), new int[]{0, 1, 2, 4}));
                                 // I can't figure out how to replicate conditions, so in the off change the enchanted book has a conditional drop, we will unfortunately ignore it
                                 poolBuilder.with(entryBuilder.build());
                             }
