@@ -63,27 +63,25 @@ public class AscendantArcana implements ModInitializer {
                 }
             }
             if (identifier.getPath().contains("chests")) {
-                LOGGER.debug(identifier.getPath());
                 builder.modifyPools((poolBuilder) -> {
                     LootPool pool = poolBuilder.build();
                     for (LootPoolEntry entry : pool.entries) {
                         if (entry instanceof ItemEntry) {
-                            LOGGER.debug("true");
-                            LOGGER.debug(((ItemEntryAccess)entry).ascendantArcana$getItem().getTranslationKey());
                             if (((ItemEntryAccess)entry).ascendantArcana$getItem() == Items.BOOK) {
                                 boolean enchanted = false;
+                                boolean bonus = false;
                                 for (LootFunction function : ((LeafEntryAccess)entry).ascendantArcana$getFunctions()) {
                                     if (function instanceof EnchantRandomlyLootFunction || function instanceof EnchantWithLevelsLootFunction) {
                                         enchanted = true;
+                                        if (function instanceof EnchantRandomlyLootFunction) bonus = true;
                                         break;
                                     }
                                 }
                                 if (!enchanted) continue;
-                                LOGGER.debug("BASED!!!");
                                 LeafEntry.Builder<?> entryBuilder = ItemEntry.builder(AArcanaItems.RELIC);
                                 entryBuilder.weight(((LeafEntryAccess) entry).ascendantArcana$getWeight());
                                 entryBuilder.quality(((LeafEntryAccess) entry).ascendantArcana$getQuality());
-                                entryBuilder.apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(1, 3), new int[]{0, 1, 2, 3, 4}));
+                                entryBuilder.apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(1, !bonus ? 3 : 4), new int[]{0, 1, 2, 3, 4}));
                                 // I can't figure out how to replicate conditions, so in the off change the enchanted book has a conditional drop, we will unfortunately ignore it
                                 poolBuilder.with(entryBuilder.build());
                             }
