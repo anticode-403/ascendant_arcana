@@ -362,14 +362,14 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
 
         @Override
         public void generate(Consumer<RecipeJsonProvider> exporter) {
-            ShapelessRecipeJsonBuilder.create(RecipeCategory.TOOLS, AArcanaItems.ENCHANTED_SCRAP, 1)
+            ShapelessRecipeJsonBuilder.create(RecipeCategory.TOOLS, AArcanaItems.ENCHANTED_SCRAP)
                     .input(Items.LAPIS_LAZULI, 2)
                     .input(Items.GOLD_NUGGET, 5)
                     .input(Items.AMETHYST_SHARD, 2)
                     .criterion("obtain_lapis", InventoryChangedCriterion.Conditions.items(Items.LAPIS_LAZULI))
                     .offerTo(exporter);
 
-            ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, AArcanaBlocks.COPPER_ENCHANTING_TABLE, 1)
+            ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, AArcanaBlocks.COPPER_ENCHANTING_TABLE)
                     .input('b', Items.BOOK)
                     .input('c', Items.CUT_COPPER)
                     .input('g', Items.CYAN_CARPET)
