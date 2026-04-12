@@ -74,7 +74,7 @@ public class RelicHelper {
             case DURABILITY -> strength * 600;
             case PROTECTION -> strength * 3;
             case HASTE -> strength * 10;
-            case ENCHANTMENT_CAPACITY -> strength;
+            case ENCHANTMENT_CAPACITY -> 5 + strength * 5;
         };
     }
 
