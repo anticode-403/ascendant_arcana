@@ -36,14 +36,18 @@ public class AArcanaEnchantmentHelper {
     }
 
     public static int getBaseEnchantmentCapacity(Item item) {
+        int base_capacity = (int)Math.floor(10 * AscendantArcana.config.capacity_multiplier);
         if (item instanceof ArmorItem armorItem) {
-            return armorItem.getEnchantability();
+            base_capacity = armorItem.getEnchantability();
         } else if (item instanceof ToolItem toolItem) {
-            return toolItem.getEnchantability();
+            base_capacity = toolItem.getEnchantability();
         } else if (item.getEnchantability() > 10) {
-            return item.getEnchantability();
+            base_capacity = item.getEnchantability();
         }
-        return (int)Math.floor(10 * AscendantArcana.config.capacity_multiplier);
+        if (AscendantArcana.config.base_enchantment_capacity_overrides.containsKey(Registries.ITEM.getId(item).toString())) {
+            base_capacity = AscendantArcana.config.base_enchantment_capacity_overrides.get(Registries.ITEM.getId(item).toString());
+        }
+        return base_capacity;
     }
 
     public static int getEnchantmentCapacity(ItemStack stack) {

@@ -68,4 +68,12 @@ public class AArcanaServerConfig implements ConfigData {
             "minecraft:crossbow",
             1
     );
+
+    @Comment("Items which have their base enchantment capacity overwritten")
+    public Map<String, Integer> base_enchantment_capacity_overrides = Map.of(
+            "minecraft:bow",
+            20,
+            "minecraft:crossbow",
+            20
+    );
 }
