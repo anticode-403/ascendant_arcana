@@ -65,7 +65,7 @@ public class AscendantArcana implements ModInitializer {
                         builder.pool(heartPool.build());
                     }
                     if (config.add_relics_to_entities) {
-                        LootPool.Builder relicPool = LootPool.builder().with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(ConstantLootNumberProvider.create(5), new int[]{0,4})));
+                        LootPool.Builder relicPool = LootPool.builder().with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(ConstantLootNumberProvider.create(5), new int[]{0,2,4})));
                         builder.pool(relicPool.build());
                     }
                 }
@@ -75,7 +75,7 @@ public class AscendantArcana implements ModInitializer {
                         builder.pool(poolBuilder.build());
                     }
                     else if (identifier.equals(Identifier.of("minecraft", "entities/wither"))) {
-                        LootPool.Builder relicPool = LootPool.builder().with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(ConstantLootNumberProvider.create(5), new int[]{1,3})));
+                        LootPool.Builder relicPool = LootPool.builder().with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(ConstantLootNumberProvider.create(5), new int[]{1,2,3})));
                         builder.pool(relicPool.build());
                     }
                     else if (identifier.equals(Identifier.of("minecraft", "entities/ender_dragon"))) {
@@ -86,9 +86,18 @@ public class AscendantArcana implements ModInitializer {
                         LootPool.Builder poolBuilder = LootPool.builder().with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(2, 4), new int[]{0})).weight(1)).with(EmptyEntry.builder().weight(19));
                         builder.pool(poolBuilder.build());
                     }
+                    else if (identifier.equals(Identifier.of("minecraft", "entities/evoker"))) {
+                        LootPool.Builder poolBuilder = LootPool.builder().with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(2, 4), new int[]{4})).weight(1)).with(EmptyEntry.builder().weight(19));
+                        builder.pool(poolBuilder.build());
+                    }
                     else if (identifier.equals(Identifier.of("minecraft", "gameplay/piglin_bartering"))) {
                         builder.modifyPools((poolBuilder) -> {
                             poolBuilder.with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(2,4), new int[]{3})).weight(13));
+                        });
+                    }
+                    else if (identifier.getPath().contains("archaeology/")) {
+                        builder.modifyPools((poolBuilder) -> {
+                            poolBuilder.with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(2,4), new int[]{1})));
                         });
                     }
                 }
