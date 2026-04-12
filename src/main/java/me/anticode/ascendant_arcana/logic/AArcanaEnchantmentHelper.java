@@ -75,8 +75,7 @@ public class AArcanaEnchantmentHelper {
         if (identifier == null) {
             return true;
         }
-        // TODO: Finish this implementation
-        return false;
+        return !AscendantArcana.config.disabled_enchantments.contains(identifier.toString());
     }
 
     public static boolean isEnchantmentAllowed(Enchantment enchantment) {
