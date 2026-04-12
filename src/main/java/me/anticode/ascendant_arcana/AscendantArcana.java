@@ -38,6 +38,8 @@ public class AscendantArcana implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        initializeConfigIfNull();
+
         AArcanaItems.initialize();
         AArcanaTags.initialize();
         AArcanaBlocks.initialize();
