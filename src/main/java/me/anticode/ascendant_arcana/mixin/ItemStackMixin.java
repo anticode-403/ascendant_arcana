@@ -19,6 +19,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,8 +39,19 @@ public abstract class ItemStackMixin {
     @Shadow
     public abstract Item getItem();
 
+    @Shadow
+    public abstract NbtList getEnchantments();
+
     @Unique
     private static Enchantment replacement = null;
+
+    @Inject(method = "addEnchantment", at = @At("HEAD"), cancellable = true)
+    private void enchantmentCapacity(Enchantment enchantment, int level, CallbackInfo ci) {
+        ItemStack stack = (ItemStack)(Object)this;
+        if (AArcanaEnchantmentHelper.getEnchantmentUsage(stack) + (AArcanaEnchantmentHelper.getEnchantmentCost(enchantment) * level) > AArcanaEnchantmentHelper.getEnchantmentCapacity(stack)) {
+            ci.cancel();
+        }
+    }
 
     @Inject(method = "addEnchantment", at = @At("HEAD"), cancellable = true)
     private void disableEnchantments(Enchantment enchantment, int level, CallbackInfo ci) {

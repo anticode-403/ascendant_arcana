@@ -1,8 +1,12 @@
 package me.anticode.ascendant_arcana.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import me.anticode.ascendant_arcana.init.AArcanaItems;
+import me.anticode.ascendant_arcana.logic.AArcanaEnchantmentHelper;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.AnvilScreenHandler;
@@ -10,6 +14,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Mixin(AnvilScreenHandler.class)
 public abstract class AnvilScreenHandlerMixin {
@@ -33,5 +40,20 @@ public abstract class AnvilScreenHandlerMixin {
     @ModifyReturnValue(method = "canTakeOutput", at = @At("RETURN"))
     private boolean canAlwaysTakeOutput(boolean value) {
         return true;
+    }
+
+    @ModifyExpressionValue(method = "updateResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/Enchantment;canCombine(Lnet/minecraft/enchantment/Enchantment;)Z"))
+    private boolean enchantmentCapacity(boolean value, @Local(ordinal = 0) ItemStack stack, @Local(ordinal = 2) ItemStack book) {
+        Map<Enchantment, Integer> bookEnchants = EnchantmentHelper.get(book);
+        int cost = 0;
+        for (Enchantment enchantment : bookEnchants.keySet()) {
+            if (enchantment.isAcceptableItem(stack) && EnchantmentHelper.isCompatible(EnchantmentHelper.get(stack).keySet(), enchantment)) {
+                cost += bookEnchants.get(enchantment) * AArcanaEnchantmentHelper.getEnchantmentCost(enchantment);
+            }
+        }
+        if (AArcanaEnchantmentHelper.getEnchantmentUsage(stack) + cost > AArcanaEnchantmentHelper.getEnchantmentCapacity(stack)) {
+            return false;
+        }
+        return value;
     }
 }
