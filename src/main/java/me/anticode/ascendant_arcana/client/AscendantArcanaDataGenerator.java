@@ -508,9 +508,29 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
                     .criterion("obtain_lapis", InventoryChangedCriterion.Conditions.items(Items.LAPIS_LAZULI))
                     .offerTo(exporter);
 
-            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 1, 3)
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 1, 0)
                     .input(Items.AMETHYST_SHARD, 1)
-                    .input(Items.GOLD_NUGGET, 1)
+                    .input(Items.IRON_INGOT)
+                    .criterion("obtain_amethyst", InventoryChangedCriterion.Conditions.items(Items.AMETHYST_SHARD))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 1, 1)
+                    .input(AArcanaItems.RESTORINE)
+                    .input(Items.AMETHYST_SHARD)
+                    .criterion("obtain_amethyst", InventoryChangedCriterion.Conditions.items(Items.AMETHYST_SHARD))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 1, 2)
+                    .input(Items.AMETHYST_SHARD)
+                    .input(Items.CLAY_BALL, 2)
+                    .criterion("obtain_amethyst", InventoryChangedCriterion.Conditions.items(Items.AMETHYST_SHARD))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 1, 3)
+                    .input(Items.AMETHYST_SHARD)
+                    .input(Items.GOLD_NUGGET)
+                    .criterion("obtain_amethyst", InventoryChangedCriterion.Conditions.items(Items.AMETHYST_SHARD))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 1, 4)
+                    .input(Items.LAPIS_LAZULI)
+                    .input(Items.AMETHYST_SHARD)
                     .criterion("obtain_amethyst", InventoryChangedCriterion.Conditions.items(Items.AMETHYST_SHARD))
                     .offerTo(exporter);
 
