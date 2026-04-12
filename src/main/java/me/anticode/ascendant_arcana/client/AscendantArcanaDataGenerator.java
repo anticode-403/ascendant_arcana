@@ -509,7 +509,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
                     .offerTo(exporter);
 
             RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 1, 0)
-                    .input(Items.AMETHYST_SHARD, 1)
+                    .input(Items.AMETHYST_SHARD)
                     .input(Items.IRON_INGOT)
                     .criterion("obtain_amethyst", InventoryChangedCriterion.Conditions.items(Items.AMETHYST_SHARD))
                     .offerTo(exporter);
