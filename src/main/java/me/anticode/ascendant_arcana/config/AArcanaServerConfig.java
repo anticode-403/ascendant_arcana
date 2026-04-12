@@ -18,6 +18,9 @@ public class AArcanaServerConfig implements ConfigData {
     @Comment("Relics are automatically added to ANY chest loot table containing an enchanted book. Recommended.")
     public boolean add_relics_to_chests = true;
 
+    @Comment("Add restorine to any chests containing amethyst shards or diamonds")
+    public boolean add_restorine_to_chests = true;
+
     @Comment("Add unique boss drops, like the Warden Heart. Disabling this will make some enchantments unobtainable.")
     public boolean add_boss_drops = true;
 

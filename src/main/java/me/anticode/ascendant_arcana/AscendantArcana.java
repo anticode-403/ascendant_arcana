@@ -23,6 +23,7 @@ import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.EnchantRandomlyLootFunction;
 import net.minecraft.loot.function.EnchantWithLevelsLootFunction;
 import net.minecraft.loot.function.LootFunction;
+import net.minecraft.loot.function.SetCountLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
 import net.minecraft.util.Identifier;
@@ -58,7 +59,7 @@ public class AscendantArcana implements ModInitializer {
         config = AutoConfig.getConfigHolder(AArcanaServerConfigWrapper.class).getConfig().server;
 
         LootTableEvents.MODIFY.register(((resourceManager, lootManager, identifier, builder, lootTableSource) -> {
-            if (lootTableSource.isBuiltin() && config.add_boss_drops || config.add_relics_to_entities) {
+            if (lootTableSource.isBuiltin() && (config.add_boss_drops || config.add_relics_to_entities)) {
                 if (identifier.equals(Identifier.of("minecraft", "entities/warden"))) {
                     if (config.add_boss_drops) {
                         LootPool.Builder heartPool = LootPool.builder().with(ItemEntry.builder(AArcanaItems.WARDEN_HEART));
@@ -93,12 +94,12 @@ public class AscendantArcana implements ModInitializer {
                     }
                 }
             }
-            if (identifier.getPath().contains("chests") && config.add_relics_to_chests) {
+            if (identifier.getPath().contains("chests") && config.add_relics_to_chests || config.add_restorine_to_chests) {
                 builder.modifyPools((poolBuilder) -> {
                     LootPool pool = poolBuilder.build();
                     for (LootPoolEntry entry : pool.entries) {
                         if (entry instanceof ItemEntry) {
-                            if (((ItemEntryAccess)entry).ascendantArcana$getItem() == Items.BOOK) {
+                            if (((ItemEntryAccess)entry).ascendantArcana$getItem() == Items.BOOK && config.add_relics_to_chests) {
                                 boolean enchanted = false;
                                 boolean bonus = false;
                                 for (LootFunction function : ((LeafEntryAccess)entry).ascendantArcana$getFunctions()) {
@@ -114,6 +115,14 @@ public class AscendantArcana implements ModInitializer {
                                 entryBuilder.quality(((LeafEntryAccess) entry).ascendantArcana$getQuality());
                                 entryBuilder.apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(1, !bonus ? 3 : 4), new int[]{0, 1, 2, 4}));
                                 // I can't figure out how to replicate conditions, so in the off chance the enchanted book has a conditional drop, we will unfortunately ignore it
+                                poolBuilder.with(entryBuilder.build());
+                            } else if ((((ItemEntryAccess)entry).ascendantArcana$getItem() == Items.AMETHYST_SHARD || ((ItemEntryAccess)entry).ascendantArcana$getItem() == Items.DIAMOND) && config.add_restorine_to_chests) {
+                                LeafEntry.Builder<?> entryBuilder = ItemEntry.builder(AArcanaItems.RESTORINE).apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 3)));
+                                if (((ItemEntryAccess)entry).ascendantArcana$getItem() == Items.DIAMOND)
+                                    entryBuilder.weight(((LeafEntryAccess) entry).ascendantArcana$getWeight() / 4);
+                                else
+                                    entryBuilder.weight(((LeafEntryAccess) entry).ascendantArcana$getWeight() / 2);
+                                entryBuilder.quality(((LeafEntryAccess) entry).ascendantArcana$getQuality());
                                 poolBuilder.with(entryBuilder.build());
                             }
                         }
