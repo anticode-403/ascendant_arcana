@@ -55,9 +55,6 @@ public class AscendantArcana implements ModInitializer {
             screenHandler.recipe = packet.recipe();
         });
 
-        AutoConfig.register(AArcanaServerConfigWrapper.class, PartitioningSerializer.wrap(JanksonConfigSerializer::new));
-        config = AutoConfig.getConfigHolder(AArcanaServerConfigWrapper.class).getConfig().server;
-
         LootTableEvents.MODIFY.register(((resourceManager, lootManager, identifier, builder, lootTableSource) -> {
             if (lootTableSource.isBuiltin() && (config.add_boss_drops || config.add_relics_to_entities)) {
                 if (identifier.equals(Identifier.of("minecraft", "entities/warden"))) {
@@ -130,5 +127,11 @@ public class AscendantArcana implements ModInitializer {
                 });
             }
         }));
+    }
+
+    public static void initializeConfigIfNull() {
+        if (config != null) return;
+        AutoConfig.register(AArcanaServerConfigWrapper.class, PartitioningSerializer.wrap(JanksonConfigSerializer::new));
+        config = AutoConfig.getConfigHolder(AArcanaServerConfigWrapper.class).getConfig().server;
     }
 }

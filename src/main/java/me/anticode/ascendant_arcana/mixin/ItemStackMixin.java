@@ -23,9 +23,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.*;
@@ -37,6 +37,37 @@ public abstract class ItemStackMixin {
 
     @Shadow
     public abstract Item getItem();
+
+    @Unique
+    private static Enchantment replacement = null;
+
+    @Inject(method = "addEnchantment", at = @At("HEAD"), cancellable = true)
+    private void disableEnchantments(Enchantment enchantment, int level, CallbackInfo ci) {
+        if (!AArcanaEnchantmentHelper.isEnchantmentEnabled(enchantment)) {
+            replacement = AArcanaEnchantmentHelper.getReplacement(enchantment, (ItemStack) (Object) this);
+            if (replacement == null) {
+                ci.cancel();
+            }
+        }
+    }
+
+    @ModifyVariable(method = "addEnchantment", at = @At("HEAD"), argsOnly = true)
+    private Enchantment disableEnchantments(Enchantment value) {
+        if (replacement != null) {
+            return replacement;
+        }
+        return value;
+    }
+
+    @ModifyVariable(method = "addEnchantment", at = @At("HEAD"), argsOnly = true)
+    private int disableEnchantments(int value) {
+        if (replacement != null) {
+            Enchantment temp = replacement;
+            replacement = null;
+            return Math.min(temp.getMaxLevel(), value);
+        }
+        return value;
+    }
 
     @ModifyReturnValue(method = "getMaxDamage", at = @At("RETURN"))
     private int implementDurabilityRelic(int maxDamage) {

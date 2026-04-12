@@ -8,16 +8,11 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolItem;
+import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class AArcanaEnchantmentHelper {
     public static String ENCHANTMENT_CAPACITY_KEY = "AArcanaEnchantmentCapacity";
@@ -71,15 +66,33 @@ public class AArcanaEnchantmentHelper {
         stack.getOrCreateNbt().putInt(ENCHANTMENT_CAPACITY_KEY, value);
     }
 
-    public static boolean isEnchantmentAllowed(Identifier identifier) {
+    public static boolean isEnchantmentEnabled(Identifier identifier) {
+        AscendantArcana.initializeConfigIfNull();
         if (identifier == null) {
             return true;
         }
         return !AscendantArcana.config.disabled_enchantments.contains(identifier.toString());
     }
 
-    public static boolean isEnchantmentAllowed(Enchantment enchantment) {
-        return isEnchantmentAllowed(Registries.ENCHANTMENT.getId(enchantment));
+    public static boolean isEnchantmentEnabled(Enchantment enchantment) {
+        return isEnchantmentEnabled(Registries.ENCHANTMENT.getId(enchantment));
+    }
+
+    public static Enchantment getReplacement(Enchantment enchantment, ItemStack stack) {
+        List<Enchantment> enchantments = new ArrayList<>();
+        for (Enchantment entry : Registries.ENCHANTMENT) {
+            if (stack.isOf(Items.ENCHANTED_BOOK) || entry.isAcceptableItem(stack)) {
+                enchantments.add(entry);
+            }
+        }
+        if (enchantments.isEmpty()) {
+            return null;
+        }
+        int index = Registries.ENCHANTMENT.getId(enchantment).hashCode() % enchantments.size();
+        if (index < 0) {
+            index += enchantments.size();
+        }
+        return enchantments.get(index);
     }
 
     public static void removeEnchantmentAttributes(Map<EntityAttribute, EntityAttributeModifier> attributeModifiers, LivingEntity entity, EquipmentSlot slot) {
