@@ -149,7 +149,7 @@ public class AArcanaEnchantmentHelper {
         randomBytes[6] &= 0x0f;
         randomBytes[6] |= 0x40;
         randomBytes[8] &= 0x3f;
-        randomBytes[8] |= 0x80;
+        randomBytes[8] |= (byte) 0x80;
         return UUID.nameUUIDFromBytes(randomBytes);
     }
 }

@@ -89,6 +89,7 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
                 if (EnchantingTableBlock.canAccessPowerProvider(world, pos, blockPos)) {
                     if (world.getBlockEntity(pos.add(blockPos), BlockEntityType.CHISELED_BOOKSHELF).isPresent()) {
                         ChiseledBookshelfBlockEntity chiseledBookshelf = (ChiseledBookshelfBlockEntity) world.getBlockEntity(pos.add(blockPos));
+                        assert chiseledBookshelf != null;
                         for (int j = 0; j < chiseledBookshelf.size(); j++) {
                             ItemStack itemStack1 = chiseledBookshelf.getStack(j);
                             for (Map.Entry<Enchantment, Integer> enchantInstance : EnchantmentHelper.get(itemStack1).entrySet()) {

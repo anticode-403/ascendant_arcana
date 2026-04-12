@@ -35,12 +35,11 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     private static final Identifier TEXTURE = new Identifier(AscendantArcana.modID, "textures/gui/container/enchanting_table.png");
     private static final Identifier OVERLAYS = new Identifier(AscendantArcana.modID, "textures/gui/container/enchanting_table_elements.png");
     List<EnchantmentRecipe> recipes = new ArrayList<>();
-    private List<EnchantmentTile> enchantments = new ArrayList<>();
+    private final List<EnchantmentTile> enchantments = new ArrayList<>();
     private LetsGoEnchantingButton enchantingButton;
     private boolean enchantingButtonEnabled = false;
     private float scrollPosition;
     private boolean scrollerClicked;
-    private int visibleTopRow;
     private ItemStack lastItem;
     private int lastBackgroundWidth;
     private int lastBackgroundHeight;
@@ -101,6 +100,8 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
         if (lastItem != null && lastItem != itemStack) {
             update = true;
             recipes = new ArrayList<>();
+            assert client != null;
+            assert client.world != null;
             for (EnchantmentRecipe recipe : client.world.getRecipeManager().listAllOfType(AArcanaRecipes.ENCHANTMENT_RECIPE_TYPE)) {
                 if (recipe.enchantment.isAcceptableItem(itemStack)) {
                     recipes.add(recipe);
@@ -297,7 +298,6 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             int k = j + 121;
             this.scrollPosition = ((float)mouseY - (float)j - 7.5F) / ((float)(k - j) - 15.0F);
             this.scrollPosition = MathHelper.clamp(this.scrollPosition, 0.0F, 1.0F);
-            this.visibleTopRow = Math.max((int)((double)(this.scrollPosition * (float)-recipes.size()) + (double)0.5F), 0);
             return true;
         } else {
             return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
@@ -309,7 +309,6 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             int recipeSize = recipes.size();
             float f = (float)amount / (float)-recipeSize;
             this.scrollPosition = MathHelper.clamp(this.scrollPosition - f, 0.0F, 1.0F);
-            this.visibleTopRow = Math.max((int)(this.scrollPosition * (float)-recipeSize + 0.5F), 0);
         }
 
         return true;
@@ -474,6 +473,8 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
         @Override
         public void onPress() {
             if (!enabled) return;
+            assert client != null;
+            assert client.interactionManager != null;
             client.interactionManager.clickButton(getScreenHandler().syncId, 0);
         }
 

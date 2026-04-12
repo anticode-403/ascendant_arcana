@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@SuppressWarnings({"unchecked", "RedundantCast"})
+@SuppressWarnings({"RedundantCast"})
 @Mixin(SimpleRegistry.class)
 public abstract class SimpleRegistryMixin<T> {
     @Shadow

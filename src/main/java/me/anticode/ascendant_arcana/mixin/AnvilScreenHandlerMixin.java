@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Mixin(AnvilScreenHandler.class)

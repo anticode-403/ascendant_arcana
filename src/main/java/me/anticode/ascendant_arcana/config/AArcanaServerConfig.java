@@ -4,7 +4,6 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +40,7 @@ public class AArcanaServerConfig implements ConfigData {
     public int very_rare_enchanting_power = 80;
 
     @Comment("""
-            Ascendant Arcana disables many vanilla enchantments because they stress the capacity system too much with 
+            Ascendant Arcana disables many vanilla enchantments because they stress the capacity system too much with
             'required' enchantments. Enchantments are generally meant to be more interesting and meaningfully impactful
             but this list is configurable so you can enable or disable whatever you want.
             

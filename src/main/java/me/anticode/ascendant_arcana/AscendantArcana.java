@@ -91,14 +91,10 @@ public class AscendantArcana implements ModInitializer {
                         builder.pool(poolBuilder.build());
                     }
                     else if (identifier.equals(Identifier.of("minecraft", "gameplay/piglin_bartering"))) {
-                        builder.modifyPools((poolBuilder) -> {
-                            poolBuilder.with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(2,4), new int[]{3})).weight(13));
-                        });
+                        builder.modifyPools((poolBuilder) -> poolBuilder.with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(2,4), new int[]{3})).weight(13)));
                     }
                     else if (identifier.getPath().contains("archaeology/")) {
-                        builder.modifyPools((poolBuilder) -> {
-                            poolBuilder.with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(2,4), new int[]{1})));
-                        });
+                        builder.modifyPools((poolBuilder) -> poolBuilder.with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(2,4), new int[]{1}))));
                     }
                 }
             }
