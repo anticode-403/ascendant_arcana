@@ -1,5 +1,6 @@
 package me.anticode.ascendant_arcana.client;
 
+import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.anticode.ascendant_arcana.AscendantArcana;
@@ -10,26 +11,31 @@ import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.*;
+import net.minecraft.advancement.Advancement;
+import net.minecraft.advancement.CriterionMerger;
+import net.minecraft.advancement.criterion.CriterionConditions;
 import net.minecraft.advancement.criterion.InventoryChangedCriterion;
+import net.minecraft.advancement.criterion.RecipeUnlockedCriterion;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.client.*;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
+import net.minecraft.data.server.recipe.*;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.SetCountLootFunction;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
+import net.minecraft.recipe.FireworkRocketRecipe;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
+import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.*;
 import net.minecraft.registry.tag.BlockTags;
@@ -38,6 +44,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -359,6 +366,138 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
                 return null;
             }
         }
+        
+        public static class RelicRecipeJsonBuilder extends RecipeJsonBuilder implements CraftingRecipeJsonBuilder {
+            private final RecipeCategory category;
+            private final int strength;
+            private final int relic;
+            private final List<Ingredient> inputs = Lists.newArrayList();
+            private final Advancement.Builder advancementBuilder = Advancement.Builder.createUntelemetered();
+            @Nullable
+            private String group;
+
+            public RelicRecipeJsonBuilder(RecipeCategory category, int strength, int relic) {
+                this.category = category;
+                this.strength = strength;
+                this.relic = relic;
+            }
+
+            public static RelicRecipeJsonBuilder create(RecipeCategory category, int strength, int relic) {
+                return new RelicRecipeJsonBuilder(category, strength, relic);
+            }
+
+            public RelicRecipeJsonBuilder input(TagKey<Item> tag) {
+                return this.input(Ingredient.fromTag(tag));
+            }
+
+            public RelicRecipeJsonBuilder input(ItemConvertible itemProvider) {
+                return this.input((ItemConvertible)itemProvider, 1);
+            }
+
+            public RelicRecipeJsonBuilder input(ItemConvertible itemProvider, int size) {
+                for(int i = 0; i < size; ++i) {
+                    this.input(Ingredient.ofItems(new ItemConvertible[]{itemProvider}));
+                }
+
+                return this;
+            }
+
+            public RelicRecipeJsonBuilder input(Ingredient ingredient) {
+                return this.input((Ingredient)ingredient, 1);
+            }
+
+            public RelicRecipeJsonBuilder input(Ingredient ingredient, int size) {
+                for(int i = 0; i < size; ++i) {
+                    this.inputs.add(ingredient);
+                }
+
+                return this;
+            }
+
+            public RelicRecipeJsonBuilder criterion(String string, CriterionConditions criterionConditions) {
+                this.advancementBuilder.criterion(string, criterionConditions);
+                return this;
+            }
+
+            public RelicRecipeJsonBuilder group(@Nullable String string) {
+                this.group = string;
+                return this;
+            }
+
+            @Override
+            public Item getOutputItem() {
+                return AArcanaItems.RELIC;
+            }
+
+            public void offerTo(Consumer<RecipeJsonProvider> exporter, Identifier recipeId) {
+                this.validate(recipeId);
+                this.advancementBuilder.parent(ROOT).criterion("has_the_recipe", RecipeUnlockedCriterion.create(recipeId)).rewards(net.minecraft.advancement.AdvancementRewards.Builder.recipe(recipeId)).criteriaMerger(CriterionMerger.OR);
+                exporter.accept(new RelicRecipeJsonBuilder.RelicRecipeJsonProvider(recipeId, this.strength, this.relic, this.group == null ? "" : this.group, getCraftingCategory(this.category), this.inputs, this.advancementBuilder, recipeId.withPrefixedPath("recipes/" + this.category.getName() + "/")));
+            }
+
+            private void validate(Identifier recipeId) {
+                if (this.advancementBuilder.getCriteria().isEmpty()) {
+                    throw new IllegalStateException("No way of obtaining recipe " + recipeId);
+                }
+            }
+
+            public static class RelicRecipeJsonProvider extends RecipeJsonBuilder.CraftingRecipeJsonProvider {
+                private final Identifier recipeId;
+                private final int strength;
+                private final int relic;
+                private final String group;
+                private final List<Ingredient> inputs;
+                private final Advancement.Builder advancementBuilder;
+                private final Identifier advancementId;
+
+                public RelicRecipeJsonProvider(Identifier recipeId, int strength, int relic, String group, CraftingRecipeCategory craftingCategory, List<Ingredient> inputs, Advancement.Builder advancementBuilder, Identifier advancementId) {
+                    super(craftingCategory);
+                    this.recipeId = recipeId;
+                    this.strength = strength;
+                    this.relic = relic;
+                    this.group = group;
+                    this.inputs = inputs;
+                    this.advancementBuilder = advancementBuilder;
+                    this.advancementId = advancementId;
+                }
+
+                public void serialize(JsonObject json) {
+                    super.serialize(json);
+                    if (!this.group.isEmpty()) {
+                        json.addProperty("group", this.group);
+                    }
+
+                    JsonArray jsonArray = new JsonArray();
+
+                    for(Ingredient ingredient : this.inputs) {
+                        jsonArray.add(ingredient.toJson());
+                    }
+
+                    json.add("ingredients", jsonArray);
+                    json.addProperty("strength", this.strength);
+                    json.addProperty("relic", this.relic);
+                }
+
+                public RecipeSerializer<?> getSerializer() {
+                    return AArcanaRecipes.RELIC_CRAFTING_RECIPE_SERIALIZER;
+                }
+
+                public Identifier getRecipeId() {
+                    return this.recipeId;
+                }
+
+                @Nullable
+                public JsonObject toAdvancementJson() {
+                    return this.advancementBuilder.toJson();
+                }
+
+                @Nullable
+                public Identifier getAdvancementId() {
+                    return this.advancementId;
+                }
+            }
+        }
+
 
         @Override
         public void generate(Consumer<RecipeJsonProvider> exporter) {
@@ -367,6 +506,12 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
                     .input(Items.GOLD_NUGGET, 5)
                     .input(Items.AMETHYST_SHARD, 2)
                     .criterion("obtain_lapis", InventoryChangedCriterion.Conditions.items(Items.LAPIS_LAZULI))
+                    .offerTo(exporter);
+
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 1, 3)
+                    .input(Items.AMETHYST_SHARD, 1)
+                    .input(Items.GOLD_NUGGET, 1)
+                    .criterion("obtain_amethyst", InventoryChangedCriterion.Conditions.items(Items.AMETHYST_SHARD))
                     .offerTo(exporter);
 
             ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, AArcanaBlocks.COPPER_ENCHANTING_TABLE)
