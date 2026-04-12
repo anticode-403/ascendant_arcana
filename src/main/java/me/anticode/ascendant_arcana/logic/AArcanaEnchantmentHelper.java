@@ -26,6 +26,10 @@ public class AArcanaEnchantmentHelper {
         };
     }
 
+    public static int getEnchantmentCost(Enchantment enchantment, int level) {
+        return getEnchantmentCost(enchantment) * level;
+    }
+
     public static int getEnchantmentUsage(ItemStack stack) {
         if (!stack.hasEnchantments()) return 0;
         int cost = 0;
@@ -33,6 +37,10 @@ public class AArcanaEnchantmentHelper {
             cost += getEnchantmentCost(enchantInstance.getKey()) * enchantInstance.getValue();
         }
         return cost;
+    }
+
+    public static boolean testEnchantmentCost(ItemStack stack, int extra) {
+        return getEnchantmentUsage(stack) + extra < getEnchantmentCapacity(stack);
     }
 
     public static int getBaseEnchantmentCapacity(Item item) {
@@ -66,7 +74,7 @@ public class AArcanaEnchantmentHelper {
         };
     }
 
-    public static void setEnchantmentCapacityKey(ItemStack stack, int value) {
+    public static void setEnchantmentCapacity(ItemStack stack, int value) {
         stack.getOrCreateNbt().putInt(ENCHANTMENT_CAPACITY_KEY, value);
     }
 

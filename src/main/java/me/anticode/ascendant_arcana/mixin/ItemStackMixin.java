@@ -48,7 +48,7 @@ public abstract class ItemStackMixin {
     @Inject(method = "addEnchantment", at = @At("HEAD"), cancellable = true)
     private void enchantmentCapacity(Enchantment enchantment, int level, CallbackInfo ci) {
         ItemStack stack = (ItemStack)(Object)this;
-        if (AArcanaEnchantmentHelper.getEnchantmentUsage(stack) + (AArcanaEnchantmentHelper.getEnchantmentCost(enchantment) * level) > AArcanaEnchantmentHelper.getEnchantmentCapacity(stack)) {
+        if (!AArcanaEnchantmentHelper.testEnchantmentCost(stack, AArcanaEnchantmentHelper.getEnchantmentCost(enchantment, level))) {
             ci.cancel();
         }
     }

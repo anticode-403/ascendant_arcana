@@ -57,9 +57,12 @@ public class EnchantmentHelperMixin {
     @ModifyVariable(method = "set", at = @At("HEAD"), argsOnly = true)
     private static Map<Enchantment, Integer> enchantmentCapacity(Map<Enchantment, Integer> value) {
         Map<Enchantment, Integer> newMap = new LinkedHashMap<>();
+        int runningTotal = 0;
         for (Enchantment enchantment : value.keySet()) {
-            if (AArcanaEnchantmentHelper.getEnchantmentUsage(cachedStack) + (AArcanaEnchantmentHelper.getEnchantmentCost(enchantment) * value.get(enchantment)) > AArcanaEnchantmentHelper.getEnchantmentCapacity(cachedStack)) {
+            int enchantCost = AArcanaEnchantmentHelper.getEnchantmentCost(enchantment) * value.get(enchantment);
+            if (AArcanaEnchantmentHelper.getEnchantmentUsage(cachedStack) + runningTotal + enchantCost > AArcanaEnchantmentHelper.getEnchantmentCapacity(cachedStack)) {
                 newMap.put(enchantment, value.get(enchantment));
+                runningTotal += enchantCost;
             }
         }
         cachedStack = null;

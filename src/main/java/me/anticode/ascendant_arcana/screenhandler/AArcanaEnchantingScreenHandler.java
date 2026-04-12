@@ -169,8 +169,7 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
 
         // Verifying
         if (recipe.levelCost > player.experienceLevel) return false;
-        int capacityCost = AArcanaEnchantmentHelper.getEnchantmentCost(recipe.enchantment);
-        if (AArcanaEnchantmentHelper.getEnchantmentUsage(itemStack) + capacityCost > AArcanaEnchantmentHelper.getEnchantmentCapacity(itemStack)) return false;
+        if (!AArcanaEnchantmentHelper.testEnchantmentCost(itemStack, AArcanaEnchantmentHelper.getEnchantmentCost(recipe.enchantment))) return false;
         if (!scrapStack.isOf(AArcanaItems.ENCHANTED_SCRAP)) return false;
         if (scrapStack.getCount() < recipe.magicalScrapCost) return false;
         if (recipe.primaryIngredientStack != null) {

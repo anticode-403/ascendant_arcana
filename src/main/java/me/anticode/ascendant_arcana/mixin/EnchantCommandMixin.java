@@ -24,7 +24,7 @@ public class EnchantCommandMixin {
 
     @ModifyExpressionValue(method = "execute", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper;isCompatible(Ljava/util/Collection;Lnet/minecraft/enchantment/Enchantment;)Z"))
     private static boolean enchantmentCapacity(boolean value, @Local ItemStack stack, @Local Enchantment enchantment, @Local(argsOnly = true) int level) {
-        if (AArcanaEnchantmentHelper.getEnchantmentUsage(stack) + (AArcanaEnchantmentHelper.getEnchantmentCost(enchantment) * level) > AArcanaEnchantmentHelper.getEnchantmentCapacity(stack)) {
+        if (!AArcanaEnchantmentHelper.testEnchantmentCost(stack, AArcanaEnchantmentHelper.getEnchantmentCost(enchantment, level))) {
             value = false;
         }
         cachedStack = null;

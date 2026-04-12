@@ -39,7 +39,7 @@ public class EnchantedBookItemMixin {
 
     @Inject(method = "addEnchantment", at = @At("HEAD"), cancellable = true)
     private static void enchantmentCapacity(ItemStack stack, EnchantmentLevelEntry entry, CallbackInfo ci) {
-        if (AArcanaEnchantmentHelper.getEnchantmentUsage(stack) + (AArcanaEnchantmentHelper.getEnchantmentCost(entry.enchantment) * entry.level) > AArcanaEnchantmentHelper.getEnchantmentCapacity(stack)) {
+        if (!AArcanaEnchantmentHelper.testEnchantmentCost(stack, AArcanaEnchantmentHelper.getEnchantmentCost(entry.enchantment, entry.level))) {
             ci.cancel();
         }
     }
