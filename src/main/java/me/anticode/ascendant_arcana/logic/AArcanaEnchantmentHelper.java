@@ -1,5 +1,6 @@
 package me.anticode.ascendant_arcana.logic;
 
+import me.anticode.ascendant_arcana.AscendantArcana;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EquipmentSlot;
@@ -47,7 +48,7 @@ public class AArcanaEnchantmentHelper {
         } else if (item.getEnchantability() > 10) {
             return item.getEnchantability();
         }
-        return 10;
+        return (int)Math.floor(10 * AscendantArcana.config.capacity_multiplier);
     }
 
     public static int getEnchantmentCapacity(ItemStack stack) {
