@@ -58,36 +58,42 @@ public class AscendantArcana implements ModInitializer {
         config = AutoConfig.getConfigHolder(AArcanaServerConfigWrapper.class).getConfig().server;
 
         LootTableEvents.MODIFY.register(((resourceManager, lootManager, identifier, builder, lootTableSource) -> {
-            if (lootTableSource.isBuiltin()) {
+            if (lootTableSource.isBuiltin() && config.add_boss_drops || config.add_relics_to_entities) {
                 if (identifier.equals(Identifier.of("minecraft", "entities/warden"))) {
-                    LootPool.Builder heartPool = LootPool.builder().with(ItemEntry.builder(AArcanaItems.WARDEN_HEART));
-                    LootPool.Builder relicPool = LootPool.builder().with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(ConstantLootNumberProvider.create(5), new int[]{0,4})));
-                    builder.pool(heartPool.build());
-                    builder.pool(relicPool.build());
+                    if (config.add_boss_drops) {
+                        LootPool.Builder heartPool = LootPool.builder().with(ItemEntry.builder(AArcanaItems.WARDEN_HEART));
+                        builder.pool(heartPool.build());
+                    }
+                    if (config.add_relics_to_entities) {
+                        LootPool.Builder relicPool = LootPool.builder().with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(ConstantLootNumberProvider.create(5), new int[]{0,4})));
+                        builder.pool(relicPool.build());
+                    }
                 }
-                else if (identifier.equals(Identifier.of("minecraft", "entities/witch"))) {
-                    LootPool.Builder poolBuilder = LootPool.builder().with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(2, 4), new int[]{4})).weight(1)).with(EmptyEntry.builder().weight(19));
-                    builder.pool(poolBuilder.build());
-                }
-                else if (identifier.equals(Identifier.of("minecraft", "entities/wither"))) {
-                    LootPool.Builder relicPool = LootPool.builder().with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(ConstantLootNumberProvider.create(5), new int[]{1,3})));
-                    builder.pool(relicPool.build());
-                }
-                else if (identifier.equals(Identifier.of("minecraft", "entities/ender_dragon"))) {
-                    LootPool.Builder relicPool = LootPool.builder().with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(ConstantLootNumberProvider.create(5), new int[]{2,3})));
-                    builder.pool(relicPool.build());
-                }
-                else if (identifier.equals(Identifier.of("minecraft", "entities/wither_skeleton"))) {
-                    LootPool.Builder poolBuilder = LootPool.builder().with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(2, 4), new int[]{0})).weight(1)).with(EmptyEntry.builder().weight(19));
-                    builder.pool(poolBuilder.build());
-                }
-                else if (identifier.equals(Identifier.of("minecraft", "gameplay/piglin_bartering"))) {
-                    builder.modifyPools((poolBuilder) -> {
-                        poolBuilder.with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(2,4), new int[]{3})).weight(13));
-                    });
+                else if (config.add_relics_to_entities) {
+                    if (identifier.equals(Identifier.of("minecraft", "entities/witch"))) {
+                        LootPool.Builder poolBuilder = LootPool.builder().with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(2, 4), new int[]{4})).weight(1)).with(EmptyEntry.builder().weight(19));
+                        builder.pool(poolBuilder.build());
+                    }
+                    else if (identifier.equals(Identifier.of("minecraft", "entities/wither"))) {
+                        LootPool.Builder relicPool = LootPool.builder().with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(ConstantLootNumberProvider.create(5), new int[]{1,3})));
+                        builder.pool(relicPool.build());
+                    }
+                    else if (identifier.equals(Identifier.of("minecraft", "entities/ender_dragon"))) {
+                        LootPool.Builder relicPool = LootPool.builder().with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(ConstantLootNumberProvider.create(5), new int[]{2,3})));
+                        builder.pool(relicPool.build());
+                    }
+                    else if (identifier.equals(Identifier.of("minecraft", "entities/wither_skeleton"))) {
+                        LootPool.Builder poolBuilder = LootPool.builder().with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(2, 4), new int[]{0})).weight(1)).with(EmptyEntry.builder().weight(19));
+                        builder.pool(poolBuilder.build());
+                    }
+                    else if (identifier.equals(Identifier.of("minecraft", "gameplay/piglin_bartering"))) {
+                        builder.modifyPools((poolBuilder) -> {
+                            poolBuilder.with(ItemEntry.builder(AArcanaItems.RELIC).apply(PopulateRelicLootFunction.builder(UniformLootNumberProvider.create(2,4), new int[]{3})).weight(13));
+                        });
+                    }
                 }
             }
-            if (identifier.getPath().contains("chests")) {
+            if (identifier.getPath().contains("chests") && config.add_relics_to_chests) {
                 builder.modifyPools((poolBuilder) -> {
                     LootPool pool = poolBuilder.build();
                     for (LootPoolEntry entry : pool.entries) {

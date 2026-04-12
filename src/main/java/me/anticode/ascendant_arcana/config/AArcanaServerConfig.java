@@ -11,4 +11,13 @@ public class AArcanaServerConfig implements ConfigData {
 
     @Comment("Default relic capacity of an item, recommended is 2 but 1 could provide for more interesting gameplay.")
     public int base_relic_capacity = 2;
+
+    @Comment("Some vanilla mobs drop relics on death, like Witches, Wither Skeletons, and bosses. Recommended.")
+    public boolean add_relics_to_entities = true;
+
+    @Comment("Relics are automatically added to ANY chest loot table containing an enchanted book. Recommended.")
+    public boolean add_relics_to_chests = true;
+
+    @Comment("Add unique boss drops, like the Warden Heart. Disabling this will make some enchantments unobtainable.")
+    public boolean add_boss_drops = true;
 }
