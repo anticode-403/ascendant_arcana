@@ -60,10 +60,10 @@ public class AArcanaEnchantmentHelper {
 
     public static int getRequiredEnchantmentPower(Enchantment enchantment) {
         return switch (enchantment.getRarity()) {
-            case COMMON -> 0;
-            case UNCOMMON -> 22;
-            case RARE -> 50;
-            case VERY_RARE -> 80;
+            case COMMON -> AscendantArcana.config.minimum_enchanting_power;
+            case UNCOMMON -> AscendantArcana.config.uncommon_enchanting_power;
+            case RARE -> AscendantArcana.config.rare_enchanting_power;
+            case VERY_RARE -> AscendantArcana.config.very_rare_enchanting_power;
         };
     }
 

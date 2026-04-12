@@ -20,4 +20,16 @@ public class AArcanaServerConfig implements ConfigData {
 
     @Comment("Add unique boss drops, like the Warden Heart. Disabling this will make some enchantments unobtainable.")
     public boolean add_boss_drops = true;
+
+    @Comment("The minimum amount of power (bookshelves and enchanted books within range of an enchanting table) to enchant")
+    public int minimum_enchanting_power = 0;
+
+    @Comment("The minimum amount of power required to enchant uncommon enchantments")
+    public int uncommon_enchanting_power = 22;
+
+    @Comment("The minimum amount of power required to enchant rare enchantments")
+    public int rare_enchanting_power = 50;
+
+    @Comment("The minimum amount of power required to enchant very rare enchantments")
+    public int very_rare_enchanting_power = 80;
 }
