@@ -4,6 +4,10 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Config(name = "server")
 public class AArcanaServerConfig implements ConfigData {
     @Comment("Multiplies the base enchantment capacity and all gains by this value. 1.0 is recommended.")
@@ -24,15 +28,44 @@ public class AArcanaServerConfig implements ConfigData {
     @Comment("Add unique boss drops, like the Warden Heart. Disabling this will make some enchantments unobtainable.")
     public boolean add_boss_drops = true;
 
-    @Comment("The minimum amount of power (bookshelves and enchanted books within range of an enchanting table) to enchant")
+    @Comment("The minimum amount of power (bookshelves and enchanted books within range of an enchanting table) to enchant.")
     public int minimum_enchanting_power = 0;
 
-    @Comment("The minimum amount of power required to enchant uncommon enchantments")
+    @Comment("The minimum amount of power required to enchant uncommon enchantments.")
     public int uncommon_enchanting_power = 22;
 
-    @Comment("The minimum amount of power required to enchant rare enchantments")
+    @Comment("The minimum amount of power required to enchant rare enchantments.")
     public int rare_enchanting_power = 50;
 
-    @Comment("The minimum amount of power required to enchant very rare enchantments")
+    @Comment("The minimum amount of power required to enchant very rare enchantments.")
     public int very_rare_enchanting_power = 80;
+
+    @Comment("""
+            Ascendant Arcana disables many vanilla enchantments because they stress the capacity system too much with 
+            'required' enchantments. Enchantments are generally meant to be more interesting and meaningfully impactful
+            but this list is configurable so you can enable or disable whatever you want.
+            
+            Do note that enchantments on this list by default DO NOT come with recipes, so in order to see them in
+            the Enchanting Table you must create your own enchantment recipes for them with a datapack.""")
+    public List<String> disabled_enchantments = List.of(
+            "minecraft:protection",
+            "minecraft:sharpness",
+            "minecraft:efficiency",
+            "minecraft:quick_charge",
+            "minecraft:power",
+            "minecraft:bane_of_arthropods",
+            "minecraft:blast_protection",
+            "minecraft:projectile_protection",
+            "minecraft:fire_protection",
+            "minecraft:smite",
+            "minecraft:impaling",
+            "minecraft:mending",
+            "minecraft:unbreaking"
+    );
+
+    @Comment("Items which have their base relic capacity value overwritten.")
+    public Map<String, Integer> base_relic_capacity_overrides = Map.of(
+            "minecraft:crossbow",
+            1
+    );
 }

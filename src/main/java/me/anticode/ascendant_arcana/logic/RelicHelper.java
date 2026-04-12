@@ -4,6 +4,7 @@ import me.anticode.ascendant_arcana.AscendantArcana;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 
 import java.util.HashMap;
@@ -15,10 +16,14 @@ public class RelicHelper {
     public static final String BONUS_RELIC_CAPACITY = "AscendantArcanaRelicCapacity";
 
     public static int getRelicCapacity(ItemStack stack) {
-        if (!stack.hasNbt()) {
-            return AscendantArcana.config.base_relic_capacity;
+        int base_capacity = AscendantArcana.config.base_relic_capacity;
+        if (AscendantArcana.config.base_relic_capacity_overrides.containsKey(Registries.ITEM.getId(stack.getItem()).toString())) {
+            base_capacity = AscendantArcana.config.base_relic_capacity_overrides.get(Registries.ITEM.getId(stack.getItem()).toString());
         }
-        return AscendantArcana.config.base_relic_capacity + stack.getOrCreateNbt().getInt(BONUS_RELIC_CAPACITY);
+        if (!stack.hasNbt()) {
+            return base_capacity;
+        }
+        return base_capacity + stack.getOrCreateNbt().getInt(BONUS_RELIC_CAPACITY);
     }
 
     public static Map<Relics, Integer> fromNbt(NbtCompound nbt) {
