@@ -406,7 +406,6 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             int absoluteScrollPositionBottom = absoluteScrollPositionTop + 122;
             if (absoluteScrollPositionTop > absolutePositionTop) {
                 int difference = absoluteScrollPositionTop - absolutePositionTop;
-                AscendantArcana.LOGGER.debug("Difference: " + difference);
                 height -= difference;
                 offset = difference;
             } else if (absoluteScrollPositionBottom < absolutePositionBottom) {
