@@ -125,7 +125,7 @@ public abstract class ItemStackMixin {
                 original.replaceValues(EntityAttributes_RangedWeapon.DAMAGE.attribute, newModifiers);
             }
             if (relics.containsKey(Relics.HASTE)) {
-                double hasteValue = RelicHelper.getTooltipStrength(Relics.HASTE, relics.get(Relics.HASTE)) * 0.01;
+                double hasteValue = RelicHelper.getTooltipStrength(Relics.HASTE, relics.get(Relics.HASTE)) * 0.005;
                 EntityAttributeModifier modifier = new EntityAttributeModifier(UUID.fromString("f2bb3e62-513f-4804-a194-2965d232c7ad"), "Haste Relic Bonus", hasteValue, EntityAttributeModifier.Operation.MULTIPLY_BASE);
                 original.put(EntityAttributes_RangedWeapon.HASTE.attribute, modifier);
             }

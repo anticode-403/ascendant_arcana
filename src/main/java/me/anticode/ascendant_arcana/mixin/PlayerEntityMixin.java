@@ -21,7 +21,7 @@ public class PlayerEntityMixin {
         if (mainStack.getItem() instanceof ToolItem) {
             Map<Relics, Integer> relics = RelicHelper.fromNbt(mainStack.getOrCreateNbt());
             if (relics.containsKey(Relics.HASTE)) {
-                float hasteMultiplier = 1 - ((float)RelicHelper.getTooltipStrength(Relics.HASTE, relics.get(Relics.HASTE)) * 0.01F);
+                float hasteMultiplier = 1 - ((float)RelicHelper.getTooltipStrength(Relics.HASTE, relics.get(Relics.HASTE)) * 0.005F);
                 return original * hasteMultiplier;
             }
         }
