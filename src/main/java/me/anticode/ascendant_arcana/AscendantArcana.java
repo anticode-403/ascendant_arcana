@@ -49,6 +49,7 @@ public class AscendantArcana implements ModInitializer {
         AArcanaStatusEffects.initialize();
         AArcanaScreenHandlers.initialize();
         AArcanaLootFunctionTypes.initialize();
+        AArcanaFeatures.initialize();
 
         ServerPlayNetworking.registerGlobalReceiver(EnchantingScreenSendRecipe.Id, (server, player, handler, buf, responseSender) -> {
             EnchantingScreenSendRecipe packet = EnchantingScreenSendRecipe.read(buf, player.getWorld().getRecipeManager());
