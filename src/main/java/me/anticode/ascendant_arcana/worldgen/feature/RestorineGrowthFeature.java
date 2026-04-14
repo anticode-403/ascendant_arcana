@@ -3,25 +3,18 @@ package me.anticode.ascendant_arcana.worldgen.feature;
 import com.mojang.serialization.Codec;
 import me.anticode.ascendant_arcana.init.AArcanaBlocks;
 import net.minecraft.block.*;
-import net.minecraft.block.enums.Thickness;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.floatprovider.FloatProvider;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.LargeDripstoneFeature;
-import net.minecraft.world.gen.feature.LargeDripstoneFeatureConfig;
 import net.minecraft.world.gen.feature.util.CaveSurface;
-import net.minecraft.world.gen.feature.util.DripstoneHelper;
 import net.minecraft.world.gen.feature.util.FeatureContext;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,14 +76,6 @@ public class RestorineGrowthFeature extends Feature<RestorineGrowthFeatureConfig
 
         private int getBaseScale() {
             return this.scale(0.0F);
-        }
-
-        private int getBottomY() {
-            return this.isStalagmite ? this.pos.getY() : this.pos.getY() - this.getBaseScale();
-        }
-
-        private int getTopY() {
-            return !this.isStalagmite ? this.pos.getY() : this.pos.getY() + this.getBaseScale();
         }
 
         boolean canGenerate(StructureWorldAccess world) {
@@ -200,12 +185,12 @@ public class RestorineGrowthFeature extends Feature<RestorineGrowthFeatureConfig
             }
             for (BlockPos pos : budding_restorine) {
                 for (int l = 0; l < 6; l++) {
-                    Block block = switch (random.nextBetween(0, 6)) {
+                    Block block = switch (random.nextBetween(0, 9)) {
                         case 0 -> AArcanaBlocks.SMALL_RESTORINE_BUD;
                         case 1 -> AArcanaBlocks.MEDIUM_RESTORINE_BUD;
                         case 2 -> AArcanaBlocks.LARGE_RESTORINE_BUD;
-                        case 3 -> AArcanaBlocks.RESTORINE_CLUSTER;
-                        case 4 -> AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER;
+                        case 3, 4 -> AArcanaBlocks.RESTORINE_CLUSTER;
+                        case 5, 6, 7 -> AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER;
                         default -> Blocks.AIR;
                     };
                     if (block == Blocks.AIR) continue;
