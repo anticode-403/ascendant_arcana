@@ -541,6 +541,14 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
                     .pattern(" b ").pattern("gcg").pattern("ccc")
                     .criterion("obtain_copper", InventoryChangedCriterion.Conditions.items(Items.COPPER_INGOT))
                     .offerTo(exporter);
+            ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, AArcanaItems.INFUSION_SMITHING_TEMPLATE)
+                    .input('c', Blocks.CALCITE)
+                    .input('r', AArcanaItems.RESTORINE)
+                    .pattern(" c ")
+                    .pattern("rrr")
+                    .pattern("ccc")
+                    .criterion("obtain_restorine", InventoryChangedCriterion.Conditions.items(AArcanaItems.RESTORINE))
+                    .offerTo(exporter);
 
             // Enchantments
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.ARCHERS_GAMBIT).primary(Items.GOLD_INGOT, 3).level(7));
