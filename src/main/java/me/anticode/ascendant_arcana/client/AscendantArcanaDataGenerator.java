@@ -452,7 +452,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
 
                 public RelicRecipeJsonProvider(Identifier recipeId, int strength, int relic, String group, CraftingRecipeCategory craftingCategory, List<Ingredient> inputs, Advancement.Builder advancementBuilder, Identifier advancementId) {
                     super(craftingCategory);
-                    this.recipeId = recipeId;
+                    this.recipeId = new Identifier(AscendantArcana.modID, recipeId.getPath() + "_" + strength + "_" + relic);
                     this.strength = strength;
                     this.relic = relic;
                     this.group = group;
