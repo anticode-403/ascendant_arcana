@@ -1,6 +1,7 @@
 package me.anticode.ascendant_arcana.init;
 
 import me.anticode.ascendant_arcana.AscendantArcana;
+import me.anticode.ascendant_arcana.block.BuddingRestorineBlock;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntityType;
@@ -14,7 +15,7 @@ import net.minecraft.util.Identifier;
 
 public class AArcanaBlocks {
     public static final Block BUDDING_RESTORINE = register(
-            new Block(AbstractBlock.Settings.create().sounds(BlockSoundGroup.AMETHYST_BLOCK).requiresTool().resistance(3f).hardness(4.5f)),
+            new BuddingRestorineBlock(AbstractBlock.Settings.create().sounds(BlockSoundGroup.AMETHYST_BLOCK).requiresTool().resistance(3f).hardness(4.5f)),
             "budding_restorine",
             true
     );
