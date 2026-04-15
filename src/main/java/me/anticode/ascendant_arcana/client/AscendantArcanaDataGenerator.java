@@ -186,6 +186,14 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             translationBuilder.add(statusEffect.getTranslationKey() + ".description", description);
         }
 
+        private void description(TranslationBuilder translationBuilder, Item item, String description) {
+            translationBuilder.add(item.getTranslationKey() + ".description", description);
+        }
+
+        private void description(TranslationBuilder translationBuilder, Enchantment enchantment, String description) {
+            translationBuilder.add(enchantment.getTranslationKey() + ".description", description);
+        }
+
         @Override
         public void generateTranslations(TranslationBuilder translationBuilder) {
             // Smithing Templates
@@ -197,10 +205,14 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             translationBuilder.add("item." + AscendantArcana.modID + ".smithing_template." + template_id + ".additions_slot_description", "Add Relic");
             // Items
             translationBuilder.add(AArcanaItems.ENCHANTED_SCRAP, "Enchanted Scrap");
+            description(translationBuilder, AArcanaItems.ENCHANTED_SCRAP, "An item made from the scrap of enchanted items and materials, used to make more enchantments.");
             translationBuilder.add(AArcanaItems.RESTORINE, "Restorine");
+            description(translationBuilder, AArcanaItems.RESTORINE, "An item that acts as the universal repair ingredient.");
             translationBuilder.add(AArcanaItems.WARDEN_HEART, "Warden Heart");
+            description(translationBuilder, AArcanaItems.WARDEN_HEART, "One of the Warden's many hearts, salvaged in whole and useful for enchanting.");
             // Relics
             translationBuilder.add(AArcanaItems.RELIC, "%1$s Relic of %2$s");
+            description(translationBuilder, AArcanaItems.RELIC, "An item that can be infused into tools or armor at a Smithing Table, increasing their potential.");
             translationBuilder.add("item.relics.empty", "Empty Relic");
 
             translationBuilder.add("item.relics.strength.1", "Dormant");
