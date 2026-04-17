@@ -59,7 +59,14 @@ public class AArcanaServerConfig implements ConfigData {
             "minecraft:smite",
             "minecraft:impaling",
             "minecraft:mending",
-            "minecraft:unbreaking"
+            "minecraft:unbreaking",
+            "majruszsenchantments:misanthropy",
+            "majruszsenchantments:gold_fuelled",
+            "majruszsenchantments:smelter",
+            "majruszsenchantments:magic_protection",
+            "majruszsenchantments:dodge",
+            "majruszsenchantments:enlightenment",
+            "majruszsenchantments:immortality"
     );
 
     @Comment("Items which have their base relic capacity value overwritten.")
