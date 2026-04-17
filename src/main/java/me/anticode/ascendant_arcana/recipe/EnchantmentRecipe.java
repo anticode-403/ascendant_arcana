@@ -1,6 +1,7 @@
 package me.anticode.ascendant_arcana.recipe;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import me.anticode.ascendant_arcana.init.AArcanaRecipes;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.Inventory;
@@ -75,6 +76,9 @@ public class EnchantmentRecipe implements Recipe<Inventory> {
             IngredientStack secondaryIngredientStack = IngredientStack.fromJson((JsonObject) json.get("secondary_ingredient"));
             int levelCost = json.get("level_cost").getAsInt();
             Enchantment enchantment = Registries.ENCHANTMENT.getOrEmpty(Identifier.tryParse(json.get("enchantment").getAsString())).orElse(null);
+            if (enchantment == null) {
+                throw new JsonParseException("Enchantment not found");
+            }
             return new EnchantmentRecipe(id, magicalScrapCost, primaryIngredientStack, secondaryIngredientStack, levelCost, enchantment);
         }
 
