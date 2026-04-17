@@ -40,7 +40,7 @@ public class AArcanaEnchantmentHelper {
     }
 
     public static boolean testEnchantmentCost(ItemStack stack, int extra) {
-        return getEnchantmentUsage(stack) + extra < getEnchantmentCapacity(stack);
+        return getEnchantmentUsage(stack) + extra <= getEnchantmentCapacity(stack);
     }
 
     public static int getBaseEnchantmentCapacity(Item item) {
