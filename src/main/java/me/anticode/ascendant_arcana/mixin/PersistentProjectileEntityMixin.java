@@ -18,6 +18,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.GameStateChangeS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -132,10 +133,8 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
             if (!persistentProjectileEntity.getWorld().isClient()) {
                 if (getPierceLevel() <= 0) livingTarget.setStuckArrowCount(livingTarget.getStuckArrowCount() + 1);
                 for(int i = 0; i < 5; ++i) {
-                    double d = livingTarget.getRandom().nextGaussian() * 0.02;
-                    double e = livingTarget.getRandom().nextGaussian() * 0.02;
-                    double f = livingTarget.getRandom().nextGaussian() * 0.02;
-                    livingTarget.getWorld().addImportantParticle(ParticleTypes.HEART, livingTarget.offsetX(2 * livingTarget.getRandom().nextDouble() - 1), livingTarget.getRandomBodyY() + (double)1.0F, livingTarget.offsetZ(2 * livingTarget.getRandom().nextDouble() - 1), d, e, f);
+                    double offset = livingTarget.getRandom().nextGaussian() * 0.02;
+                    ((ServerWorld)livingTarget.getWorld()).spawnParticles(ParticleTypes.HEART, livingTarget.offsetX(2 * livingTarget.getRandom().nextDouble() - 1), livingTarget.getRandomBodyY(), livingTarget.offsetZ(2 * livingTarget.getRandom().nextDouble() - 1), 5, offset, offset, offset, 1);
                 }
                 SoundCategory soundCategory = SoundCategory.PLAYERS;
                 if (persistentProjectileEntity.getOwner() != null) soundCategory = persistentProjectileEntity.getOwner().getSoundCategory();

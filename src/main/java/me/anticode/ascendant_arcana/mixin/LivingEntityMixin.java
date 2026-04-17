@@ -22,6 +22,7 @@ import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.DamageTypeTags;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.Box;
@@ -177,7 +178,7 @@ public abstract class LivingEntityMixin {
                             for (int i = 0; i < livingEntity.getEyePos().distanceTo(target.getEyePos()) * 4; i++) {
                                 double delta = ((double)i) / (livingEntity.getEyePos().distanceTo(target.getEyePos()) * 4);
                                 Vec3d particlePos = livingEntity.getEyePos().lerp(target.getEyePos(), delta);
-                                attackingEntity.getWorld().addImportantParticle(ParticleTypes.ENCHANTED_HIT, particlePos.x, particlePos.y, particlePos.z, 0, 0, 0);
+                                ((ServerWorld)attackingEntity.getWorld()).spawnParticles(ParticleTypes.ENCHANTED_HIT, particlePos.x, particlePos.y, particlePos.z, 1, 0, 0, 0, 0);
                             }
                             Vec3d soundPos = livingEntity.getPos().lerp(target.getPos(), 0.5D);
                             livingEntity.getWorld().playSound(null, soundPos.getX(), soundPos.getY(), soundPos.getZ(), SoundEvents.ITEM_CHORUS_FRUIT_TELEPORT, attackingEntity.getSoundCategory(), 0.8F, 0.1F);
