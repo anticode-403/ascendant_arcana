@@ -252,11 +252,12 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             registerEnchantment(translationBuilder, AArcanaEnchantments.ARCHERS_GAMBIT, "Archer's Gambit", "Briefly increased draw speed after consecutively hitting a target. Stacks 3 times.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.ALCHEMISTS_HEART, "Alchemist's Heart", "Increases the amplifier of all beneficial status effects.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.AMBUSH, "Ambush", "When you hit a mob after throwing this Trident, teleport to it.");
-            registerEnchantment(translationBuilder, AArcanaEnchantments.DEBILITATING_CHAIN, "Debilitating Chain", "Slaying a mob transfers all status effects to the nearest enemy.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.BLADEHEART, "Bladeheart", "Slightly increases all damage dealt by physical attacks.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.COLDHEART, "Coldheart", "Increases damage dealt by all cold attacks.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.DEBILITATING_CHAIN, "Debilitating Chain", "Slaying a mob transfers all status effects to the nearest enemy.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.EVOKERS_WRATH, "Evoker's Wrath", "Summons an Evoker Fang when the arrow lands.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.NETHER_HEART, "Heart of the Nether", "Increases damage dealt by all fire attacks.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.PROTECTIVE_ECHO, "Protective Echo", "Instances of high damage are spread out over time.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.REJUVENATING_SHOT, "Rejuvenating Shot", "Instead of doing damage, arrows heal for half the damage they would have done.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.RICOCHET, "Ricochet", "Arrows ricochet, dealing reduced initial damage but increasing with each bounce.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.SMELTING, "Smelting", "Smelts blocks mined.");
@@ -284,6 +285,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             translationBuilder.add("gui.enchanting.enchant", "Enchant!");
             // Status Effects
             registerStatusEffect(translationBuilder, AArcanaStatusEffects.ARCHERS_GAMBIT, "Archer's Gambit", "Faster draw speed of bows and crossbows.");
+            registerStatusEffect(translationBuilder, AArcanaStatusEffects.ECHOING_DAMAGE, "Echoing Damage", "Deals damage every second based on amplification.");
         }
     }
 

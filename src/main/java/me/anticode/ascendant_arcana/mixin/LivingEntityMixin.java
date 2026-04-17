@@ -7,9 +7,11 @@ import me.anticode.ascendant_arcana.enchantment.TickableAttributeEnchantment;
 import me.anticode.ascendant_arcana.enchantment.TurtleHeart;
 import me.anticode.ascendant_arcana.init.AArcanaAttributes;
 import me.anticode.ascendant_arcana.init.AArcanaEnchantments;
+import me.anticode.ascendant_arcana.init.AArcanaStatusEffects;
 import me.anticode.ascendant_arcana.logic.ItemHelper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.AreaEffectCloudEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
@@ -17,6 +19,7 @@ import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
+import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.item.ItemStack;
@@ -27,6 +30,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -50,6 +54,13 @@ public abstract class LivingEntityMixin {
 
     @Shadow
     public abstract boolean damage(DamageSource source, float amount);
+
+    @Shadow
+    @Nullable
+    public abstract StatusEffectInstance getStatusEffect(StatusEffect effect);
+
+    @Shadow
+    public abstract void setStatusEffect(StatusEffectInstance effect, @Nullable Entity source);
 
     @Unique
     private Map<AArcanaEnchantments.IndirectHeartDamageTypes, Integer> heartAttackers = new EnumMap<>(AArcanaEnchantments.IndirectHeartDamageTypes.class);
@@ -120,6 +131,15 @@ public abstract class LivingEntityMixin {
         if (source.isIn(DamageTypeTags.IS_FREEZING) && heartAttackers.containsKey(AArcanaEnchantments.IndirectHeartDamageTypes.COLD))
             damage *= 2;
         return damage;
+    }
+
+    @Inject(method = "applyDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/damage/DamageTracker;onDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"), cancellable = true)
+    private void protectiveEcho(DamageSource source, float amount, CallbackInfo ci) {
+        if (amount < 5) return;
+        if (getStatusEffect(AArcanaStatusEffects.ECHOING_DAMAGE) != null) return;
+        if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.PROTECTIVE_ECHO, (LivingEntity) (Object) this) == 0) return;
+        setStatusEffect(new StatusEffectInstance(AArcanaStatusEffects.ECHOING_DAMAGE, 5, (int)Math.floor(amount / 5)), (LivingEntity)(Object)this);
+        ci.cancel();
     }
 
     @Inject(method = "onDeath", at = @At("HEAD"))
@@ -234,6 +254,12 @@ public abstract class LivingEntityMixin {
                         }
                     }, stack, false);
                 }
+            }
+
+            if (((LivingEntity)(Object)this).getWorld().getTime() % 20 == 0 && getStatusEffect(AArcanaStatusEffects.ECHOING_DAMAGE) != null) {
+                StatusEffectInstance instance = getStatusEffect(AArcanaStatusEffects.ECHOING_DAMAGE);
+                int damage = instance.getAmplifier();
+                damage(((LivingEntity)(Object)this).getWorld().getDamageSources().magic(), damage);
             }
         }
     }
