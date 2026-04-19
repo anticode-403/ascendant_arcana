@@ -549,7 +549,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, AArcanaBlocks.COPPER_ENCHANTING_TABLE)
                     .input('b', Items.BOOK)
                     .input('c', Items.CUT_COPPER)
-                    .input('g', Items.CYAN_CARPET)
+                    .input('g', AArcanaItems.RESTORINE)
                     .pattern(" b ").pattern("gcg").pattern("ccc")
                     .criterion("obtain_copper", InventoryChangedCriterion.Conditions.items(Items.COPPER_INGOT))
                     .offerTo(exporter);
