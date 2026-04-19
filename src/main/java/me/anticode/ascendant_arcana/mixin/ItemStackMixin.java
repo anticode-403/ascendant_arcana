@@ -91,10 +91,10 @@ public abstract class ItemStackMixin {
         if (getItem() instanceof ArmorItem armorItem) {
             if (slot != armorItem.getSlotType()) return original;
             UUID uuid = switch (armorItem.getSlotType()) {
-                case EquipmentSlot.HEAD -> UUID.fromString("ccd7386d-62cf-4ef7-8cc1-a8a2ac7f942c");
-                case EquipmentSlot.CHEST -> UUID.fromString("610c3b9b-9c45-4845-8289-99dbe5034894");
-                case EquipmentSlot.LEGS -> UUID.fromString("e91f5ebf-3c02-43ec-a842-ce9b68a80c3a");
-                case EquipmentSlot.FEET -> UUID.fromString("93ef9100-4f32-45e0-8568-f837918e9b43");
+                case HEAD -> UUID.fromString("ccd7386d-62cf-4ef7-8cc1-a8a2ac7f942c");
+                case CHEST -> UUID.fromString("610c3b9b-9c45-4845-8289-99dbe5034894");
+                case LEGS -> UUID.fromString("e91f5ebf-3c02-43ec-a842-ce9b68a80c3a");
+                case FEET -> UUID.fromString("93ef9100-4f32-45e0-8568-f837918e9b43");
                 default -> null;
             };
             int protectionValue = RelicHelper.getTooltipStrength(Relics.PROTECTION, RelicHelper.getValueFromNbt(getOrCreateNbt(), Relics.PROTECTION));
