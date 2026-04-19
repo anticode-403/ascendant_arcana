@@ -39,17 +39,26 @@ public class RelicCraftingRecipe extends SpecialCraftingRecipe {
 
     @Override
     public boolean matches(RecipeInputInventory inventory, World world) {
-        RecipeMatcher recipeMatcher = new RecipeMatcher();
         int i = 0;
+        boolean matches = true;
 
         for (int j = 0; j < inventory.size(); ++j) {
             ItemStack itemStack = inventory.getStack(j);
             if (!itemStack.isEmpty()) {
                 ++i;
-                recipeMatcher.addInput(itemStack, 1);
+                boolean matchAny = false;
+                for (Ingredient ingredient : input) {
+                    if (ingredient.test(itemStack)) {
+                        matchAny = true;
+                    }
+                }
+                if (!matchAny) {
+                    matches = false;
+                    break;
+                }
             }
         }
-        return i == input.size() && recipeMatcher.match(this, null);
+        return i == input.size() && matches;
     }
 
     @Override
