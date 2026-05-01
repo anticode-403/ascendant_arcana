@@ -91,4 +91,16 @@ public class AArcanaServerConfig implements ConfigData {
             "minecraft:trident",
             15
     );
+
+    @Comment("Enchantments which have their base rarity overwritten. Common is 1, Uncommon is 2, Rare is 3, Very Rare is 4. This might not work on modded enchantments.")
+    public Map<String, Integer> overwritten_rarities = Map.of(
+            "minecraft:knockback",
+            1,
+            "minecraft:fire_aspect",
+            2,
+            "minecraft:punch",
+            1,
+            "minecraft:flame",
+            2
+    );
 }

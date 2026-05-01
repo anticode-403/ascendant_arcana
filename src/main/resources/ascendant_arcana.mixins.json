@@ -13,6 +13,7 @@
     "EnchantedBookItemMixin",
     "EnchantingTableBlockMixin",
     "EnchantmentHelperMixin",
+    "EnchantmentMixin",
     "ItemEntryAccessor",
     "ItemGroupEntriesMixin",
     "ItemStackMixin",
