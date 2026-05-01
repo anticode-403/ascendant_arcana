@@ -106,7 +106,6 @@ public class RestorineGrowthFeature extends Feature<RestorineGrowthFeatureConfig
             if (canGenerateOrLava(world, pos)) {
                 return false;
             } else {
-                float f = 6.0F;
                 float g = 6.0F / (float)height;
 
                 for(float h = 0.0F; h < ((float)Math.PI * 2F); h += g) {
@@ -138,13 +137,12 @@ public class RestorineGrowthFeature extends Feature<RestorineGrowthFeatureConfig
                 radius = bluntness;
             }
 
-            double d = 0.384;
             double e = radius / scale * 0.384;
             double f = (double)0.75F * Math.pow(e, 1.3333333333333333);
             double g = Math.pow(e, 0.6666666666666666);
             double h = 0.3333333333333333 * Math.log(e);
             double i = heightScale * (f - g - h);
-            i = Math.max(i, (double)0.0F);
+            i = Math.max(i, 0.0F);
             return i / 0.384 * scale;
         }
 
