@@ -52,7 +52,7 @@ public class RestorineGrowthFeature extends Feature<RestorineGrowthFeatureConfig
     }
 
     private static boolean canGenerate(BlockState blockState) {
-        return blockState.isAir() || blockState.isOf(Blocks.WATER);
+        return blockState.isAir();
     }
 
     private static boolean canReplaceOrLava(BlockState state) {
