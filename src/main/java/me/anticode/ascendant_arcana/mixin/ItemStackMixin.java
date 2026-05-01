@@ -177,7 +177,7 @@ public abstract class ItemStackMixin {
             Map<Enchantment, Integer> enchantments = EnchantmentHelper.get((ItemStack)(Object) this);
             boolean hasTreasure = false;
             for (Enchantment enchantment : enchantments.keySet()) {
-                if (enchantment.isTreasure()) hasTreasure = true;
+                if (enchantment.isTreasure() && !enchantment.isCursed()) hasTreasure = true;
             }
             if (hasTreasure) {
                 tooltip.add(Text.translatable("item.book_contains_treasure_title").formatted(Formatting.GOLD));
