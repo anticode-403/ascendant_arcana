@@ -93,14 +93,18 @@ public class AArcanaServerConfig implements ConfigData {
     );
 
     @Comment("Enchantments which have their base rarity overwritten. Common is 1, Uncommon is 2, Rare is 3, Very Rare is 4. This might not work on modded enchantments.")
-    public Map<String, Integer> overwritten_rarities = Map.of(
-            "minecraft:knockback",
-            1,
-            "minecraft:fire_aspect",
-            2,
-            "minecraft:punch",
-            1,
-            "minecraft:flame",
-            2
+    public Map<String, Integer> overwritten_rarities = Map.ofEntries(
+            Map.entry("minecraft:knockback", 1),
+            Map.entry("minecraft:fire_aspect", 2),
+            Map.entry("minecraft:punch", 1),
+            Map.entry("minecraft:flame", 2),
+            Map.entry("minecraft:respiration", 2),
+            Map.entry("minecraft:sweeping", 2),
+            Map.entry("minecraft:fortune", 4),
+            Map.entry("minecraft:looting", 4),
+            Map.entry("minecraft:infinity", 3),
+            Map.entry("minecraft:lure", 1),
+            Map.entry("minecraft:frost_walker", 2),
+            Map.entry("minecraft:thorns", 2)
     );
 }
