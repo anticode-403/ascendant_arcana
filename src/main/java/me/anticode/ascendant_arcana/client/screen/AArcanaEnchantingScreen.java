@@ -166,10 +166,10 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                 context.getMatrices().push();
                 context.getMatrices().peek().getPositionMatrix().scale(0.5F, 0.5F, 0.5F);
                 MutableText text = Text.empty();
-                if (AArcanaEnchantmentHelper.getRequiredEnchantmentPower(recipe.enchantment) > getScreenHandler().enchantmentPower[0] && tile.locked) {
-                    text = Text.translatable("gui.enchanting.low_level");
-                } else if (recipe.enchantment.isTreasure() && tile.locked) {
+                if (recipe.enchantment.isTreasure() && tile.locked) {
                     text = Text.translatable("gui.enchanting.treasure");
+                } else if (AArcanaEnchantmentHelper.getRequiredEnchantmentPower(recipe.enchantment) > getScreenHandler().enchantmentPower[0] && tile.locked) {
+                    text = Text.translatable("gui.enchanting.low_level");
                 } else if (!withinCapacity) {
                     text = Text.translatable("gui.enchanting.max_capacity");
                 }
