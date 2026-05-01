@@ -80,6 +80,12 @@ public class AArcanaServerConfig implements ConfigData {
             "minecraft:bow",
             20,
             "minecraft:crossbow",
-            20
+            20,
+            "minecraft:enchanted_book",
+            20,
+            "minecraft:shield",
+            15,
+            "minecraft:trident",
+            15
     );
 }
