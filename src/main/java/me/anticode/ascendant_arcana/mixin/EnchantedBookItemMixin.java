@@ -1,5 +1,6 @@
 package me.anticode.ascendant_arcana.mixin;
 
+import me.anticode.ascendant_arcana.AscendantArcana;
 import me.anticode.ascendant_arcana.logic.AArcanaEnchantmentHelper;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
@@ -39,7 +40,9 @@ public class EnchantedBookItemMixin {
 
     @Inject(method = "addEnchantment", at = @At("HEAD"), cancellable = true)
     private static void enchantmentCapacity(ItemStack stack, EnchantmentLevelEntry entry, CallbackInfo ci) {
-        if (!AArcanaEnchantmentHelper.testEnchantmentCost(stack, AArcanaEnchantmentHelper.getEnchantmentCost(entry.enchantment, entry.level))) {
+        if (AscendantArcana.config.single_enchantment_books) {
+            if (!EnchantedBookItem.getEnchantmentNbt(stack).isEmpty()) ci.cancel();
+        } else if (!AArcanaEnchantmentHelper.testEnchantmentCost(stack, AArcanaEnchantmentHelper.getEnchantmentCost(entry.enchantment, entry.level))) {
             ci.cancel();
         }
     }

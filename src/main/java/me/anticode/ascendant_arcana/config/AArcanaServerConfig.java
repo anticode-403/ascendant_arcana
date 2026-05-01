@@ -39,6 +39,9 @@ public class AArcanaServerConfig implements ConfigData {
     @Comment("The minimum amount of power required to enchant very rare enchantments.")
     public int very_rare_enchanting_power = 80;
 
+    @Comment("Enchanted Books can only have one enchantment on them. Otherwise, they use the regular capacity system.")
+    public boolean single_enchantment_books = true;
+
     @Comment("""
             Ascendant Arcana disables many vanilla enchantments because they stress the capacity system too much with
             'required' enchantments. Enchantments are generally meant to be more interesting and meaningfully impactful
@@ -82,7 +85,7 @@ public class AArcanaServerConfig implements ConfigData {
             "minecraft:crossbow",
             20,
             "minecraft:enchanted_book",
-            20,
+            12,
             "minecraft:shield",
             15,
             "minecraft:trident",

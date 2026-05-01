@@ -31,7 +31,7 @@ public class AArcanaEnchantmentHelper {
     }
 
     public static int getEnchantmentUsage(ItemStack stack) {
-        if (!stack.hasEnchantments()) return 0;
+        if (!stack.hasEnchantments() && !(stack.getItem() instanceof EnchantedBookItem)) return 0;
         int cost = 0;
         for (Map.Entry<Enchantment, Integer> enchantInstance : EnchantmentHelper.get(stack).entrySet()) {
             cost += getEnchantmentCost(enchantInstance.getKey()) * enchantInstance.getValue();
@@ -40,6 +40,7 @@ public class AArcanaEnchantmentHelper {
     }
 
     public static boolean testEnchantmentCost(ItemStack stack, int extra) {
+//        if (stack.getItem())
         return getEnchantmentUsage(stack) + extra <= getEnchantmentCapacity(stack);
     }
 
