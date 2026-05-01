@@ -163,10 +163,10 @@ public abstract class ItemStackMixin {
         return modifiers;
     }
 
-    @Inject(method = "getTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getDamage()I", shift = At.Shift.AFTER))
+    @Inject(method = "getTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isDamaged()Z", shift = At.Shift.AFTER))
     private void addEnchantmentCapacityTooltipWhileAdvanced(PlayerEntity player, TooltipContext context, CallbackInfoReturnable<List<Text>> cir, @Local List<Text> tooltip) {
-        if (context.isAdvanced()) {
-            ItemStack itemStack = (ItemStack)(Object)this;
+        ItemStack itemStack = (ItemStack)(Object)this;
+        if (context.isAdvanced() && (itemStack.hasEnchantments() || itemStack.isEnchantable())) {
             tooltip.add(Text.translatable("item.enchantment_capacity", AArcanaEnchantmentHelper.getEnchantmentUsage(itemStack), AArcanaEnchantmentHelper.getEnchantmentCapacity(itemStack)));
         }
     }
