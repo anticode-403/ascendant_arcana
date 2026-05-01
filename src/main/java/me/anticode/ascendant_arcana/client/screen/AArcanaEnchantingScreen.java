@@ -255,7 +255,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
         boolean locked = false;
         int power = getScreenHandler().enchantmentPower[0];
         int requiredPower = AArcanaEnchantmentHelper.getRequiredEnchantmentPower(recipe.enchantment);
-        if (power < requiredPower) locked = true;
+        if (power < requiredPower - 1) locked = true;
         if (recipe.enchantment.isTreasure() && !getScreenHandler().unlockedTreasures.contains(recipe.enchantment)) locked = true;
         EnchantmentTile tile = new EnchantmentTile(recipe, buttonX, buttonY, i, locked);
         enchantments.add(tile);
