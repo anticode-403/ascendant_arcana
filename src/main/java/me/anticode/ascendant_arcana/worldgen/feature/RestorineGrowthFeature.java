@@ -183,12 +183,12 @@ public class RestorineGrowthFeature extends Feature<RestorineGrowthFeatureConfig
             }
             for (BlockPos pos : budding_restorine) {
                 for (int l = 0; l < 6; l++) {
-                    Block block = switch (random.nextBetween(0, 9)) {
+                    Block block = switch (random.nextBetween(0, 13)) {
                         case 0 -> AArcanaBlocks.SMALL_RESTORINE_BUD;
                         case 1 -> AArcanaBlocks.MEDIUM_RESTORINE_BUD;
                         case 2 -> AArcanaBlocks.LARGE_RESTORINE_BUD;
-                        case 3, 4 -> AArcanaBlocks.RESTORINE_CLUSTER;
-                        case 5, 6, 7 -> AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER;
+                        case 3, 4, 5, 6 -> AArcanaBlocks.RESTORINE_CLUSTER;
+                        case 7, 8, 9, 10 -> AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER;
                         default -> Blocks.AIR;
                     };
                     if (block == Blocks.AIR) continue;
