@@ -11,6 +11,7 @@ public class AArcanaEnchantments {
     public static Enchantment AMBUSH = register(new Ambush(), "ambush");
     public static Enchantment ARCHERS_GAMBIT = register(new ArchersGambit(), "archers_gambit");
     public static Enchantment DEBILITATING_CHAIN = register(new DebilitatingChain(), "debilitating_chain");
+    public static Enchantment DEFLECT = register(new Deflect(), "deflect");
     public static Enchantment PROTECTIVE_ECHO = register(new ProtectiveEcho(), "protective_echo");
     public static Enchantment EVOKERS_WRATH = register(new EvokersWrath(), "evokers_wrath");
     public static Enchantment REJUVENATING_SHOT = register(new RejuvenatingShot(), "rejuvenating_shot");

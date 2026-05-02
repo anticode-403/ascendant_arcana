@@ -1,6 +1,7 @@
 package me.anticode.ascendant_arcana.logic;
 
 import me.anticode.ascendant_arcana.AscendantArcana;
+import me.anticode.ascendant_arcana.init.AArcanaEnchantments;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EquipmentSlot;
@@ -8,9 +9,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.EntityHitResult;
 
 import java.util.*;
 
@@ -106,6 +110,16 @@ public class AArcanaEnchantmentHelper {
             index += enchantments.size();
         }
         return enchantments.get(index);
+    }
+
+    public static boolean doesEntityHitHaveDeflect(EntityHitResult entityHitResult, ProjectileEntity projectile) {
+        if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
+            LivingEntity owner = projectile.getOwner() instanceof LivingEntity ? (LivingEntity) projectile.getOwner() : livingEntity;
+            if (livingEntity.blockedByShield(projectile.getDamageSources().mobProjectile(projectile, owner))) {
+                return EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.DEFLECT, livingEntity) > 0;
+            }
+        }
+        return false;
     }
 
     public static void removeEnchantmentAttributes(Map<EntityAttribute, EntityAttributeModifier> attributeModifiers, LivingEntity entity, EquipmentSlot slot) {

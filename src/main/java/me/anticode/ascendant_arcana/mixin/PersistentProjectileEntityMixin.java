@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import me.anticode.ascendant_arcana.api.EnchantedArrow;
 import me.anticode.ascendant_arcana.init.AArcanaStatusEffects;
+import me.anticode.ascendant_arcana.logic.AArcanaEnchantmentHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -14,6 +15,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.EvokerFangsEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.GameStateChangeS2CPacket;
 import net.minecraft.particle.ParticleTypes;
@@ -157,6 +159,11 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
 
             doRicochet();
         }
+    }
+
+    @Inject(method = "onEntityHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/projectile/ProjectileEntity;onEntityHit(Lnet/minecraft/util/hit/EntityHitResult;)V", shift = At.Shift.AFTER), cancellable = true)
+    private void cancelIfDeflecting(EntityHitResult entityHitResult, CallbackInfo ci) {
+        if (AArcanaEnchantmentHelper.doesEntityHitHaveDeflect(entityHitResult, (ProjectileEntity)(Object)this)) ci.cancel();
     }
 
     @Inject(method = "onEntityHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"), cancellable = true)
