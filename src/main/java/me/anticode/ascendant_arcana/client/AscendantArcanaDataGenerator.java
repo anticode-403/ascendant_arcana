@@ -257,6 +257,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             registerEnchantment(translationBuilder, AArcanaEnchantments.DEBILITATING_CHAIN, "Debilitating Chain", "Slaying a mob transfers all status effects to the nearest enemy.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.DEFLECT, "Deflect", "Blocking a projectile with your shield will shoot it back.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.EVOKERS_WRATH, "Evoker's Wrath", "Summons an Evoker Fang when the arrow lands.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.HOBBLING_SHOT, "Hobbling Shot", "Reduces movement speed and jump height, stacking 5 times.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.NETHER_HEART, "Heart of the Nether", "Increases damage dealt by all fire attacks.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.PROTECTIVE_ECHO, "Protective Echo", "Instances of high damage are spread out over time.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.REJUVENATING_SHOT, "Rejuvenating Shot", "Instead of doing damage, arrows heal for half the damage they would have done.");
@@ -287,6 +288,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             // Status Effects
             registerStatusEffect(translationBuilder, AArcanaStatusEffects.ARCHERS_GAMBIT, "Archer's Gambit", "Faster draw speed of bows and crossbows.");
             registerStatusEffect(translationBuilder, AArcanaStatusEffects.ECHOING_DAMAGE, "Echoing Damage", "Deals damage every second based on amplification.");
+            registerStatusEffect(translationBuilder, AArcanaStatusEffects.HOBBLED, "Hobbled", "Slightly reduces movement speed and jump height.");
         }
     }
 
@@ -572,6 +574,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.BLADEHEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.DIAMOND, 8).level(15));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.COLDHEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.BLUE_ICE, 32).level(15));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.EVOKERS_WRATH).scrap(2).primary(Items.TOTEM_OF_UNDYING, 1).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.HOBBLING_SHOT).scrap(3).primary(Items.VINE, 6).secondary(Items.BONE_MEAL, 6).level(6));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.NETHER_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.NETHERITE_INGOT, 2).level(15));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.REJUVENATING_SHOT).scrap(6).primary(Items.GHAST_TEAR, 4).level(6));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.RICOCHET).scrap(6).primary(Items.SLIME_BALL, 23).level(6));

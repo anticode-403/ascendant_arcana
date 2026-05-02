@@ -36,11 +36,14 @@ public class ItemHelper {
         int evokersWrathLevel = EnchantmentHelper.getLevel(AArcanaEnchantments.EVOKERS_WRATH, itemStack);
         int rejuvenatingShotLevel = EnchantmentHelper.getLevel(AArcanaEnchantments.REJUVENATING_SHOT, itemStack);
         int ricochetLevel = EnchantmentHelper.getLevel(AArcanaEnchantments.RICOCHET, itemStack);
+        int hobblingShotLevel = EnchantmentHelper.getLevel(AArcanaEnchantments.HOBBLING_SHOT, itemStack);
+
         EnchantedArrow enchantedArrow = (EnchantedArrow) persistentProjectileEntity;
         enchantedArrow.ascendant_arcana$setArchersGambitLevel(archersGambitLevel);
         enchantedArrow.ascendant_arcana$setEvokersWrathLevel(evokersWrathLevel);
         enchantedArrow.ascendant_arcana$setRejuvenatingShotLevel(rejuvenatingShotLevel);
         enchantedArrow.ascendant_arcana$setRicochetLevel(ricochetLevel);
+        enchantedArrow.ascendant_arcana$setHobblingShotLevel(hobblingShotLevel);
     }
 
     public static List<EntityAttributeModifier> multiplyAttributeList(List<EntityAttributeModifier> attributes, double multiplier) {

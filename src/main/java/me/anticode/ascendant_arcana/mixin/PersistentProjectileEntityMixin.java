@@ -71,6 +71,9 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
     private int evokersWrathLevel;
 
     @Unique
+    private int hobblingShotLevel;
+
+    @Unique
     private int ricochetLevel;
 
     @Unique
@@ -106,6 +109,11 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
     @Override
     public void ascendant_arcana$setRicochetLevel(int value) {
         this.ricochetLevel = value;
+    }
+
+    @Override
+    public void ascendant_arcana$setHobblingShotLevel(int value) {
+        this.hobblingShotLevel = value;
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
@@ -228,6 +236,20 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
             );
             owner.addStatusEffect(newInstance);
             didHitEntity = true;
+        }
+
+        if (hobblingShotLevel >= 1 && (entityHitResult.getEntity() instanceof LivingEntity target)) {
+            StatusEffectInstance hobblingShotInstance = target.getStatusEffect(AArcanaStatusEffects.HOBBLED);
+            int consecutiveShots = MathHelper.clamp(hobblingShotInstance != null ? hobblingShotInstance.getAmplifier() + 1 : 0, 0, 5);
+            StatusEffectInstance newInstance = new StatusEffectInstance(
+                    AArcanaStatusEffects.HOBBLED,
+                    60 * hobblingShotLevel,
+                    consecutiveShots,
+                    false,
+                    false,
+                    true
+            );
+            target.addStatusEffect(newInstance);
         }
     }
 

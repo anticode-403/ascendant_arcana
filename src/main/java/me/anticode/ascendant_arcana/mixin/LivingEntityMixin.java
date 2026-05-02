@@ -76,6 +76,15 @@ public abstract class LivingEntityMixin {
         return original;
     }
 
+    @ModifyReturnValue(method = "getJumpVelocity", at = @At("RETURN"))
+    private float modifyJumpVelocity(float original) {
+        StatusEffectInstance hobbled = getStatusEffect(AArcanaStatusEffects.HOBBLED);
+        if (hobbled != null) {
+            return original * (1F - (0.1F * hobbled.getAmplifier()));
+        }
+        return original;
+    }
+
     @ModifyReturnValue(method = "modifyAppliedDamage", at = @At("RETURN"))
     private float applyProtectionStat(float original, @Local(argsOnly = true) DamageSource source) {
         if (source.isIn(DamageTypeTags.BYPASSES_ENCHANTMENTS)) return original;
