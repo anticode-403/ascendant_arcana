@@ -1,5 +1,6 @@
 package me.anticode.ascendant_arcana.recipe;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import me.anticode.ascendant_arcana.init.AArcanaRecipes;
@@ -71,10 +72,14 @@ public class EnchantmentRecipe implements Recipe<Inventory> {
 
         @Override
         public EnchantmentRecipe read(Identifier id, JsonObject json) {
-            int magicalScrapCost = json.get("magical_scrap_cost").getAsInt();
+            JsonElement magicalScrapCostJson = json.get("magical_scrap_cost");
+            int magicalScrapCost = 3;
+            if (!magicalScrapCostJson.isJsonNull()) magicalScrapCost = magicalScrapCostJson.getAsInt();
             IngredientStack primaryIngredientStack = IngredientStack.fromJson((JsonObject) json.get("primary_ingredient"));
             IngredientStack secondaryIngredientStack = IngredientStack.fromJson((JsonObject) json.get("secondary_ingredient"));
-            int levelCost = json.get("level_cost").getAsInt();
+            JsonElement levelCostJson = json.get("level_cost");
+            int levelCost = 3;
+            if (!levelCostJson.isJsonNull()) levelCost = levelCostJson.getAsInt();
             Enchantment enchantment = Registries.ENCHANTMENT.getOrEmpty(Identifier.tryParse(json.get("enchantment").getAsString())).orElse(null);
             if (enchantment == null) {
                 throw new JsonParseException("Enchantment not found");
