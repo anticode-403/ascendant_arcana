@@ -122,34 +122,6 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
         this.ricochetLevel = nbt.getInt("ricochetLevel");
     }
 
-    @Inject(method = "onEntityHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"), cancellable = true)
-    private void healInsteadOfDamage(EntityHitResult entityHitResult, CallbackInfo ci, @Local(ordinal = 0) Entity target, @Local(ordinal = 1) Entity owner, @Local(ordinal = 0) int amount) {
-        if (rejuvenatingShotLevel < 1) return;
-        PersistentProjectileEntity persistentProjectileEntity = (PersistentProjectileEntity) (Object) this;
-        if (target instanceof LivingEntity livingTarget) {
-            if (target == owner) return;
-            livingTarget.heal((float) amount / 2);
-            onHit(livingTarget);
-            if (!persistentProjectileEntity.getWorld().isClient()) {
-                if (getPierceLevel() <= 0) livingTarget.setStuckArrowCount(livingTarget.getStuckArrowCount() + 1);
-                for(int i = 0; i < 5; ++i) {
-                    double offset = livingTarget.getRandom().nextGaussian() * 0.02;
-                    ((ServerWorld)livingTarget.getWorld()).spawnParticles(ParticleTypes.HEART, livingTarget.offsetX(2 * livingTarget.getRandom().nextDouble() - 1), livingTarget.getRandomBodyY(), livingTarget.offsetZ(2 * livingTarget.getRandom().nextDouble() - 1), 5, offset, offset, offset, 1);
-                }
-                SoundCategory soundCategory = SoundCategory.PLAYERS;
-                if (persistentProjectileEntity.getOwner() != null) soundCategory = persistentProjectileEntity.getOwner().getSoundCategory();
-                livingTarget.getWorld().playSound(null, livingTarget.getX(), livingTarget.getY(), livingTarget.getZ(), SoundEvents.ENTITY_ARROW_HIT_PLAYER, soundCategory, 1.0F, 1.0F);
-            }
-            if (livingTarget instanceof PlayerEntity && owner instanceof ServerPlayerEntity && !persistentProjectileEntity.isSilent()) {
-                ((ServerPlayerEntity)owner).networkHandler.sendPacket(new GameStateChangeS2CPacket(GameStateChangeS2CPacket.PROJECTILE_HIT_PLAYER, 0.0F));
-            }
-        }
-        if (getPierceLevel() <= 0) {
-            persistentProjectileEntity.discard();
-        }
-        ci.cancel();
-    }
-
     @Inject(method = "tick", at = @At("HEAD"))
     private void willRicochet(CallbackInfo ci) {
         PersistentProjectileEntity projectile = (PersistentProjectileEntity)((Object)this);
@@ -185,6 +157,34 @@ public abstract class PersistentProjectileEntityMixin implements EnchantedArrow 
 
             doRicochet();
         }
+    }
+
+    @Inject(method = "onEntityHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"), cancellable = true)
+    private void healInsteadOfDamage(EntityHitResult entityHitResult, CallbackInfo ci, @Local(ordinal = 0) Entity target, @Local(ordinal = 1) Entity owner, @Local(ordinal = 0) int amount) {
+        if (rejuvenatingShotLevel < 1) return;
+        PersistentProjectileEntity persistentProjectileEntity = (PersistentProjectileEntity) (Object) this;
+        if (target instanceof LivingEntity livingTarget) {
+            if (target == owner) return;
+            livingTarget.heal((float) amount / 2);
+            onHit(livingTarget);
+            if (!persistentProjectileEntity.getWorld().isClient()) {
+                if (getPierceLevel() <= 0) livingTarget.setStuckArrowCount(livingTarget.getStuckArrowCount() + 1);
+                for(int i = 0; i < 5; ++i) {
+                    double offset = livingTarget.getRandom().nextGaussian() * 0.02;
+                    ((ServerWorld)livingTarget.getWorld()).spawnParticles(ParticleTypes.HEART, livingTarget.offsetX(2 * livingTarget.getRandom().nextDouble() - 1), livingTarget.getRandomBodyY(), livingTarget.offsetZ(2 * livingTarget.getRandom().nextDouble() - 1), 5, offset, offset, offset, 1);
+                }
+                SoundCategory soundCategory = SoundCategory.PLAYERS;
+                if (persistentProjectileEntity.getOwner() != null) soundCategory = persistentProjectileEntity.getOwner().getSoundCategory();
+                livingTarget.getWorld().playSound(null, livingTarget.getX(), livingTarget.getY(), livingTarget.getZ(), SoundEvents.ENTITY_ARROW_HIT_PLAYER, soundCategory, 1.0F, 1.0F);
+            }
+            if (livingTarget instanceof PlayerEntity && owner instanceof ServerPlayerEntity && !persistentProjectileEntity.isSilent()) {
+                ((ServerPlayerEntity)owner).networkHandler.sendPacket(new GameStateChangeS2CPacket(GameStateChangeS2CPacket.PROJECTILE_HIT_PLAYER, 0.0F));
+            }
+        }
+        if (getPierceLevel() <= 0) {
+            persistentProjectileEntity.discard();
+        }
+        ci.cancel();
     }
 
     @Redirect(method = "onEntityHit", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"))
