@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 
 public class Ricochet extends Enchantment {
     public Ricochet() {
-        super(Rarity.RARE, EnchantmentTarget.BOW, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
+        super(Rarity.UNCOMMON, EnchantmentTarget.BOW, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
     }
 
     @Override
@@ -20,7 +20,7 @@ public class Ricochet extends Enchantment {
 
     @Override
     public boolean isTreasure() {
-        return true;
+        return false;
     }
 
     @Override
