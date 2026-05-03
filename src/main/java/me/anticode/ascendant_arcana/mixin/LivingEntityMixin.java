@@ -108,21 +108,24 @@ public abstract class LivingEntityMixin {
         if (heartAttackers == null) {
             heartAttackers = new EnumMap<>(AArcanaEnchantments.IndirectHeartDamageTypes.class);
         }
-        if (source.getAttacker() != null && source.getAttacker() instanceof LivingEntity) {
-            if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.NETHER_HEART, (LivingEntity) source.getAttacker()) > 0)
+        if (source.getAttacker() != null && source.getAttacker() instanceof LivingEntity attacker) {
+            if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.NETHER_HEART, attacker) > 0)
                 heartAttackers.put(AArcanaEnchantments.IndirectHeartDamageTypes.NETHER, 0);
-            else if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.COLDHEART, (LivingEntity) source.getAttacker()) > 0)
+            else if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.COLDHEART, attacker) > 0)
                 heartAttackers.put(AArcanaEnchantments.IndirectHeartDamageTypes.COLD, 0);
-            else if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.STORM_HEART, (LivingEntity) source.getAttacker()) > 0)
+            else if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.STORM_HEART, attacker) > 0)
                 heartAttackers.put(AArcanaEnchantments.IndirectHeartDamageTypes.STORM, 0);
-            else if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.TURTLE_HEART, (LivingEntity) source.getAttacker()) > 0)
+            else if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.TURTLE_HEART, attacker) > 0)
                 damage *= 0.75F;
-            else if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.WITCH_HEART, (LivingEntity) source.getAttacker()) > 0
+            else if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.WITCH_HEART, attacker) > 0
                     && (source.isOf(DamageTypes.MAGIC) || source.isOf(DamageTypes.INDIRECT_MAGIC)))
                 damage *= 1.2F;
-            else if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.BLADEHEART, (LivingEntity) source.getAttacker()) > 0
+            else if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.BLADEHEART, attacker) > 0
                     && (source.isIn(DamageTypeTags.IS_PROJECTILE) || source.isOf(DamageTypes.PLAYER_ATTACK)))
                 damage *= 1.2F;
+            if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.PINCUSHION, attacker) > 0) {
+                damage *= 0.9F + (0.1F * ((LivingEntity)(Object)this).getStuckArrowCount());
+            }
         }
 
         if (source.isIn(DamageTypeTags.BYPASSES_EFFECTS) || damage >= 1.1342745E38F) return damage;

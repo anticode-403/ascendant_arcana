@@ -15,6 +15,7 @@ public class AArcanaEnchantments {
     public static Enchantment PROTECTIVE_ECHO = register(new ProtectiveEcho(), "protective_echo");
     public static Enchantment EVOKERS_WRATH = register(new EvokersWrath(), "evokers_wrath");
     public static Enchantment HOBBLING_SHOT = register(new HobblingShot(), "hobbling_shot");
+    public static Enchantment PINCUSHION = register(new Pincushion(), "pincushion");
     public static Enchantment REJUVENATING_SHOT = register(new RejuvenatingShot(), "rejuvenating_shot");
     public static Enchantment RICOCHET = register(new Ricochet(), "ricochet");
     public static Enchantment SMELTING = register(new Smelting(), "smelting");
