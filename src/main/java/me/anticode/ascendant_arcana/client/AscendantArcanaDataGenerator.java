@@ -578,6 +578,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.HOBBLING_SHOT).scrap(3).primary(Items.VINE, 6).secondary(Items.BONE_MEAL, 6).level(6));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.NETHER_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.NETHERITE_INGOT, 2).level(15));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.PINCUSHION).scrap(3).primary(Items.ECHO_SHARD, 1).secondary(Items.IRON_INGOT, 6).level(6));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.PROTECTIVE_ECHO).scrap(6).primary(Items.POPPED_CHORUS_FRUIT, 4).secondary(Items.SCUTE, 2).level(8));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.REJUVENATING_SHOT).scrap(6).primary(Items.GHAST_TEAR, 4).level(6));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.RICOCHET).scrap(6).primary(Items.SLIME_BALL, 23).level(6));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.SMELTING).primary(Items.BLAZE_ROD, 2).level(3));
