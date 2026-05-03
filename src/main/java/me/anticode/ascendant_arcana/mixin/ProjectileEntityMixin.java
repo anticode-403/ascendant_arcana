@@ -37,7 +37,7 @@ public class ProjectileEntityMixin {
                         explosiveProjectile.powerY = velocity.getY() / d * 0.1;
                         explosiveProjectile.powerZ = velocity.getZ() / d * 0.1;
                     }
-                    target.damageShield(1);
+                    target.damageShield(3);
                     target.getWorld().playSound(null, target.getBlockPos(), SoundEvents.ITEM_SHIELD_BLOCK, target.getSoundCategory(), 1, 1);
                     ci.cancel();
                 }
