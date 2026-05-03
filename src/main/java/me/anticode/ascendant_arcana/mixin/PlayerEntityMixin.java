@@ -1,6 +1,7 @@
 package me.anticode.ascendant_arcana.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import me.anticode.ascendant_arcana.AscendantArcana;
 import me.anticode.ascendant_arcana.init.AArcanaEnchantments;
 import me.anticode.ascendant_arcana.init.AArcanaStatusEffects;
 import me.anticode.ascendant_arcana.logic.RelicHelper;
@@ -21,6 +22,11 @@ import java.util.Map;
 
 @Mixin(PlayerEntity.class)
 public class PlayerEntityMixin {
+    @ModifyReturnValue(method = "getNextLevelExperience", at = @At("RETURN"))
+    private int xp(int original) {
+        return Math.max(0, AscendantArcana.config.xp_per_level);
+    }
+
     @ModifyReturnValue(method = "getAttackCooldownProgressPerTick", at = @At("RETURN"))
     private float modifyAttackCooldownProgress(float original) {
         LivingEntity livingEntity = (LivingEntity)(Object)this;
