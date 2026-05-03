@@ -100,7 +100,7 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
                                     default -> 1;
                                 };
                                 i += enchantInstance.getValue() * rarityMultiplier;
-                                if (enchantInstance.getKey().isTreasure()) {
+                                if (enchantInstance.getKey().isTreasure() && !unlockedTreasures.contains(enchantInstance.getKey())) {
                                     unlockedTreasures.add(enchantInstance.getKey());
                                 }
                             }
