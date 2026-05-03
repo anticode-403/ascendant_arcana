@@ -18,6 +18,7 @@
     "FireballEntityMixin",
     "ItemEntryAccessor",
     "ItemGroupEntriesMixin",
+    "ItemMixin",
     "ItemStackMixin",
     "LeafEntryAccessor",
     "LivingEntityMixin",

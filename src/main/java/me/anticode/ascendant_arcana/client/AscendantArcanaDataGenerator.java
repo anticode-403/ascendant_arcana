@@ -254,6 +254,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             registerEnchantment(translationBuilder, AArcanaEnchantments.AMBUSH, "Ambush", "When you hit a mob after throwing this Trident, teleport to it.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.BLADEHEART, "Bladeheart", "Slightly increases all damage dealt by physical attacks.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.COLDHEART, "Coldheart", "Increases damage dealt by all cold attacks.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.CLEANSE, "Cleanse", "Holding the shield up cleanses you of all status effects after a short time.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.DEBILITATING_CHAIN, "Debilitating Chain", "Slaying a mob transfers all status effects to the nearest enemy.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.DEFLECT, "Deflect", "Blocking a projectile with your shield will shoot it back.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.EVOKERS_WRATH, "Evoker's Wrath", "Summons an Evoker Fang when the arrow lands.");
@@ -570,10 +571,11 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.ARCHERS_GAMBIT).primary(Items.GOLD_INGOT, 3).level(7));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.ALCHEMISTS_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.GLISTERING_MELON_SLICE, 16).level(15));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.AMBUSH).primary(Items.ENDER_PEARL, 8).secondary(Items.AMETHYST_SHARD, 3).level(3));
-            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.DEBILITATING_CHAIN).primary(Items.FERMENTED_SPIDER_EYE, 3).secondary(Items.GUNPOWDER, 3).level(3));
-            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.DEFLECT).scrap(4).primary(Items.SLIME_BALL, 4).secondary(Items.SCUTE, 2).level(5));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.BLADEHEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.DIAMOND, 8).level(15));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.COLDHEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.BLUE_ICE, 32).level(15));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.CLEANSE).scrap(9).primary(Items.MILK_BUCKET, 1).secondary(Items.PITCHER_PLANT, 4).level(9));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.DEBILITATING_CHAIN).primary(Items.FERMENTED_SPIDER_EYE, 3).secondary(Items.GUNPOWDER, 3).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.DEFLECT).scrap(4).primary(Items.SLIME_BALL, 4).secondary(Items.SCUTE, 2).level(5));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.EVOKERS_WRATH).scrap(2).primary(Items.TOTEM_OF_UNDYING, 1).level(3));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.HOBBLING_SHOT).scrap(3).primary(Items.VINE, 6).secondary(Items.BONE_MEAL, 6).level(6));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.NETHER_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.NETHERITE_INGOT, 2).level(15));

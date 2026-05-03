@@ -10,6 +10,7 @@ import net.minecraft.util.Identifier;
 public class AArcanaEnchantments {
     public static Enchantment AMBUSH = register(new Ambush(), "ambush");
     public static Enchantment ARCHERS_GAMBIT = register(new ArchersGambit(), "archers_gambit");
+    public static Enchantment CLEANSE = register(new Cleanse(), "cleanse");
     public static Enchantment DEBILITATING_CHAIN = register(new DebilitatingChain(), "debilitating_chain");
     public static Enchantment DEFLECT = register(new Deflect(), "deflect");
     public static Enchantment PROTECTIVE_ECHO = register(new ProtectiveEcho(), "protective_echo");
