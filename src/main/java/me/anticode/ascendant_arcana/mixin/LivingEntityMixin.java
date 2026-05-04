@@ -223,7 +223,8 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void tick(CallbackInfo ci) {
-        if(!((LivingEntity)(Object)this).getWorld().isClient()) {
+        LivingEntity livingEntity = (LivingEntity)(Object)this;
+        if(!livingEntity.getWorld().isClient()) {
             if (heartAttackers != null) {
                 for (AArcanaEnchantments.IndirectHeartDamageTypes damageType : heartAttackers.keySet()) {
                     if (heartAttackers.get(damageType) > 300) heartAttackers.remove(damageType);
@@ -239,10 +240,10 @@ public abstract class LivingEntityMixin {
                 if(!hasStackEquipInSlot(st, pair.getLeft())) {
                     ItemHelper.forEachEnchantment((en, stack, lvl)-> {
                         if(en instanceof TickableAttributeEnchantment) {
-                            ((TickableAttributeEnchantment) en).removeAttributes((LivingEntity)(Object)this, pair.getLeft());
+                            ((TickableAttributeEnchantment) en).removeAttributes(livingEntity, pair.getLeft());
                         }
                         else if (en instanceof TurtleHeart) {
-                            ((TurtleHeart) en).removeAttributes((LivingEntity)(Object)this, pair.getLeft());
+                            ((TurtleHeart) en).removeAttributes(livingEntity, pair.getLeft());
                         }
                     }, st, true);
                     it.remove();
@@ -254,13 +255,13 @@ public abstract class LivingEntityMixin {
                 if(!stack.isEmpty()) {
                     ItemHelper.forEachEnchantment((en, st, lvl)-> {
                         if(en instanceof TickableAttributeEnchantment) {
-                            ((TickableAttributeEnchantment) en).onTick((LivingEntity)(Object)this, st, lvl);
-                            if(missingAttributeStack(st) && ((TickableAttributeEnchantment) en).addAttributes((LivingEntity)(Object)this, st, slot, lvl)) {
+                            ((TickableAttributeEnchantment) en).onTick(livingEntity, st, lvl);
+                            if(missingAttributeStack(st) && ((TickableAttributeEnchantment) en).addAttributes(livingEntity, st, slot, lvl)) {
                                 attributeStacks.add(new Pair<>(slot, st));
                             }
                         }
                         else if (en instanceof TurtleHeart) {
-                            if(missingAttributeStack(st) && ((TurtleHeart) en).addAttributes((LivingEntity)(Object)this, st, slot, lvl)) {
+                            if(missingAttributeStack(st) && ((TurtleHeart) en).addAttributes(livingEntity, st, slot, lvl)) {
                                 attributeStacks.add(new Pair<>(slot, st));
                             }
                         }
@@ -268,10 +269,10 @@ public abstract class LivingEntityMixin {
                 }
             }
 
-            if (((LivingEntity)(Object)this).getWorld().getTime() % 20 == 0 && getStatusEffect(AArcanaStatusEffects.ECHOING_DAMAGE) != null) {
+            if (livingEntity.getWorld().getTime() % 20 == 0 && getStatusEffect(AArcanaStatusEffects.ECHOING_DAMAGE) != null) {
                 StatusEffectInstance instance = getStatusEffect(AArcanaStatusEffects.ECHOING_DAMAGE);
                 int damage = instance.getAmplifier();
-                damage(((LivingEntity)(Object)this).getWorld().getDamageSources().magic(), damage);
+                damage(livingEntity.getWorld().getDamageSources().magic(), damage);
             }
         }
     }
