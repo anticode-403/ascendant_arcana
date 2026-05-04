@@ -6,8 +6,8 @@ import net.minecraft.enchantment.RiptideEnchantment;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 
-public class Ambush extends Enchantment {
-    public Ambush() {
+public class Lifetide extends Enchantment {
+    public Lifetide() {
         super(Rarity.RARE, EnchantmentTarget.TRIDENT, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
     }
 
@@ -23,6 +23,6 @@ public class Ambush extends Enchantment {
 
     @Override
     protected boolean canAccept(Enchantment other) {
-        return super.canAccept(other) && !(other instanceof RiptideEnchantment) && !(other instanceof Lifetide);
+        return super.canAccept(other) && !(other instanceof RiptideEnchantment) && !(other instanceof Ambush);
     }
 }

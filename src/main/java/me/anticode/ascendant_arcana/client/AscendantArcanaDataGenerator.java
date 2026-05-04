@@ -259,6 +259,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             registerEnchantment(translationBuilder, AArcanaEnchantments.DEFLECT, "Deflect", "Blocking a projectile with your shield will shoot it back.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.EVOKERS_WRATH, "Evoker's Wrath", "Summons an Evoker Fang when the arrow lands.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.HOBBLING_SHOT, "Hobbling Shot", "Reduces movement speed and jump height, stacking 5 times.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.LIFETIDE, "Lifetide", "On hit, sticks into the entity hit and heals them for a short duration. You heal half as much.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.NETHER_HEART, "Heart of the Nether", "Increases damage dealt by all fire attacks.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.PINCUSHION, "Pincushion", "Reduced base damage, increases damage dealt based on the number of arrows stuck in the target.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.PROTECTIVE_ECHO, "Protective Echo", "Instances of high damage are spread out over time.");
@@ -578,6 +579,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.DEFLECT).scrap(4).primary(Items.SLIME_BALL, 4).secondary(Items.SCUTE, 2).level(5));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.EVOKERS_WRATH).scrap(2).primary(Items.TOTEM_OF_UNDYING, 1).level(3));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.HOBBLING_SHOT).scrap(3).primary(Items.VINE, 6).secondary(Items.BONE_MEAL, 6).level(6));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.LIFETIDE).scrap(12).primary(Items.GHAST_TEAR, 6).level(9));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.NETHER_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.NETHERITE_INGOT, 2).level(15));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.PINCUSHION).scrap(3).primary(Items.ECHO_SHARD, 1).secondary(Items.IRON_INGOT, 6).level(6));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.PROTECTIVE_ECHO).scrap(6).primary(Items.POPPED_CHORUS_FRUIT, 4).secondary(Items.SCUTE, 2).level(8));

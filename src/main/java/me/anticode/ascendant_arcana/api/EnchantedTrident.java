@@ -1,5 +1,15 @@
 package me.anticode.ascendant_arcana.api;
 
+import net.minecraft.entity.LivingEntity;
+
 public interface EnchantedTrident {
     void ascendant_arcana$setAmbushLevel(int ambushLevel);
+
+    void ascendant_arcana$setLifetideLevel(int lifetideLevel);
+
+    LivingEntity ascendant_arcana$getStuckEntity();
+
+    float ascendant_arcana$getRenderTicks();
+
+    float ascendant_arcana$getStabTicks();
 }
