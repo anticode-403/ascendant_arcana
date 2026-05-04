@@ -167,7 +167,6 @@ public class TridentEntityMixin implements EnchantedTrident {
                         trident.getWorld().playSound(null, trident.getBlockPos(), SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, stuckEntity.getSoundCategory(), 1, 2);
                         stuckEntity.heal(2);
                         living.heal(1);
-                        stuckEntity.timeUntilRegen = 0;
                         stabTicks = 1;
                     }
                 } else {
