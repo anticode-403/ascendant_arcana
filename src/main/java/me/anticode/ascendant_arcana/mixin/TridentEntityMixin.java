@@ -105,6 +105,7 @@ public class TridentEntityMixin implements EnchantedTrident {
                         }
                     }
                     projectile.getWorld().playSound(null, projectile.getBlockPos(), SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, soundCategory, 1, 2);
+                    stuckEntity.heal(4);
                 }
             }
             ci.cancel();
