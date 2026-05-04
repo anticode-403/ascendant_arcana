@@ -1,15 +1,14 @@
 package me.anticode.ascendant_arcana.enchantment;
 
-import net.minecraft.enchantment.ChannelingEnchantment;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.enchantment.RiptideEnchantment;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 
-public class Lifetide extends Enchantment {
-    public Lifetide() {
-        super(Rarity.RARE, EnchantmentTarget.TRIDENT, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
+public class Sundering extends Enchantment {
+    public Sundering() {
+        super(Rarity.UNCOMMON, EnchantmentTarget.TRIDENT, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
     }
 
     @Override
@@ -24,6 +23,6 @@ public class Lifetide extends Enchantment {
 
     @Override
     protected boolean canAccept(Enchantment other) {
-        return super.canAccept(other) && !(other instanceof RiptideEnchantment) && !(other instanceof Ambush) && !(other instanceof Sundering) && !(other instanceof ChannelingEnchantment);
+        return super.canAccept(other) && !(other instanceof RiptideEnchantment) && !(other instanceof Ambush) && !(other instanceof Lifetide);
     }
 }

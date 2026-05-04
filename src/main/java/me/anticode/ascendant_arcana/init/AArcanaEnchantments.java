@@ -22,6 +22,7 @@ public class AArcanaEnchantments {
     public static Enchantment RICOCHET = register(new Ricochet(), "ricochet");
     public static Enchantment SMELTING = register(new Smelting(), "smelting");
     public static Enchantment SOUL_BURST = register(new SoulBurst(), "soul_burst");
+    public static Enchantment SUNDERING = register(new Sundering(), "sundering");
     public static Enchantment STRAFE = register(new Strafe(), "strafe");
 
     public static Enchantment ALCHEMISTS_HEART = register(new HeartEnchantment(), "alchemists_heart");

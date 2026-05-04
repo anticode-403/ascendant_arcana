@@ -259,7 +259,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             registerEnchantment(translationBuilder, AArcanaEnchantments.DEFLECT, "Deflect", "Blocking a projectile with your shield will shoot it back.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.EVOKERS_WRATH, "Evoker's Wrath", "Summons an Evoker Fang when the arrow lands.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.HOBBLING_SHOT, "Hobbling Shot", "Reduces movement speed and jump height, stacking 5 times.");
-            registerEnchantment(translationBuilder, AArcanaEnchantments.LIFETIDE, "Lifetide", "On hit, sticks into the entity hit and heals them for a short duration. You heal half as much.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.LIFETIDE, "Lifetide", "On hit, sticks into the target and heals them for a short duration. You heal half as much.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.NETHER_HEART, "Heart of the Nether", "Increases damage dealt by all fire attacks.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.PINCUSHION, "Pincushion", "Reduced base damage, increases damage dealt based on the number of arrows stuck in the target.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.PROTECTIVE_ECHO, "Protective Echo", "Instances of high damage are spread out over time.");
@@ -269,6 +269,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             registerEnchantment(translationBuilder, AArcanaEnchantments.SOUL_BURST, "Soul Burst", "Slain enemies deal damage to nearby entities based on their maximum health.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.STORM_HEART, "Heart of the Storm", "Increases the damage dealt by all lightning attacks.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.STRAFE, "Strafe", "Allows you to sprint in any direction and reduces movement speed penalties while using an item.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.SUNDERING, "Sundering", "On hit, sticks into the target and deals damage over time, reducing their armor.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.TURTLE_HEART, "Heart of the Turtle", "Decreases all incoming and outgoing damage.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.WITCH_HEART, "Witch's Heart", "Slightly increases damage dealt by all magic attacks.");
 

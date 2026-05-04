@@ -1,8 +1,10 @@
 package me.anticode.ascendant_arcana.mixin;
 
 import me.anticode.ascendant_arcana.api.EnchantedTrident;
+import me.anticode.ascendant_arcana.init.AArcanaStatusEffects;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.entity.projectile.TridentEntity;
@@ -28,6 +30,9 @@ public class TridentEntityMixin implements EnchantedTrident {
 
     @Unique
     private int lifetideLevel;
+
+    @Unique
+    private int sunderingLevel;
 
     @Unique
     private LivingEntity stuckEntity = null;
@@ -63,6 +68,11 @@ public class TridentEntityMixin implements EnchantedTrident {
     }
 
     @Override
+    public void ascendant_arcana$setSunderingLevel(int value) {
+        this.sunderingLevel = value;
+    }
+
+    @Override
     public void ascendant_arcana$setAmbushLevel(int value) {
         this.ambushLevel = value;
     }
@@ -90,7 +100,7 @@ public class TridentEntityMixin implements EnchantedTrident {
     @Inject(method = "onEntityHit", at = @At("HEAD"), cancellable = true)
     private void onEntityHitHead(EntityHitResult entityHitResult, CallbackInfo ci) {
         PersistentProjectileEntity projectile = (PersistentProjectileEntity)((Object)this);
-        if (lifetideLevel >= 1) {
+        if (lifetideLevel >= 1 || sunderingLevel >= 1) {
             if (entityHitResult.getEntity() instanceof LivingEntity livingEntity && stuckEntity == null) {
                 stuckEntity = livingEntity;
                 stuckEntityId = livingEntity.getId();
@@ -106,6 +116,16 @@ public class TridentEntityMixin implements EnchantedTrident {
                     }
                     projectile.getWorld().playSound(null, projectile.getBlockPos(), SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, soundCategory, 1, 2);
                     stuckEntity.heal(4);
+                } else if (sunderingLevel >= 1) {
+                    if (projectile.getWorld() instanceof ServerWorld serverWorld) {
+                        for(int i = 0; i < 5; ++i) {
+                            double offset = livingEntity.getRandom().nextGaussian() * 0.02;
+                            serverWorld.spawnParticles(ParticleTypes.DAMAGE_INDICATOR, livingEntity.offsetX(2 * livingEntity.getRandom().nextDouble() - 1), livingEntity.getRandomBodyY(), livingEntity.offsetZ(2 * livingEntity.getRandom().nextDouble() - 1), 5, offset, offset, offset, 1);
+                        }
+                    }
+                    projectile.getWorld().playSound(null, projectile.getBlockPos(), SoundEvents.ENTITY_ITEM_BREAK, soundCategory, 1, 0.5F);
+                    stuckEntity.addStatusEffect(new StatusEffectInstance(AArcanaStatusEffects.SUNDERED, 60, 0, true, false, true));
+                    stuckEntity.damage(projectile.getDamageSources().trident(projectile, projectile.getOwner()), 2);
                 }
             }
             ci.cancel();
@@ -132,7 +152,7 @@ public class TridentEntityMixin implements EnchantedTrident {
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void stuckTridentEnchants(CallbackInfo ci) {
-        if (lifetideLevel <= 0) return;
+        if (lifetideLevel <= 0 && sunderingLevel <= 0) return;
         TridentEntity trident = (TridentEntity)(Object)this;
         if (stuckEntityId == -2) {
             stuckEntity = null;
@@ -159,15 +179,27 @@ public class TridentEntityMixin implements EnchantedTrident {
                 if (trident.getOwner() instanceof LivingEntity living && living.isAlive()) {
                     trident.teleport(stuckEntity.getX(), stuckEntity.getEyeY(), stuckEntity.getZ());
                     if (ticksStuck % 20 == 0) {
-                        if (trident.getWorld() instanceof ServerWorld serverWorld) {
-                            for(int i = 0; i < 5; ++i) {
-                                double offset = stuckEntity.getRandom().nextGaussian() * 0.02;
-                                serverWorld.spawnParticles(ParticleTypes.HEART, stuckEntity.offsetX(2 * stuckEntity.getRandom().nextDouble() - 1), stuckEntity.getRandomBodyY(), stuckEntity.offsetZ(2 * stuckEntity.getRandom().nextDouble() - 1), 5, offset, offset, offset, 1);
+                        if (lifetideLevel >= 1) {
+                            if (trident.getWorld() instanceof ServerWorld serverWorld) {
+                                for(int i = 0; i < 5; ++i) {
+                                    double offset = stuckEntity.getRandom().nextGaussian() * 0.02;
+                                    serverWorld.spawnParticles(ParticleTypes.HEART, stuckEntity.offsetX(2 * stuckEntity.getRandom().nextDouble() - 1), stuckEntity.getRandomBodyY(), stuckEntity.offsetZ(2 * stuckEntity.getRandom().nextDouble() - 1), 5, offset, offset, offset, 1);
+                                }
                             }
+                            trident.getWorld().playSound(null, trident.getBlockPos(), SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, stuckEntity.getSoundCategory(), 1, 2);
+                            stuckEntity.heal(2);
+                            living.heal(1);
+                        } else if (sunderingLevel >= 1) {
+                            if (trident.getWorld() instanceof ServerWorld serverWorld) {
+                                for(int i = 0; i < 5; ++i) {
+                                    double offset = stuckEntity.getRandom().nextGaussian() * 0.02;
+                                    serverWorld.spawnParticles(ParticleTypes.DAMAGE_INDICATOR, stuckEntity.offsetX(2 * stuckEntity.getRandom().nextDouble() - 1), stuckEntity.getRandomBodyY(), stuckEntity.offsetZ(2 * stuckEntity.getRandom().nextDouble() - 1), 5, offset, offset, offset, 1);
+                                }
+                            }
+                            trident.getWorld().playSound(null, trident.getBlockPos(), SoundEvents.ENTITY_ITEM_BREAK, stuckEntity.getSoundCategory(), 1, 0.5F);
+                            stuckEntity.addStatusEffect(new StatusEffectInstance(AArcanaStatusEffects.SUNDERED, 60, 0, true, false, true));
+                            stuckEntity.damage(trident.getDamageSources().trident(trident, trident.getOwner()), 1);
                         }
-                        trident.getWorld().playSound(null, trident.getBlockPos(), SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, stuckEntity.getSoundCategory(), 1, 2);
-                        stuckEntity.heal(2);
-                        living.heal(1);
                         stabTicks = 1;
                     }
                 } else {

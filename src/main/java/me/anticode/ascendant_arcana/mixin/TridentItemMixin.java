@@ -22,9 +22,11 @@ public abstract class TridentItemMixin {
                                         @Local TridentEntity tridentEntity) {
         int ambushLevel = EnchantmentHelper.getLevel(AArcanaEnchantments.AMBUSH, stack);
         int lifetideLevel = EnchantmentHelper.getLevel(AArcanaEnchantments.LIFETIDE, stack);
+        int sunderingLevel = EnchantmentHelper.getLevel(AArcanaEnchantments.SUNDERING, stack);
 
         EnchantedTrident enchantedTrident = (EnchantedTrident) tridentEntity;
         enchantedTrident.ascendant_arcana$setAmbushLevel(ambushLevel);
         enchantedTrident.ascendant_arcana$setLifetideLevel(lifetideLevel);
+        enchantedTrident.ascendant_arcana$setSunderingLevel(sunderingLevel);
     }
 }

@@ -23,6 +23,6 @@ public class Ambush extends Enchantment {
 
     @Override
     protected boolean canAccept(Enchantment other) {
-        return super.canAccept(other) && !(other instanceof RiptideEnchantment) && !(other instanceof Lifetide);
+        return super.canAccept(other) && !(other instanceof RiptideEnchantment) && !(other instanceof Lifetide) && !(other instanceof Sundering);
     }
 }
