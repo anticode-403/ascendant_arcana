@@ -22,6 +22,7 @@ public class AArcanaEnchantmentHelper {
     public static String ENCHANTMENT_CAPACITY_KEY = "AArcanaEnchantmentCapacity";
 
     public static int getEnchantmentCost(Enchantment enchantment) {
+        if (enchantment.isCursed()) return 1;
         return switch (enchantment.getRarity()) {
             case VERY_RARE -> 5;
             case RARE -> 3;
