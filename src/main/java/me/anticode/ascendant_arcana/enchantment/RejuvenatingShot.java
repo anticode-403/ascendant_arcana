@@ -36,6 +36,6 @@ public class RejuvenatingShot extends Enchantment {
 
     @Override
     protected boolean canAccept(Enchantment other) {
-        return super.canAccept(other) && other != AArcanaEnchantments.HOBBLING_SHOT && other != Enchantments.INFINITY;
+        return super.canAccept(other) && other != AArcanaEnchantments.HOBBLING_SHOT && other != Enchantments.INFINITY && other != AArcanaEnchantments.RICOCHET;
     }
 }
