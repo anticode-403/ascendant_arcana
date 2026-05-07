@@ -3,6 +3,7 @@ package me.anticode.ascendant_arcana.mixin;
 import com.google.common.collect.Lists;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
+import me.anticode.ascendant_arcana.enchantment.HellWalker;
 import me.anticode.ascendant_arcana.enchantment.TickableAttributeEnchantment;
 import me.anticode.ascendant_arcana.enchantment.TurtleHeart;
 import me.anticode.ascendant_arcana.init.AArcanaAttributes;
@@ -28,6 +29,7 @@ import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Pair;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
@@ -83,6 +85,14 @@ public abstract class LivingEntityMixin {
             return original * (1F - (0.1F * hobbled.getAmplifier()));
         }
         return original;
+    }
+
+    @Inject(method = "applyMovementEffects", at = @At("HEAD"))
+    private void applyMovementEffects(BlockPos pos, CallbackInfo ci) {
+        LivingEntity livingEntity = (LivingEntity) (Object) this;
+        if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.HELLWALKER, livingEntity) > 0) {
+            HellWalker.freezeLava(livingEntity, livingEntity.getWorld(), pos);
+        }
     }
 
     @ModifyReturnValue(method = "modifyAppliedDamage", at = @At("RETURN"))
