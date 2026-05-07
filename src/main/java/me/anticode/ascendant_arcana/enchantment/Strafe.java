@@ -7,7 +7,7 @@ import net.minecraft.entity.EquipmentSlot;
 
 public class Strafe extends Enchantment {
     public Strafe() {
-        super(Rarity.COMMON, EnchantmentTarget.ARMOR_LEGS, new EquipmentSlot[]{EquipmentSlot.LEGS});
+        super(Rarity.UNCOMMON, EnchantmentTarget.ARMOR_LEGS, new EquipmentSlot[]{EquipmentSlot.LEGS});
     }
 
     @Override
