@@ -604,7 +604,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             exporter.accept(new EnchantmentRecipeProvider(Enchantments.FROST_WALKER).scrap(6).primary(Items.BLUE_ICE, 2).secondary(Items.ECHO_SHARD, 1).level(3));
             exporter.accept(new EnchantmentRecipeProvider(Enchantments.FEATHER_FALLING).scrap(2).primary(Items.FEATHER, 5).level(3));
             exporter.accept(new EnchantmentRecipeProvider(Enchantments.INFINITY).scrap(12).primary(Items.ECHO_SHARD, 2).secondary(Items.ARROW, 1).level(3));
-            exporter.accept(new EnchantmentRecipeProvider(Enchantments.THORNS).scrap(3).primary(Items.PRISMARINE, 3).secondary(Items.PRISMARINE_CRYSTALS, 1).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(Enchantments.THORNS).scrap(3).primary(Items.CACTUS, 2).secondary(Items.SLIME_BALL, 1).level(3));
             exporter.accept(new EnchantmentRecipeProvider(Enchantments.KNOCKBACK).scrap(1).primary(Items.PISTON, 2).level(3));
             exporter.accept(new EnchantmentRecipeProvider(Enchantments.SOUL_SPEED).scrap(6).primary(Items.SCULK_CATALYST, 1).secondary(Items.FEATHER, 2).level(6));
             exporter.accept(new EnchantmentRecipeProvider(Enchantments.SWIFT_SNEAK).scrap(6).primary(Items.FEATHER, 5).secondary(Items.ECHO_SHARD, 1).level(6));
