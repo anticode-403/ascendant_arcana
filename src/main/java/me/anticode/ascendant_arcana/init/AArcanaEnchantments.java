@@ -26,6 +26,7 @@ public class AArcanaEnchantments {
     public static Enchantment SOUL_BURST = register(new SoulBurst(), "soul_burst");
     public static Enchantment STRAFE = register(new Strafe(), "strafe");
     public static Enchantment SUNDERING = register(new Sundering(), "sundering");
+    public static Enchantment SUREFOOT = register(new Surefoot(), "surefoot");
 
     public static Enchantment ALCHEMISTS_HEART = register(new HeartEnchantment(), "alchemists_heart");
     public static Enchantment NETHER_HEART = register(new HeartEnchantment(), "heart_of_the_nether");

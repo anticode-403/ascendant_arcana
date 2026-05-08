@@ -11,6 +11,7 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.ItemStack;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class TickableAttributeEnchantment extends Enchantment {
     private final boolean isCurse;
@@ -42,13 +43,16 @@ public class TickableAttributeEnchantment extends Enchantment {
         return isCurse;
     }
 
-    public boolean addAttributes(LivingEntity entity, ItemStack stack, EquipmentSlot slot, int level)
-    {
+    protected void addAttributeModifier(EntityAttribute attribute, double amount, EntityAttributeModifier.Operation operation) {
+        EntityAttributeModifier entityAttributeModifier = new EntityAttributeModifier(UUID.randomUUID(), this::getTranslationKey, amount, operation);
+        this.attributeModifiers.put(attribute, entityAttributeModifier);
+    }
+
+    public boolean addAttributes(LivingEntity entity, ItemStack stack, EquipmentSlot slot, int level) {
         return AArcanaEnchantmentHelper.addEnchantmentAttributes(this, attributeModifiers, entity, stack, slot, level);
     }
 
-    public void removeAttributes(LivingEntity entity, EquipmentSlot slot)
-    {
+    public void removeAttributes(LivingEntity entity, EquipmentSlot slot) {
         AArcanaEnchantmentHelper.removeEnchantmentAttributes(this.attributeModifiers, entity, slot);
     }
 }

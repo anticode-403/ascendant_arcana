@@ -271,6 +271,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             registerEnchantment(translationBuilder, AArcanaEnchantments.STORM_HEART, "Heart of the Storm", "Increases the damage dealt by all lightning attacks.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.STRAFE, "Strafe", "Allows you to sprint in any direction and reduces movement speed penalties while using an item.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.SUNDERING, "Sundering", "On hit, sticks into the target and deals damage over time, reducing their armor.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.SUREFOOT, "Surefoot", "Significantly increases knockback resistance and reduces the strength of most slowing effects.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.TURTLE_HEART, "Heart of the Turtle", "Decreases all incoming and outgoing damage.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.WITCH_HEART, "Witch's Heart", "Slightly increases damage dealt by all magic attacks.");
 
@@ -595,6 +596,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.STORM_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.LIGHTNING_ROD, 6).level(15));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.STRAFE).scrap(6).primary(Items.FEATHER, 12).level(4));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.SUNDERING).scrap(4).primary(Items.TORCHFLOWER, 2).secondary(Items.FERMENTED_SPIDER_EYE, 4).level(6));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.SUREFOOT).scrap(6).primary(Items.ANVIL, 1));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.TURTLE_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.ANVIL, 1).level(15));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.WITCH_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.CAULDRON, 1).level(15));
 

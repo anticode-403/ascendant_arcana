@@ -15,9 +15,7 @@ import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.AttributeContainer;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffect;
@@ -95,6 +93,16 @@ public abstract class LivingEntityMixin {
         if (useTime > 5 + 5 * level) return;
         StatusEffectInstance crossCounter = new StatusEffectInstance(AArcanaStatusEffects.CROSS_COUNTER, 15 * level, 0, false, false, true);
         addStatusEffect(crossCounter, (LivingEntity)(Object)this);
+    }
+
+    @ModifyReturnValue(method = "getAttributeValue(Lnet/minecraft/entity/attribute/EntityAttribute;)D", at = @At("RETURN"))
+    private double implementSurefootMovementResistance(double original, @Local(argsOnly = true) EntityAttribute attribute) {
+        if (attribute != EntityAttributes.GENERIC_MOVEMENT_SPEED) return original;
+        LivingEntity livingEntity = (LivingEntity)(Object)this;
+        if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.SUREFOOT, livingEntity) <= 0) return original;
+        double baseValue = livingEntity.getAttributeBaseValue(attribute);
+        if (original >= baseValue) return original;
+        return baseValue - (baseValue - original)/2;
     }
 
     @ModifyReturnValue(method = "createLivingAttributes", at = @At("RETURN"))
