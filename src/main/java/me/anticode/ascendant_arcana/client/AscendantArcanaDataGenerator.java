@@ -293,6 +293,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             registerStatusEffect(translationBuilder, AArcanaStatusEffects.ARCHERS_GAMBIT, "Archer's Gambit", "Faster draw speed of bows and crossbows.");
             registerStatusEffect(translationBuilder, AArcanaStatusEffects.ECHOING_DAMAGE, "Echoing Damage", "Deals damage every second based on amplification.");
             registerStatusEffect(translationBuilder, AArcanaStatusEffects.HOBBLED, "Hobbled", "Slightly reduces movement speed and jump height.");
+            registerStatusEffect(translationBuilder, AArcanaStatusEffects.SUNDERED, "Sundered", "Significantly reduces armor and armor toughness.");
         }
     }
 
