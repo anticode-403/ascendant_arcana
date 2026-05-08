@@ -64,12 +64,38 @@ public abstract class LivingEntityMixin {
     @Shadow
     public abstract void setStatusEffect(StatusEffectInstance effect, @Nullable Entity source);
 
+    @Shadow
+    public abstract boolean removeStatusEffect(StatusEffect type);
+
+    @Shadow
+    public abstract int getItemUseTime();
+
+    @Shadow
+    public abstract boolean addStatusEffect(StatusEffectInstance effect, @Nullable Entity source);
+
     @Unique
     private Map<AArcanaEnchantments.IndirectHeartDamageTypes, Integer> heartAttackers = new EnumMap<>(AArcanaEnchantments.IndirectHeartDamageTypes.class);
 
     @Unique
     private final Collection<Pair<EquipmentSlot, ItemStack>> attributeStacks = Lists.newArrayList();
 
+    @Inject(method = "onAttacking", at = @At("HEAD"))
+    private void removeCrossCounterOnAttack(Entity target, CallbackInfo ci) {
+        if (getStatusEffect(AArcanaStatusEffects.CROSS_COUNTER) != null) {
+            removeStatusEffect(AArcanaStatusEffects.CROSS_COUNTER);
+        }
+    }
+
+    @Inject(method = "takeShieldHit", at = @At("HEAD"))
+    private void addCrossCounterOnParry(LivingEntity attacker, CallbackInfo ci) {
+        int level = EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.CROSS_COUNTER, (LivingEntity)(Object)this);
+        if (level <= 0) return;
+        int useTime = getItemUseTime();
+        if (useTime <= 0) return;
+        if (useTime > 5 + 5 * level) return;
+        StatusEffectInstance crossCounter = new StatusEffectInstance(AArcanaStatusEffects.CROSS_COUNTER, 15 * level, 0, false, false, true);
+        addStatusEffect(crossCounter, (LivingEntity)(Object)this);
+    }
 
     @ModifyReturnValue(method = "createLivingAttributes", at = @At("RETURN"))
     private static DefaultAttributeContainer.Builder createLivingAttributes(DefaultAttributeContainer.Builder original) {
