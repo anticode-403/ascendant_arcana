@@ -267,6 +267,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             registerEnchantment(translationBuilder, AArcanaEnchantments.REJUVENATING_SHOT, "Rejuvenating Shot", "Instead of doing damage, arrows heal for half the damage they would have done.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.RICOCHET, "Ricochet", "Arrows ricochet, dealing reduced initial damage but increasing with each bounce.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.SMELTING, "Smelting", "Smelts blocks mined.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.SONIC_BLAST, "Sonic Blast", "Holding up the shield charges a powerful sonic blast that ignores most forms of protection.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.SOUL_BURST, "Soul Burst", "Slain enemies deal damage to nearby entities based on their maximum health.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.STORM_HEART, "Heart of the Storm", "Increases the damage dealt by all lightning attacks.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.STRAFE, "Strafe", "Allows you to sprint in any direction and reduces movement speed penalties while using an item.");
@@ -592,6 +593,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.REJUVENATING_SHOT).scrap(6).primary(Items.GHAST_TEAR, 4).level(6));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.RICOCHET).scrap(6).primary(Items.SLIME_BALL, 23).level(6));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.SMELTING).primary(Items.BLAZE_ROD, 2).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.SONIC_BLAST).scrap(6).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.ECHO_SHARD, 6).level(9));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.SOUL_BURST).primary(Items.SCULK_CATALYST, 1).secondary(Items.GUNPOWDER, 12).level(3));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.STORM_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.LIGHTNING_ROD, 6).level(15));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.STRAFE).scrap(6).primary(Items.FEATHER, 12).level(4));
