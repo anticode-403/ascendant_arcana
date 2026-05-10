@@ -55,7 +55,7 @@ public class ItemMixin {
                     if (world instanceof ServerWorld serverWorld) serverWorld.spawnParticles(ParticleTypes.SONIC_BOOM, particlePos.x, particlePos.y, particlePos.z, 1, 0.0F, 0.0F, 0.0F, 0.0F);
                 }
                 player.stopUsingItem();
-                player.getItemCooldownManager().set(stack.getItem(), 100);
+                player.getItemCooldownManager().set(stack.getItem(), 600);
             }
         }
     }
