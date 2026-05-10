@@ -37,6 +37,8 @@ public class AArcanaEnchantments {
     public static Enchantment WITCH_HEART = register(new HeartEnchantment(), "witch_heart");
     public static Enchantment TURTLE_HEART = register(new TurtleHeart(), "heart_of_the_turtle");
 
+    public static Enchantment DEPTHS_CURSE = register(new DepthsCurse(), "depths_curse");
+    public static Enchantment ENFEEBLEMENT_CURSE = register(new EnfeeblementCurse(), "enfeeblement_curse");
     public static Enchantment INACCURACY_CURSE = register(new InaccuracyCurse(), "inaccuracy_curse");
 
 

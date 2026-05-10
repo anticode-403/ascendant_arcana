@@ -276,6 +276,8 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             registerEnchantment(translationBuilder, AArcanaEnchantments.TURTLE_HEART, "Heart of the Turtle", "Decreases all incoming and outgoing damage.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.WITCH_HEART, "Witch's Heart", "Slightly increases damage dealt by all magic attacks.");
 
+            registerEnchantment(translationBuilder, AArcanaEnchantments.DEPTHS_CURSE, "Curse of the Depths", "Drags you to the bottom of a body of water.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.ENFEEBLEMENT_CURSE, "Curse of Enfeeblement", "Reduces your maximum health.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.INACCURACY_CURSE, "Curse of Inaccuracy", "Reduces the accuracy of bows and crossbows.");
             // Tooltips
             translationBuilder.add("item.book_contains_treasure_title", "Treasure Enchantment");
