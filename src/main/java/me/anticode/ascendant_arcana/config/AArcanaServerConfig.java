@@ -72,7 +72,9 @@ public class AArcanaServerConfig implements ConfigData {
             "majruszsenchantments:magic_protection",
             "majruszsenchantments:dodge",
             "majruszsenchantments:enlightenment",
-            "majruszsenchantments:immortality"
+            "majruszsenchantments:immortality",
+            "ascendant_arcana:coldheart",
+            "ascendant_arcana:heart_of_the_storm"
     );
 
     @Comment("Items which have their base relic capacity value overwritten.")
