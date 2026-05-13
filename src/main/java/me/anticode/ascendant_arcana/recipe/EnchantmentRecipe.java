@@ -79,7 +79,7 @@ public class EnchantmentRecipe implements Recipe<Inventory> {
             IngredientStack secondaryIngredientStack = IngredientStack.fromJson((JsonObject) json.get("secondary_ingredient"));
             JsonElement levelCostJson = json.get("level_cost");
             int levelCost = 3;
-            if (!levelCostJson.isJsonNull()) levelCost = levelCostJson.getAsInt();
+            if (levelCostJson != null && !levelCostJson.isJsonNull()) levelCost = levelCostJson.getAsInt();
             Enchantment enchantment = Registries.ENCHANTMENT.getOrEmpty(Identifier.tryParse(json.get("enchantment").getAsString())).orElse(null);
             if (enchantment == null) {
                 throw new JsonParseException("Enchantment not found");
