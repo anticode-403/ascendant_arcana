@@ -1,5 +1,6 @@
 package me.anticode.ascendant_arcana.screenhandler;
 
+import me.anticode.ascendant_arcana.AscendantArcana;
 import me.anticode.ascendant_arcana.init.AArcanaBlocks;
 import me.anticode.ascendant_arcana.init.AArcanaItems;
 import me.anticode.ascendant_arcana.init.AArcanaScreenHandlers;
@@ -40,6 +41,7 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
     public List<Enchantment> unlockedTreasures = Lists.newArrayList();
     public PlayerEntity player;
     public EnchantmentRecipe recipe;
+    ItemStack last;
 
     public AArcanaEnchantingScreenHandler(int Id, PlayerInventory playerInventory) {
         this(Id, playerInventory, ScreenHandlerContext.EMPTY);
@@ -81,39 +83,43 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
     public void onContentChanged(Inventory inventory) {
         if (inventory != this.inventory) return;
         ItemStack itemStack = inventory.getStack(0);
-        if (itemStack.isEmpty() || (!itemStack.hasEnchantments() && !itemStack.isEnchantable())) return;
-        context.run((world, pos) -> {
-            int i = 0;
+        if (itemStack != last || itemStack == ItemStack.EMPTY) {
+            last = itemStack;
+            dumpContents(true);
+            if (itemStack.isEmpty() || (!itemStack.hasEnchantments() && !itemStack.isEnchantable())) return;
+            context.run((world, pos) -> {
+                int i = 0;
 
-            for (BlockPos blockPos : EnchantingTableBlock.POWER_PROVIDER_OFFSETS) {
-                if (EnchantingTableBlock.canAccessPowerProvider(world, pos, blockPos)) {
-                    if (world.getBlockEntity(pos.add(blockPos), BlockEntityType.CHISELED_BOOKSHELF).isPresent()) {
-                        ChiseledBookshelfBlockEntity chiseledBookshelf = (ChiseledBookshelfBlockEntity) world.getBlockEntity(pos.add(blockPos));
-                        assert chiseledBookshelf != null;
-                        for (int j = 0; j < chiseledBookshelf.size(); j++) {
-                            ItemStack itemStack1 = chiseledBookshelf.getStack(j);
-                            for (Map.Entry<Enchantment, Integer> enchantInstance : EnchantmentHelper.get(itemStack1).entrySet()) {
-                                int rarityMultiplier = switch (enchantInstance.getKey().getRarity()) {
-                                    case UNCOMMON -> 2;
-                                    case RARE -> 3;
-                                    case VERY_RARE -> 5;
-                                    default -> 1;
-                                };
-                                i += enchantInstance.getValue() * rarityMultiplier;
-                                if (enchantInstance.getKey().isTreasure() && !unlockedTreasures.contains(enchantInstance.getKey())) {
-                                    unlockedTreasures.add(enchantInstance.getKey());
+                for (BlockPos blockPos : EnchantingTableBlock.POWER_PROVIDER_OFFSETS) {
+                    if (EnchantingTableBlock.canAccessPowerProvider(world, pos, blockPos)) {
+                        if (world.getBlockEntity(pos.add(blockPos), BlockEntityType.CHISELED_BOOKSHELF).isPresent()) {
+                            ChiseledBookshelfBlockEntity chiseledBookshelf = (ChiseledBookshelfBlockEntity) world.getBlockEntity(pos.add(blockPos));
+                            assert chiseledBookshelf != null;
+                            for (int j = 0; j < chiseledBookshelf.size(); j++) {
+                                ItemStack itemStack1 = chiseledBookshelf.getStack(j);
+                                for (Map.Entry<Enchantment, Integer> enchantInstance : EnchantmentHelper.get(itemStack1).entrySet()) {
+                                    int rarityMultiplier = switch (enchantInstance.getKey().getRarity()) {
+                                        case UNCOMMON -> 2;
+                                        case RARE -> 3;
+                                        case VERY_RARE -> 5;
+                                        default -> 1;
+                                    };
+                                    i += enchantInstance.getValue() * rarityMultiplier;
+                                    if (enchantInstance.getKey().isTreasure() && !unlockedTreasures.contains(enchantInstance.getKey())) {
+                                        unlockedTreasures.add(enchantInstance.getKey());
+                                    }
                                 }
                             }
-                        }
-                    } else i++;
+                        } else i++;
+                    }
                 }
-            }
-            ServerPlayNetworking.send((ServerPlayerEntity) player, EnchantingScreenSync.Id, new EnchantingScreenSync(syncId, unlockedTreasures).write());
-            if (world.getBlockState(pos).getBlock().getDefaultState().isOf(AArcanaBlocks.COPPER_ENCHANTING_TABLE)) {
-                if (i > 30) i = 30;
-            }
-            enchantmentPower[0] = i;
-        });
+                ServerPlayNetworking.send((ServerPlayerEntity) player, EnchantingScreenSync.Id, new EnchantingScreenSync(syncId, unlockedTreasures).write());
+                if (world.getBlockState(pos).getBlock().getDefaultState().isOf(AArcanaBlocks.COPPER_ENCHANTING_TABLE)) {
+                    if (i > AscendantArcana.config.uncommon_enchanting_power) i = AscendantArcana.config.uncommon_enchanting_power;
+                }
+                enchantmentPower[0] = i;
+            });
+        }
     }
 
     @Override
@@ -150,13 +156,7 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
     @Override
     public void onClosed(PlayerEntity player) {
         super.onClosed(player);
-        if (inventory.isEmpty()) return;
-        for (int i = 0; i < inventory.size(); ++i) {
-            ItemStack itemStack = inventory.getStack(i);
-            if (itemStack != ItemStack.EMPTY) {
-                if (!this.insertItem(itemStack, 4, 40, true)) player.dropItem(itemStack, true);
-            }
-        }
+        dumpContents(false);
     }
 
     @Override
@@ -228,6 +228,16 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
         return true;
     }
 
+    private void dumpContents(boolean skipFirst) {
+        if (inventory.isEmpty()) return;
+        for (int i = skipFirst ? 1 : 0; i < inventory.size(); ++i) {
+            ItemStack itemStack = inventory.getStack(i);
+            if (itemStack != ItemStack.EMPTY) {
+                if (!this.insertItem(itemStack, 4, 40, true)) player.dropItem(itemStack, true);
+            }
+        }
+    }
+
     private static class EnchantableToolSlot extends Slot {
         public EnchantableToolSlot(Inventory inventory, int index, int x, int y) {
             super(inventory, index, x, y);
@@ -244,25 +254,28 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
         }
     }
 
-    private static class MagicalScrapSlot extends Slot {
+    private class MagicalScrapSlot extends Slot {
         public MagicalScrapSlot(Inventory inventory, int index, int x, int y) {
             super(inventory, index, x, y);
         }
 
         @Override
         public boolean canInsert(ItemStack stack) {
-            return stack.isOf(AArcanaItems.ENCHANTED_SCRAP);
+            return stack.isOf(AArcanaItems.ENCHANTED_SCRAP) && AArcanaEnchantingScreenHandler.this.recipe != null;
         }
     }
 
-    private static class EnchantmentIngredientSlot extends Slot {
+    private class EnchantmentIngredientSlot extends Slot {
         public EnchantmentIngredientSlot(Inventory inventory, int index, int x, int y) {
             super(inventory, index, x, y);
         }
 
         @Override
         public boolean canInsert(ItemStack stack) {
-            return true;
+            EnchantmentRecipe recipe = AArcanaEnchantingScreenHandler.this.recipe;
+            if (recipe == null) return false;
+            int index = getIndex();
+            return index == 2 ? recipe.primaryIngredientStack != null : recipe.secondaryIngredientStack != null;
         }
     }
 }

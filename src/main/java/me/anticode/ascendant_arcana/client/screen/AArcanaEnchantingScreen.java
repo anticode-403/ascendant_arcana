@@ -97,7 +97,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
         super.drawForeground(context, mouseX, mouseY);
         boolean update = false;
         ItemStack itemStack = getScreenHandler().getSlot(0).getStack();
-        if (lastItem != null && lastItem != itemStack) {
+        if (lastItem != null && !lastItem.isOf(itemStack.getItem())) {
             update = true;
             recipes = new ArrayList<>();
             assert client != null;
