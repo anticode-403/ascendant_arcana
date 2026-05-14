@@ -64,10 +64,12 @@ public class AArcanaEnchantmentHelper {
     }
 
     public static int getEnchantmentCapacity(ItemStack stack) {
+        int bonus_capacity = RelicHelper.getValueFromNbt(stack.getOrCreateNbt(), Relics.ENCHANTMENT_CAPACITY);
+        if (bonus_capacity != 0) bonus_capacity = 5 + (bonus_capacity * 5);
         if (stack.getOrCreateNbt().contains(ENCHANTMENT_CAPACITY_KEY)) {
-            return stack.getOrCreateNbt().getInt(ENCHANTMENT_CAPACITY_KEY);
+            return stack.getOrCreateNbt().getInt(ENCHANTMENT_CAPACITY_KEY) + bonus_capacity;
         }
-        return getBaseEnchantmentCapacity(stack.getItem());
+        return getBaseEnchantmentCapacity(stack.getItem()) + bonus_capacity;
     }
 
     public static int getRequiredEnchantmentPower(Enchantment enchantment) {
