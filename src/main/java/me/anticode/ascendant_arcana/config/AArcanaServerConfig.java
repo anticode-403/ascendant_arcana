@@ -1,11 +1,11 @@
 package me.anticode.ascendant_arcana.config;
 
+import com.google.common.collect.Lists;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Config(name = "server")
 public class AArcanaServerConfig implements ConfigData {
@@ -52,39 +52,16 @@ public class AArcanaServerConfig implements ConfigData {
             
             Do note that enchantments on this list by default DO NOT come with recipes, so in order to see them in
             the Enchanting Table you must create your own enchantment recipes for them with a datapack.""")
-    public List<String> disabled_enchantments = List.of(
-            "minecraft:protection",
-            "minecraft:sharpness",
-            "minecraft:efficiency",
-            "minecraft:quick_charge",
-            "minecraft:power",
-            "minecraft:bane_of_arthropods",
-            "minecraft:blast_protection",
-            "minecraft:projectile_protection",
-            "minecraft:fire_protection",
-            "minecraft:smite",
-            "minecraft:impaling",
-            "minecraft:mending",
-            "minecraft:unbreaking",
-            "majruszsenchantments:misanthropy",
-            "majruszsenchantments:gold_fuelled",
-            "majruszsenchantments:smelter",
-            "majruszsenchantments:magic_protection",
-            "majruszsenchantments:dodge",
-            "majruszsenchantments:enlightenment",
-            "majruszsenchantments:immortality",
-            "ascendant_arcana:coldheart",
-            "ascendant_arcana:heart_of_the_storm"
-    );
+    public Set<String> disabled_enchantments;
 
     @Comment("Items which have their base relic capacity value overwritten.")
-    public Map<String, Integer> base_relic_capacity_overrides = Map.of(
+    public Map<String, Integer> base_relic_capacity_overrides = new HashMap<>(Map.of(
             "minecraft:crossbow",
             1
-    );
+    ));
 
     @Comment("Items which have their base enchantment capacity overwritten")
-    public Map<String, Integer> base_enchantment_capacity_overrides = Map.of(
+    public Map<String, Integer> base_enchantment_capacity_overrides = new HashMap<>(Map.of(
             "minecraft:bow",
             20,
             "minecraft:crossbow",
@@ -95,10 +72,10 @@ public class AArcanaServerConfig implements ConfigData {
             15,
             "minecraft:trident",
             15
-    );
+    ));
 
     @Comment("Enchantments which have their base rarity overwritten. Common is 1, Uncommon is 2, Rare is 3, Very Rare is 4. This might not work on modded enchantments.")
-    public Map<String, Integer> overwritten_rarities = Map.ofEntries(
+    public Map<String, Integer> overwritten_rarities = new HashMap<>(Map.ofEntries(
             Map.entry("minecraft:knockback", 1),
             Map.entry("minecraft:fire_aspect", 2),
             Map.entry("minecraft:punch", 1),
@@ -111,5 +88,35 @@ public class AArcanaServerConfig implements ConfigData {
             Map.entry("minecraft:lure", 1),
             Map.entry("minecraft:frost_walker", 2),
             Map.entry("minecraft:thorns", 2)
-    );
+    ));
+
+    @Override
+    public void validatePostLoad() throws ValidationException {
+        ConfigData.super.validatePostLoad();
+        if (disabled_enchantments == null) {
+            disabled_enchantments = new LinkedHashSet<>();
+            disabled_enchantments.add("minecraft:protection");
+            disabled_enchantments.add("minecraft:sharpness");
+            disabled_enchantments.add("minecraft:efficiency");
+            disabled_enchantments.add("minecraft:quick_charge");
+            disabled_enchantments.add("minecraft:power");
+            disabled_enchantments.add("minecraft:bane_of_arthropods");
+            disabled_enchantments.add("minecraft:blast_protection");
+            disabled_enchantments.add("minecraft:projectile_protection");
+            disabled_enchantments.add("minecraft:fire_protection");
+            disabled_enchantments.add("minecraft:smite");
+            disabled_enchantments.add("minecraft:impaling");
+            disabled_enchantments.add("minecraft:mending");
+            disabled_enchantments.add("minecraft:unbreaking");
+            disabled_enchantments.add("majruszsenchantments:misanthropy");
+            disabled_enchantments.add("majruszsenchantments:gold_fuelled");
+            disabled_enchantments.add("majruszsenchantments:smelter");
+            disabled_enchantments.add("majruszsenchantments:magic_protection");
+            disabled_enchantments.add("majruszsenchantments:dodge");
+            disabled_enchantments.add("majruszsenchantments:enlightenment");
+            disabled_enchantments.add("majruszsenchantments:immortality");
+            disabled_enchantments.add("ascendant_arcana:coldheart");
+            disabled_enchantments.add("ascendant_arcana:heart_of_the_storm");
+        }
+    }
 }

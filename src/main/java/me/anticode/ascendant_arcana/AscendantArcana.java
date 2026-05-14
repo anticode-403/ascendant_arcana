@@ -30,6 +30,8 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedHashSet;
+
 public class AscendantArcana implements ModInitializer {
 
     public static String modID = "ascendant_arcana";
