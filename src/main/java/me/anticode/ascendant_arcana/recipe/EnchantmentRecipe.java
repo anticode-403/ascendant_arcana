@@ -90,8 +90,14 @@ public class EnchantmentRecipe implements Recipe<Inventory> {
         @Override
         public EnchantmentRecipe read(Identifier id, PacketByteBuf buf) {
             int magicalScrapCost = buf.readInt();
-            IngredientStack primaryIngredientStack = IngredientStack.fromPacket(buf);
-            IngredientStack secondaryIngredientStack = IngredientStack.fromPacket(buf);
+            IngredientStack primaryIngredientStack = null;
+            if (buf.readBoolean()) {
+                primaryIngredientStack = IngredientStack.fromPacket(buf);
+            }
+            IngredientStack secondaryIngredientStack = null;
+            if (buf.readBoolean()) {
+                secondaryIngredientStack = IngredientStack.fromPacket(buf);
+            }
             int levelCost = buf.readInt();
             Enchantment enchantment = Registries.ENCHANTMENT.getOrEmpty(Identifier.tryParse(buf.readString())).orElse(null);
             return new EnchantmentRecipe(id, magicalScrapCost, primaryIngredientStack, secondaryIngredientStack, levelCost, enchantment);
@@ -100,8 +106,14 @@ public class EnchantmentRecipe implements Recipe<Inventory> {
         @Override
         public void write(PacketByteBuf buf, EnchantmentRecipe recipe) {
             buf.writeInt(recipe.magicalScrapCost);
-            recipe.primaryIngredientStack.write(buf);
-            recipe.secondaryIngredientStack.write(buf);
+            buf.writeBoolean(recipe.primaryIngredientStack != null);
+            if (recipe.primaryIngredientStack != null) {
+                recipe.primaryIngredientStack.write(buf);
+            }
+            buf.writeBoolean(recipe.secondaryIngredientStack != null);
+            if (recipe.secondaryIngredientStack != null) {
+                recipe.secondaryIngredientStack.write(buf);
+            }
             buf.writeInt(recipe.levelCost);
             buf.writeString(Registries.ENCHANTMENT.getId(recipe.enchantment).toString());
         }
