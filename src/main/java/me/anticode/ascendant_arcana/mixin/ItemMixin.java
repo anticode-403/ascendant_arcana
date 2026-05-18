@@ -1,19 +1,18 @@
 package me.anticode.ascendant_arcana.mixin;
 
 import me.anticode.ascendant_arcana.init.AArcanaEnchantments;
+import me.anticode.ascendant_arcana.logic.RelicHelper;
+import me.anticode.ascendant_arcana.logic.Relics;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShieldItem;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -22,6 +21,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Item.class)
 public class ItemMixin {
@@ -58,5 +58,18 @@ public class ItemMixin {
                 player.getItemCooldownManager().set(stack.getItem(), 600);
             }
         }
+    }
+
+    @Inject(method = "getItemBarStep", at = @At("HEAD"), cancellable = true)
+    private void fixItemBarWithDurabilityRelic(ItemStack stack, CallbackInfoReturnable<Integer> cir) {
+        if (RelicHelper.getValueFromNbt(stack.getOrCreateNbt(), Relics.DURABILITY) == 0) return;
+        cir.setReturnValue(Math.round(13.0F - (float)stack.getDamage() * 13.0F / (float)stack.getMaxDamage()));
+    }
+
+    @Inject(method = "getItemBarColor", at = @At("HEAD"), cancellable = true)
+    private void fixItemBarColorWithDurabilityRelic(ItemStack stack, CallbackInfoReturnable<Integer> cir) {
+        if (RelicHelper.getValueFromNbt(stack.getOrCreateNbt(), Relics.DURABILITY) == 0) return;
+        float f = Math.max(0.0F, ((float)stack.getMaxDamage() - (float)stack.getDamage()) / (float)stack.getMaxDamage());
+        cir.setReturnValue(MathHelper.hsvToRgb(f / 3.0F, 1.0F, 1.0F));
     }
 }
