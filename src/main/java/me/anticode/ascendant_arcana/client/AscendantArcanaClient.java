@@ -11,10 +11,10 @@ import me.anticode.ascendant_arcana.screenhandler.AArcanaEnchantingScreenHandler
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.render.block.entity.EnchantingTableBlockEntityRenderer;
 import net.minecraft.util.Identifier;
 
@@ -39,7 +39,8 @@ public class AscendantArcanaClient implements ClientModInitializer {
         ModelPredicateProviderRegistry.register(AArcanaItems.RELIC, new Identifier("relic_type"), (itemStack, clientWorld, livingEntity, seed) -> Relics.toId(RelicItem.getRelicType(itemStack)) / 5F);
         ModelPredicateProviderRegistry.register(AArcanaItems.RELIC, new Identifier("relic_strength"), (itemStack, clientWorld, livingEntity, seed) -> RelicItem.getRelicStrength(itemStack) / 5F);
 
-        BlockEntityRendererRegistryImpl.register(AArcanaBlocks.COPPER_ENCHANTING_TABLE_BLOCK_ENTITY, EnchantingTableBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(AArcanaBlocks.COPPER_ENCHANTING_TABLE_BLOCK_ENTITY, EnchantingTableBlockEntityRenderer::new);
+
         HandledScreens.register(AArcanaScreenHandlers.ENCHANTING, AArcanaEnchantingScreen::new);
     }
 }

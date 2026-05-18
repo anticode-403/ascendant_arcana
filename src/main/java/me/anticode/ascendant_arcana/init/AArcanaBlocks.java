@@ -2,16 +2,20 @@ package me.anticode.ascendant_arcana.init;
 
 import me.anticode.ascendant_arcana.AscendantArcana;
 import me.anticode.ascendant_arcana.block.BuddingRestorineBlock;
+import me.anticode.ascendant_arcana.block.CopperEnchantingTableBlock;
+import me.anticode.ascendant_arcana.block.CopperEnchantingTableBlockEntity;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.EnchantingTableBlockEntity;
 import net.minecraft.block.piston.PistonBehavior;
+import net.minecraft.datafixer.TypeReferences;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 public class AArcanaBlocks {
     public static final Block BUDDING_RESTORINE = register(
@@ -46,15 +50,15 @@ public class AArcanaBlocks {
             true
     );
 
-    public static final EnchantingTableBlock COPPER_ENCHANTING_TABLE = (EnchantingTableBlock) register(
-            new EnchantingTableBlock(AbstractBlock.Settings.copy(Blocks.ENCHANTING_TABLE).luminance((state) -> 0).strength(2.0F, 1200.0F).sounds(BlockSoundGroup.COPPER)),
+    public static final CopperEnchantingTableBlock COPPER_ENCHANTING_TABLE = (CopperEnchantingTableBlock) register(
+            new CopperEnchantingTableBlock(AbstractBlock.Settings.copy(Blocks.ENCHANTING_TABLE).luminance((state) -> 0).strength(2.0F, 1200.0F).sounds(BlockSoundGroup.COPPER)),
             "copper_enchanting_table",
             true
     );
-    public static final BlockEntityType<EnchantingTableBlockEntity> COPPER_ENCHANTING_TABLE_BLOCK_ENTITY = Registry.register(
+    public static final BlockEntityType<CopperEnchantingTableBlockEntity> COPPER_ENCHANTING_TABLE_BLOCK_ENTITY = Registry.register(
             Registries.BLOCK_ENTITY_TYPE,
             new Identifier(AscendantArcana.modID, "copper_enchanting_table"),
-            BlockEntityType.Builder.create(EnchantingTableBlockEntity::new, COPPER_ENCHANTING_TABLE).build(null)
+            BlockEntityType.Builder.create(CopperEnchantingTableBlockEntity::new, COPPER_ENCHANTING_TABLE).build(Util.getChoiceType(TypeReferences.BLOCK_ENTITY, "enchanting_table"))
     );
 
     public static Block register(Block block, String name, boolean shouldRegisterItem) {
