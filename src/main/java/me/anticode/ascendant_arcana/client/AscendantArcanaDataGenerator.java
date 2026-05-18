@@ -88,7 +88,8 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
                     .add(AArcanaBlocks.LARGE_RESTORINE_BUD)
                     .add(AArcanaBlocks.RESTORINE_CLUSTER)
                     .add(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER)
-                    .add(AArcanaBlocks.BUDDING_RESTORINE);
+                    .add(AArcanaBlocks.BUDDING_RESTORINE)
+                    .add(AArcanaBlocks.COPPER_ENCHANTING_TABLE);
             getOrCreateTagBuilder(BlockTags.ENCHANTMENT_POWER_PROVIDER)
                     .add(Blocks.CHISELED_BOOKSHELF);
         }
@@ -646,6 +647,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             addDrop(AArcanaBlocks.RESTORINE_CLUSTER, LootTable.builder().pool(LootPool.builder().with(ItemEntry.builder(AArcanaItems.RESTORINE)).apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 2)))));
             dropsWithSilkTouch(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER);
             addDrop(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER, LootTable.builder().pool(LootPool.builder().with(ItemEntry.builder(AArcanaItems.RESTORINE).apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(3, 6))))));
+            addDrop(AArcanaBlocks.COPPER_ENCHANTING_TABLE);
         }
     }
 }
