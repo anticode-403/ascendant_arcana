@@ -47,7 +47,7 @@ public class AArcanaBlocks {
     );
 
     public static final EnchantingTableBlock COPPER_ENCHANTING_TABLE = (EnchantingTableBlock) register(
-            new EnchantingTableBlock(AbstractBlock.Settings.copy(Blocks.ENCHANTING_TABLE).luminance((state) -> 0).sounds(BlockSoundGroup.COPPER)),
+            new EnchantingTableBlock(AbstractBlock.Settings.copy(Blocks.ENCHANTING_TABLE).luminance((state) -> 0).strength(2.0F, 1200.0F).sounds(BlockSoundGroup.COPPER)),
             "copper_enchanting_table",
             true
     );
