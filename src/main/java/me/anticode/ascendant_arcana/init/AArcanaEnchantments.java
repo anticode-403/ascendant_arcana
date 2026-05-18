@@ -15,7 +15,7 @@ public class AArcanaEnchantments {
     public static Enchantment DEBILITATING_CHAIN = register(new DebilitatingChain(), "debilitating_chain");
     public static Enchantment DEFLECT = register(new Deflect(), "deflect");
     public static Enchantment EVOKERS_WRATH = register(new EvokersWrath(), "evokers_wrath");
-    public static Enchantment HELLWALKER = register(new HellWalker(), "hellwalker");
+//    public static Enchantment HELLWALKER = register(new HellWalker(), "hellwalker");
     public static Enchantment HOBBLING_SHOT = register(new HobblingShot(), "hobbling_shot");
     public static Enchantment LIFETIDE = register(new Lifetide(), "lifetide");
     public static Enchantment PINCUSHION = register(new Pincushion(), "pincushion");

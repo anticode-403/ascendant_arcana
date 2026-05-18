@@ -121,13 +121,13 @@ public abstract class LivingEntityMixin {
         return original;
     }
 
-    @Inject(method = "applyMovementEffects", at = @At("HEAD"))
-    private void applyMovementEffects(BlockPos pos, CallbackInfo ci) {
-        LivingEntity livingEntity = (LivingEntity) (Object) this;
-        if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.HELLWALKER, livingEntity) > 0) {
-            HellWalker.freezeLava(livingEntity, livingEntity.getWorld(), pos);
-        }
-    }
+//    @Inject(method = "applyMovementEffects", at = @At("HEAD"))
+//    private void applyMovementEffects(BlockPos pos, CallbackInfo ci) {
+//        LivingEntity livingEntity = (LivingEntity) (Object) this;
+//        if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.HELLWALKER, livingEntity) > 0) {
+//            HellWalker.freezeLava(livingEntity, livingEntity.getWorld(), pos);
+//        }
+//    }
 
     @ModifyReturnValue(method = "modifyAppliedDamage", at = @At("RETURN"))
     private float applyProtectionStat(float original, @Local(argsOnly = true) DamageSource source) {
