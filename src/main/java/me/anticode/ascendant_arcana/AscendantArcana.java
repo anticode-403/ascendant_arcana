@@ -6,6 +6,7 @@ import me.anticode.ascendant_arcana.config.AArcanaServerConfig;
 import me.anticode.ascendant_arcana.config.AArcanaServerConfigWrapper;
 import me.anticode.ascendant_arcana.init.*;
 import me.anticode.ascendant_arcana.loot.PopulateRelicLootFunction;
+import me.anticode.ascendant_arcana.networking.EnchantingScreenRemoveRecipe;
 import me.anticode.ascendant_arcana.networking.EnchantingScreenSendRecipe;
 import me.anticode.ascendant_arcana.screenhandler.AArcanaEnchantingScreenHandler;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -58,6 +59,14 @@ public class AscendantArcana implements ModInitializer {
             if (player.currentScreenHandler.syncId != packet.syncId()) return;
             AArcanaEnchantingScreenHandler screenHandler = (AArcanaEnchantingScreenHandler) player.currentScreenHandler;
             screenHandler.recipe = packet.recipe();
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(EnchantingScreenRemoveRecipe.Id, (server, player, handler, buf, responseSender) -> {
+            EnchantingScreenRemoveRecipe packet = EnchantingScreenRemoveRecipe.read(buf);
+            if (player.currentScreenHandler.syncId != packet.syncId()) return;
+            AArcanaEnchantingScreenHandler screenHandler = (AArcanaEnchantingScreenHandler) player.currentScreenHandler;
+            screenHandler.recipe = null;
+            screenHandler.dumpContents(true);
         });
 
         LootTableEvents.MODIFY.register(((resourceManager, lootManager, identifier, builder, lootTableSource) -> {

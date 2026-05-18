@@ -5,6 +5,7 @@ import me.anticode.ascendant_arcana.AscendantArcana;
 import me.anticode.ascendant_arcana.init.AArcanaItems;
 import me.anticode.ascendant_arcana.init.AArcanaRecipes;
 import me.anticode.ascendant_arcana.logic.AArcanaEnchantmentHelper;
+import me.anticode.ascendant_arcana.networking.EnchantingScreenRemoveRecipe;
 import me.anticode.ascendant_arcana.networking.EnchantingScreenSendRecipe;
 import me.anticode.ascendant_arcana.recipe.EnchantmentRecipe;
 import me.anticode.ascendant_arcana.screenhandler.AArcanaEnchantingScreenHandler;
@@ -463,6 +464,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             if (selectedTile == i && anySelected) {
                 selectedTile = 0;
                 anySelected = false;
+                ClientPlayNetworking.send(EnchantingScreenRemoveRecipe.Id, new EnchantingScreenRemoveRecipe(getScreenHandler().syncId).write());
             } else {
                 selectedTile = i;
                 anySelected = true;

@@ -228,7 +228,7 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
         return true;
     }
 
-    private void dumpContents(boolean skipFirst) {
+    public void dumpContents(boolean skipFirst) {
         if (inventory.isEmpty()) return;
         for (int i = skipFirst ? 1 : 0; i < inventory.size(); ++i) {
             ItemStack itemStack = inventory.getStack(i);
