@@ -41,7 +41,7 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
     public List<Enchantment> unlockedTreasures = Lists.newArrayList();
     public PlayerEntity player;
     public EnchantmentRecipe recipe;
-    ItemStack last;
+    ItemStack last = ItemStack.EMPTY;
 
     public AArcanaEnchantingScreenHandler(int Id, PlayerInventory playerInventory) {
         this(Id, playerInventory, ScreenHandlerContext.EMPTY);
@@ -83,7 +83,7 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
     public void onContentChanged(Inventory inventory) {
         if (inventory != this.inventory) return;
         ItemStack itemStack = inventory.getStack(0);
-        if (itemStack != last || itemStack == ItemStack.EMPTY) {
+        if (itemStack == ItemStack.EMPTY || (last != ItemStack.EMPTY && !last.isOf(itemStack.getItem()))) {
             last = itemStack;
             dumpContents(true);
             if (itemStack.isEmpty() || (!itemStack.hasEnchantments() && !itemStack.isEnchantable())) return;
