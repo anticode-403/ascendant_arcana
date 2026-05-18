@@ -643,9 +643,9 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             dropsWithSilkTouch(AArcanaBlocks.MEDIUM_RESTORINE_BUD);
             dropsWithSilkTouch(AArcanaBlocks.LARGE_RESTORINE_BUD);
             dropsWithSilkTouch(AArcanaBlocks.RESTORINE_CLUSTER);
-            addDrop(AArcanaBlocks.RESTORINE_CLUSTER, LootTable.builder().pool(LootPool.builder().with(ItemEntry.builder(AArcanaItems.RESTORINE))));
+            addDrop(AArcanaBlocks.RESTORINE_CLUSTER, LootTable.builder().pool(LootPool.builder().with(ItemEntry.builder(AArcanaItems.RESTORINE)).apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 2)))));
             dropsWithSilkTouch(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER);
-            addDrop(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER, LootTable.builder().pool(LootPool.builder().with(ItemEntry.builder(AArcanaItems.RESTORINE).apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 4))))));
+            addDrop(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER, LootTable.builder().pool(LootPool.builder().with(ItemEntry.builder(AArcanaItems.RESTORINE).apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(3, 6))))));
         }
     }
 }
