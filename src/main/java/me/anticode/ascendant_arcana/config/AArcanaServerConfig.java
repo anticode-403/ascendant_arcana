@@ -15,7 +15,10 @@ public class AArcanaServerConfig implements ConfigData {
     @Comment("Default relic capacity of an item, recommended is 2 but 1 could provide for more interesting gameplay.")
     public int base_relic_capacity = 2;
 
-    @Comment("Levels in Ascendant Arcana are linear. This adjusts the XP required to level up each time.")
+    @Comment("XP is by default disabled in Ascendant Arcana, but can be optionally enabled and is fully supported if you do so.")
+    public boolean disable_xp = true;
+
+    @Comment("Levels are linear if enabled. This adjusts the XP required to level up each time.")
     public int xp_per_level = 30;
 
     @Comment("Some vanilla mobs drop relics on death, like Witches, Wither Skeletons, and bosses. Recommended.")

@@ -169,7 +169,7 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
         ItemStack secondaryStack = inventory.getStack(3);
 
         // Verifying
-        if (recipe.levelCost > player.experienceLevel) return false;
+        if (!AscendantArcana.config.disable_xp && recipe.levelCost > player.experienceLevel) return false;
         if (!AArcanaEnchantmentHelper.testEnchantmentCost(itemStack, AArcanaEnchantmentHelper.getEnchantmentCost(recipe.enchantment))) return false;
         if (!scrapStack.isOf(AArcanaItems.ENCHANTED_SCRAP)) return false;
         if (scrapStack.getCount() < recipe.magicalScrapCost) return false;

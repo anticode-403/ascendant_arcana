@@ -16,6 +16,7 @@
     "EnchantmentHelperMixin",
     "EnchantmentMixin",
     "EntityMixin",
+    "ExperienceOrbMixin",
     "FireballEntityMixin",
     "GrindstoneScreenHandlerMixin",
     "ItemEntryAccessor",
