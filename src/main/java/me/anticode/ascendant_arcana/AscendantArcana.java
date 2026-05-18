@@ -124,7 +124,7 @@ public class AscendantArcana implements ModInitializer {
                                 // I can't figure out how to replicate conditions, so in the off chance the enchanted book has a conditional drop, we will unfortunately ignore it
                                 poolBuilder.with(entryBuilder.build());
                             } else if ((((ItemEntryAccess)entry).ascendantArcana$getItem() == Items.AMETHYST_SHARD || ((ItemEntryAccess)entry).ascendantArcana$getItem() == Items.DIAMOND) && config.add_restorine_to_chests) {
-                                LeafEntry.Builder<?> entryBuilder = ItemEntry.builder(AArcanaItems.RESTORINE).apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 3)));
+                                LeafEntry.Builder<?> entryBuilder = ItemEntry.builder(AArcanaItems.RESTORINE).apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(1, 15)));
                                 if (((ItemEntryAccess)entry).ascendantArcana$getItem() == Items.DIAMOND)
                                     entryBuilder.weight(((LeafEntryAccess) entry).ascendantArcana$getWeight() / 4);
                                 else
