@@ -161,7 +161,11 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                 boolean withinCapacity = AArcanaEnchantmentHelper.testEnchantmentCost(stack, AArcanaEnchantmentHelper.getEnchantmentCost(recipe.enchantment));
 
                 if (anySelected && !tile.locked && !tile.maxLevel && withinCapacity) {
-                    context.drawTexture(OVERLAYS, panelX + 2, panelY + 105, 12, 0, 7, 7);
+                    if (getScreenHandler().player.experienceLevel < recipe.levelCost) {
+                        context.drawTexture(OVERLAYS, panelX + 2, panelY + 105, 19, 0, 6, 7);
+                    } else {
+                        context.drawTexture(OVERLAYS, panelX + 2, panelY + 105, 12, 0, 7, 7);
+                    }
                     context.drawTexture(OVERLAYS, panelX + 1, panelY + 113, 12, 8, 9, 7);
                 } else if (anySelected && (tile.locked || !withinCapacity)) {
                     context.drawTexture(OVERLAYS, panelX + 2, panelY + 47, 135, 0, 56, 57);
@@ -360,6 +364,13 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             context.drawTexture(OVERLAYS, getX(), getY(), 0, v + offset, width, getHeight());
 
             if (getHeight() == 0) return;
+            if (height == getHeight() && !locked && !maxLevel) {
+                if (recipe.levelCost > getScreenHandler().player.experienceLevel) {
+                    context.drawTexture(OVERLAYS, getX() + 76, getY() + 11, 19, 0, 6, 7);
+                } else {
+                    context.drawTexture(OVERLAYS, getX() + 76, getY() + 11, 12, 0, 7, 7);
+                }
+            }
             context.getMatrices().push();
             context.getMatrices().peek().getPositionMatrix().scale(0.5F, 0.5F, 0.5F);
             Matrix4f positionMatrix = context.getMatrices().peek().getPositionMatrix();
