@@ -47,6 +47,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     private int lastPower = 0;
     private int selectedTile;
     private boolean anySelected;
+    private boolean updateEnchantments = false;
 
     public AArcanaEnchantingScreen(AArcanaEnchantingScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -73,9 +74,11 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
     protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
         super.drawForeground(context, mouseX, mouseY);
         boolean update = false;
+        boolean partialUpdate = true;
         ItemStack itemStack = getScreenHandler().getSlot(0).getStack();
         if (lastItem != null && !lastItem.isOf(itemStack.getItem())) {
             update = true;
+            partialUpdate = false;
             recipes = new ArrayList<>();
             assert client != null;
             assert client.world != null;
@@ -97,6 +100,8 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             update = true;
             lastPower = getScreenHandler().enchantmentPower[0];
         }
+
+        if (!update && updateEnchantments) update = true;
 
         int panelX = 161;
         int panelY = 9;
@@ -141,7 +146,9 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             context.drawTexture(OVERLAYS, 11, 53 + (32 - MathHelper.floor(32 * multiplier)), 84, 44 - MathHelper.floor(31 * multiplier), 5, MathHelper.floor(32 * multiplier));
 
             if (update) {
-                clearEnchantments();
+                if (!anySelected) partialUpdate = false;
+                if (partialUpdate) partialClearEnchantments();
+                else clearEnchantments();
                 scrollPosition = 0;
             }
             if (hasRecipes && update) {
@@ -149,6 +156,22 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
                 for (EnchantmentRecipe recipe : recipes) {
                     addEnchantment(recipe, x + 68, y + 8 + (i * 19), i);
                     i++;
+                }
+                if (partialUpdate) {
+                    if (anySelected && enchantments.get(selectedTile) != null) {
+                        Enchantment enchantment = enchantments.get(selectedTile).recipe.enchantment;
+                        if (EnchantmentHelper.get(itemStack).containsKey(enchantment)) {
+                            if (enchantment.getMaxLevel() <= EnchantmentHelper.get(itemStack).get(enchantment)) {
+                                anySelected = false;
+                                selectedTile = 0;
+                                ClientPlayNetworking.send(EnchantingScreenRemoveRecipe.Id, new EnchantingScreenRemoveRecipe(getScreenHandler().syncId).write());
+                            }
+                        }
+                    } else {
+                        anySelected = false;
+                        selectedTile = 0;
+                        ClientPlayNetworking.send(EnchantingScreenRemoveRecipe.Id, new EnchantingScreenRemoveRecipe(getScreenHandler().syncId).write());
+                    }
                 }
             }
 
@@ -287,11 +310,15 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
         addDrawableChild(tile);
     }
 
-    public void clearEnchantments() {
+    public void partialClearEnchantments() {
         for (EnchantmentTile tile : enchantments) {
             remove(tile);
         }
         enchantments.clear();
+    }
+
+    public void clearEnchantments() {
+        partialClearEnchantments();
         selectedTile = 0;
         anySelected = false;
     }
@@ -516,6 +543,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             if (!enabled) return;
             assert client != null;
             assert client.interactionManager != null;
+            updateEnchantments = true;
             client.interactionManager.clickButton(getScreenHandler().syncId, 0);
         }
 
