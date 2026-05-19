@@ -241,11 +241,11 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             translationBuilder.add(AArcanaBlocks.BUDDING_RESTORINE, "Budding Restorine");
             translationBuilder.add(AArcanaBlocks.COPPER_ENCHANTING_TABLE, "Copper Enchanting Table");
             // Restorine Clusters
-            translationBuilder.add(AArcanaBlocks.SMALL_RESTORINE_BUD, "Small Restore Bud");
-            translationBuilder.add(AArcanaBlocks.MEDIUM_RESTORINE_BUD, "Medium Restore Bud");
-            translationBuilder.add(AArcanaBlocks.LARGE_RESTORINE_BUD, "Large Restore Bud");
-            translationBuilder.add(AArcanaBlocks.RESTORINE_CLUSTER, "Restore Cluster");
-            translationBuilder.add(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER, "Massive Restore Cluster");
+            translationBuilder.add(AArcanaBlocks.SMALL_RESTORINE_BUD, "Small Restorine Bud");
+            translationBuilder.add(AArcanaBlocks.MEDIUM_RESTORINE_BUD, "Medium Restorine Bud");
+            translationBuilder.add(AArcanaBlocks.LARGE_RESTORINE_BUD, "Large Restorine Bud");
+            translationBuilder.add(AArcanaBlocks.RESTORINE_CLUSTER, "Restorine Cluster");
+            translationBuilder.add(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER, "Massive Restorine Cluster");
             // Attributes
             translationBuilder.add(AArcanaAttributes.PROTECTION, "Protection");
             translationBuilder.add(AArcanaAttributes.DAMAGE_TAKEN, "Damage Taken");
