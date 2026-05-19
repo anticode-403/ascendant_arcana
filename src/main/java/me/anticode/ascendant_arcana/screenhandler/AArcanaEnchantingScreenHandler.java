@@ -61,12 +61,14 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
         player = playerInventory.player;
         inventory.onOpen(player);
 
-        addSlot(new EnchantableToolSlot(inventory, 0, 29, 27));
+        addSlot(new EnchantableToolSlot(inventory, 0, 22, 61));
         addSlot(new MagicalScrapSlot(inventory, 1, 164, 60));
         addSlot(new EnchantmentIngredientSlot(inventory, 2, 164, 78));
         addSlot(new EnchantmentIngredientSlot(inventory, 3, 164, 96));
 
         addProperty(Property.create(enchantmentPower, 0));
+
+        updatePower();
 
         int x, y;
         for (y = 0; y < 3; ++y) {
@@ -87,39 +89,43 @@ public class AArcanaEnchantingScreenHandler extends ScreenHandler {
             dumpContents(true);
             if (last != null && (itemStack.isEmpty() || (!itemStack.hasEnchantments() && !itemStack.isEnchantable()))) return;
             last = itemStack;
-            context.run((world, pos) -> {
-                int i = 0;
+            updatePower();
+        }
+    }
 
-                for (BlockPos blockPos : EnchantingTableBlock.POWER_PROVIDER_OFFSETS) {
-                    if (EnchantingTableBlock.canAccessPowerProvider(world, pos, blockPos)) {
-                        if (world.getBlockEntity(pos.add(blockPos), BlockEntityType.CHISELED_BOOKSHELF).isPresent()) {
-                            ChiseledBookshelfBlockEntity chiseledBookshelf = (ChiseledBookshelfBlockEntity) world.getBlockEntity(pos.add(blockPos));
-                            assert chiseledBookshelf != null;
-                            for (int j = 0; j < chiseledBookshelf.size(); j++) {
-                                ItemStack itemStack1 = chiseledBookshelf.getStack(j);
-                                for (Map.Entry<Enchantment, Integer> enchantInstance : EnchantmentHelper.get(itemStack1).entrySet()) {
-                                    int rarityMultiplier = switch (enchantInstance.getKey().getRarity()) {
-                                        case UNCOMMON -> 2;
-                                        case RARE -> 3;
-                                        case VERY_RARE -> 5;
-                                        default -> 1;
-                                    };
-                                    i += enchantInstance.getValue() * rarityMultiplier;
-                                    if (enchantInstance.getKey().isTreasure() && !unlockedTreasures.contains(enchantInstance.getKey())) {
-                                        unlockedTreasures.add(enchantInstance.getKey());
-                                    }
+    private void updatePower() {
+        context.run((world, pos) -> {
+            int i = 0;
+
+            for (BlockPos blockPos : EnchantingTableBlock.POWER_PROVIDER_OFFSETS) {
+                if (EnchantingTableBlock.canAccessPowerProvider(world, pos, blockPos)) {
+                    if (world.getBlockEntity(pos.add(blockPos), BlockEntityType.CHISELED_BOOKSHELF).isPresent()) {
+                        ChiseledBookshelfBlockEntity chiseledBookshelf = (ChiseledBookshelfBlockEntity) world.getBlockEntity(pos.add(blockPos));
+                        assert chiseledBookshelf != null;
+                        for (int j = 0; j < chiseledBookshelf.size(); j++) {
+                            ItemStack itemStack1 = chiseledBookshelf.getStack(j);
+                            for (Map.Entry<Enchantment, Integer> enchantInstance : EnchantmentHelper.get(itemStack1).entrySet()) {
+                                int rarityMultiplier = switch (enchantInstance.getKey().getRarity()) {
+                                    case UNCOMMON -> 2;
+                                    case RARE -> 3;
+                                    case VERY_RARE -> 5;
+                                    default -> 1;
+                                };
+                                i += enchantInstance.getValue() * rarityMultiplier;
+                                if (enchantInstance.getKey().isTreasure() && !unlockedTreasures.contains(enchantInstance.getKey())) {
+                                    unlockedTreasures.add(enchantInstance.getKey());
                                 }
                             }
-                        } else i++;
-                    }
+                        }
+                    } else i++;
                 }
-                ServerPlayNetworking.send((ServerPlayerEntity) player, EnchantingScreenSync.Id, new EnchantingScreenSync(syncId, unlockedTreasures).write());
-                if (world.getBlockState(pos).getBlock().getDefaultState().isOf(AArcanaBlocks.COPPER_ENCHANTING_TABLE)) {
-                    if (i > AscendantArcana.config.uncommon_enchanting_power) i = AscendantArcana.config.uncommon_enchanting_power;
-                }
-                enchantmentPower[0] = i;
-            });
-        }
+            }
+            ServerPlayNetworking.send((ServerPlayerEntity) player, EnchantingScreenSync.Id, new EnchantingScreenSync(syncId, unlockedTreasures).write());
+            if (world.getBlockState(pos).getBlock().getDefaultState().isOf(AArcanaBlocks.COPPER_ENCHANTING_TABLE)) {
+                if (i > AscendantArcana.config.uncommon_enchanting_power) i = AscendantArcana.config.uncommon_enchanting_power;
+            }
+            enchantmentPower[0] = i;
+        });
     }
 
     @Override

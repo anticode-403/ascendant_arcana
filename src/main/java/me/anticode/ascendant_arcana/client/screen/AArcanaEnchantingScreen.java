@@ -67,30 +67,6 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
         int x = (width - backgroundWidth) / 2;
         int y = (height - backgroundHeight) / 2;
         context.drawTexture(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight);
-
-        if (getScreenHandler().getSlot(0).hasStack()) {
-            ItemStack stack = getScreenHandler().getSlot(0).getStack();
-            if (stack.hasEnchantments()) {
-                int i = 0;
-                for (Map.Entry<Enchantment, Integer> enchantInstance : EnchantmentHelper.get(stack).entrySet()) {
-                    Enchantment enchantment = enchantInstance.getKey();
-                    int strength = enchantInstance.getValue();
-                    MutableText text = Text.translatable(enchantment.getTranslationKey());
-                    if (enchantment.getMaxLevel() != 1) text.append(" ").append(Text.translatable("enchantment.level." + strength));
-                    if (text.getString().length() > 20) text = Text.literal(text.asTruncatedString(17)).append("...");
-                    int color = 5636095;
-                    if (strength == enchantment.getMaxLevel()) color = 16755200;
-                    if (enchantment.isCursed()) color = 16733525;
-                    context.getMatrices().push();
-                    context.getMatrices().peek().getPositionMatrix().scale(0.5F, 0.5F, 0.5F);
-                    int scaledX = (x + 9) * 2;
-                    int scaledY = (y + 50 + (i * 5)) * 2;
-                    this.textRenderer.draw(text, scaledX, scaledY, color, true, context.getMatrices().peek().getPositionMatrix(), context.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 15728880);
-                    context.getMatrices().pop();
-                    i++;
-                }
-            }
-        }
     }
 
     @Override
@@ -132,6 +108,27 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
         boolean hasRecipes = recipes != null && !recipes.isEmpty();
         context.drawTexture(OVERLAYS, 153, 9 + k, (hasRecipes && recipes.size() > 6 ? 0 : 6), 0, 6, 27);
 
+        int progress;
+        if (lastPower >= AscendantArcana.config.uncommon_enchanting_power) {
+            if (lastPower >= AscendantArcana.config.rare_enchanting_power) {
+                if (lastPower >= AscendantArcana.config.very_rare_enchanting_power) {
+                    progress = 123;
+                } else {
+                    int relativePartial = lastPower - AscendantArcana.config.rare_enchanting_power;
+                    int relativeGoal = AscendantArcana.config.very_rare_enchanting_power - AscendantArcana.config.rare_enchanting_power;
+                    progress = 82 + MathHelper.floor((float)relativePartial / (float)relativeGoal * 41);
+                }
+            } else {
+                int relativePartial = lastPower - AscendantArcana.config.uncommon_enchanting_power;
+                int relativeGoal = AscendantArcana.config.rare_enchanting_power - AscendantArcana.config.uncommon_enchanting_power;
+                int relative = MathHelper.floor(((float)relativePartial / (float)relativeGoal) * 41);
+                progress = 41 + relative;
+            }
+        } else {
+            progress = MathHelper.floor((float)lastPower / (float)AscendantArcana.config.uncommon_enchanting_power * 41F);
+        }
+        context.drawTexture(OVERLAYS, 64, 8 + (123 - progress), 89, 135-progress, 5, progress);
+
         ItemStack stack = getScreenHandler().getSlot(0).getStack();
 
         if (stack != ItemStack.EMPTY) {
@@ -141,7 +138,7 @@ public class AArcanaEnchantingScreen extends HandledScreen<AArcanaEnchantingScre
             float multiplier = (float) usedCapacity / maxCapacity;
             if (multiplier > 1) multiplier = 1;
 
-            context.drawTexture(OVERLAYS, 8, 110, 25, 0, MathHelper.floor(58 * multiplier), 5);
+            context.drawTexture(OVERLAYS, 11, 53 + (32 - MathHelper.floor(32 * multiplier)), 84, 44 - MathHelper.floor(31 * multiplier), 5, MathHelper.floor(32 * multiplier));
 
             if (update) {
                 clearEnchantments();
