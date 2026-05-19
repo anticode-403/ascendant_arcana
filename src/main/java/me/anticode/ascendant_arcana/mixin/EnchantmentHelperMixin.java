@@ -60,7 +60,7 @@ public class EnchantmentHelperMixin {
         int runningTotal = 0;
         for (Enchantment enchantment : value.keySet()) {
             int enchantCost = AArcanaEnchantmentHelper.getEnchantmentCost(enchantment) * value.get(enchantment);
-            if (AArcanaEnchantmentHelper.getEnchantmentUsage(cachedStack) + runningTotal + enchantCost < AArcanaEnchantmentHelper.getEnchantmentCapacity(cachedStack)) {
+            if (runningTotal + enchantCost < AArcanaEnchantmentHelper.getEnchantmentCapacity(cachedStack)) {
                 newMap.put(enchantment, value.get(enchantment));
                 runningTotal += enchantCost;
             }
