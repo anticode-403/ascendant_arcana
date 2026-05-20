@@ -40,10 +40,10 @@ public class AArcanaServerConfig implements ConfigData {
     public int uncommon_enchanting_power = 22;
 
     @Comment("The minimum amount of power required to enchant rare enchantments.")
-    public int rare_enchanting_power = 50;
+    public int rare_enchanting_power = 55;
 
     @Comment("The minimum amount of power required to enchant very rare enchantments.")
-    public int very_rare_enchanting_power = 80;
+    public int very_rare_enchanting_power = 100;
 
     @Comment("Enchanted Books can only have one enchantment on them. Otherwise, they use the regular capacity system.")
     public boolean single_enchantment_books = true;
