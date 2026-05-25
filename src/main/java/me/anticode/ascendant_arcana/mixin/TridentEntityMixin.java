@@ -4,6 +4,7 @@ import me.anticode.ascendant_arcana.api.EnchantedTrident;
 import me.anticode.ascendant_arcana.init.AArcanaStatusEffects;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -17,7 +18,9 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,6 +28,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(TridentEntity.class)
 public class TridentEntityMixin implements EnchantedTrident {
+    @Shadow
+    @Final
+    private static TrackedData<Byte> LOYALTY;
+
     @Unique
     private int ambushLevel;
 
@@ -68,6 +75,11 @@ public class TridentEntityMixin implements EnchantedTrident {
     }
 
     @Override
+    public int ascendant_arcana$getLifetideLevel() {
+        return lifetideLevel;
+    }
+
+    @Override
     public void ascendant_arcana$setSunderingLevel(int value) {
         this.sunderingLevel = value;
     }
@@ -75,6 +87,11 @@ public class TridentEntityMixin implements EnchantedTrident {
     @Override
     public void ascendant_arcana$setAmbushLevel(int value) {
         this.ambushLevel = value;
+    }
+
+    @Override
+    public int ascendant_arcana$getLoyaltyLevel() {
+        return ((TridentEntity)(Object)this).getDataTracker().get(LOYALTY);
     }
 
     @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))

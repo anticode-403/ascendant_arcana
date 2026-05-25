@@ -1,12 +1,12 @@
 package me.anticode.ascendant_arcana.mixin;
 
+import me.anticode.ascendant_arcana.api.EnchantedTrident;
 import me.anticode.ascendant_arcana.init.AArcanaEnchantments;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.sound.SoundCategory;
+import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -42,6 +42,12 @@ public class ProjectileEntityMixin {
                     ci.cancel();
                 }
             } else if (target.blockedByShield(projectile.getDamageSources().mobProjectile(projectile, owner))) {
+                if (projectile instanceof TridentEntity tridentEntity) {
+                    EnchantedTrident enchantedTrident = (EnchantedTrident)tridentEntity;
+                    if (enchantedTrident.ascendant_arcana$getLoyaltyLevel() > 0 || enchantedTrident.ascendant_arcana$getLoyaltyLevel() > 0) {
+                        return;
+                    }
+                }
                 projectile.setVelocity(target, target.getPitch() - 1, target.getYaw(), 0, (float)projectile.getVelocity().length(), 0.5F);
                 projectile.setOwner(target);
                 target.damageShield(1);

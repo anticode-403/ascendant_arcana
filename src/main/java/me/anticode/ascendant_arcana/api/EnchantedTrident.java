@@ -7,6 +7,8 @@ public interface EnchantedTrident {
 
     void ascendant_arcana$setLifetideLevel(int lifetideLevel);
 
+    int ascendant_arcana$getLifetideLevel();
+
     void ascendant_arcana$setSunderingLevel(int sunderingLevel);
 
     LivingEntity ascendant_arcana$getStuckEntity();
@@ -14,4 +16,6 @@ public interface EnchantedTrident {
     float ascendant_arcana$getRenderTicks();
 
     float ascendant_arcana$getStabTicks();
+
+    int ascendant_arcana$getLoyaltyLevel();
 }
