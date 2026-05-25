@@ -1,5 +1,6 @@
 package me.anticode.ascendant_arcana.enchantment;
 
+import me.anticode.ascendant_arcana.init.AArcanaBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidBlock;
@@ -39,7 +40,7 @@ public class HellWalker extends Enchantment {
 
     public static void freezeLava(LivingEntity entity, World world, BlockPos blockPos) {
         if (entity.isOnGround()) {
-            BlockState blockState = Blocks.BASALT.getDefaultState();
+            BlockState blockState = AArcanaBlocks.CRYSTALIZED_LAVAL_BLOCK.getDefaultState();
             int i = Math.min(16, 4);
             BlockPos.Mutable mutable = new BlockPos.Mutable();
 
@@ -51,7 +52,7 @@ public class HellWalker extends Enchantment {
                         BlockState blockState3 = world.getBlockState(blockPos2);
                         if (blockState3.getBlock() == Blocks.LAVA && blockState3.get(FluidBlock.LEVEL) == 0 && blockState.canPlaceAt(world, blockPos2) && world.canPlace(blockState, blockPos2, ShapeContext.absent())) {
                             world.setBlockState(blockPos2, blockState);
-                            world.scheduleBlockTick(blockPos2, Blocks.BASALT, MathHelper.nextInt(entity.getRandom(), 60, 120));
+                            world.scheduleBlockTick(blockPos2, AArcanaBlocks.CRYSTALIZED_LAVAL_BLOCK, MathHelper.nextInt(entity.getRandom(), 60, 120));
                         }
                     }
                 }

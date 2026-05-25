@@ -38,6 +38,7 @@ import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.*;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
@@ -124,6 +125,8 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
 
             blockStateModelGenerator.registerAmethyst(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER);
             blockStateModelGenerator.registerItemModel(AArcanaBlocks.MASSIVE_RESTORINE_CLUSTER);
+
+            blockStateModelGenerator.blockStateCollector.accept(VariantsBlockStateSupplier.create(AArcanaBlocks.CRYSTALIZED_LAVAL_BLOCK).coordinate(BlockStateVariantMap.create(Properties.AGE_3).register(0, BlockStateVariant.create().put(VariantSettings.MODEL, blockStateModelGenerator.createSubModel(AArcanaBlocks.CRYSTALIZED_LAVAL_BLOCK, "_0", Models.CUBE_ALL, TextureMap::all))).register(1, BlockStateVariant.create().put(VariantSettings.MODEL, blockStateModelGenerator.createSubModel(AArcanaBlocks.CRYSTALIZED_LAVAL_BLOCK, "_1", Models.CUBE_ALL, TextureMap::all))).register(2, BlockStateVariant.create().put(VariantSettings.MODEL, blockStateModelGenerator.createSubModel(AArcanaBlocks.CRYSTALIZED_LAVAL_BLOCK, "_2", Models.CUBE_ALL, TextureMap::all))).register(3, BlockStateVariant.create().put(VariantSettings.MODEL, blockStateModelGenerator.createSubModel(AArcanaBlocks.CRYSTALIZED_LAVAL_BLOCK, "_3", Models.CUBE_ALL, TextureMap::all)))));
         }
 
         @Override
@@ -260,6 +263,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             registerEnchantment(translationBuilder, AArcanaEnchantments.DEBILITATING_CHAIN, "Debilitating Chain", "Slaying a mob transfers all status effects to the nearest enemy.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.DEFLECT, "Deflect", "Blocking a projectile with your shield will shoot it back.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.EVOKERS_WRATH, "Evoker's Wrath", "Summons an Evoker Fang when the arrow lands.");
+            registerEnchantment(translationBuilder, AArcanaEnchantments.HELLWALKER, "Hellwalker", "Crystalizes nearby lava so it can be walked on.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.HOBBLING_SHOT, "Hobbling Shot", "Reduces movement speed and jump height, stacking 5 times.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.LIFETIDE, "Lifetide", "On hit, sticks into the target and heals them for a short duration. You heal half as much.");
             registerEnchantment(translationBuilder, AArcanaEnchantments.NETHER_HEART, "Heart of the Nether", "Increases damage dealt by all fire attacks.");
@@ -588,6 +592,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.DEBILITATING_CHAIN).primary(Items.FERMENTED_SPIDER_EYE, 3).secondary(Items.GUNPOWDER, 3).level(3));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.DEFLECT).scrap(4).primary(Items.SLIME_BALL, 4).secondary(Items.SCUTE, 2).level(5));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.EVOKERS_WRATH).scrap(2).primary(Items.TOTEM_OF_UNDYING, 1).level(3));
+            exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.HELLWALKER).scrap(12).primary(Items.BLAZE_ROD, 2).secondary(Items.TORCHFLOWER, 1).level(6));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.HOBBLING_SHOT).scrap(3).primary(Items.VINE, 6).secondary(Items.BONE_MEAL, 6).level(6));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.LIFETIDE).scrap(12).primary(Items.GHAST_TEAR, 6).level(9));
             exporter.accept(new EnchantmentRecipeProvider(AArcanaEnchantments.NETHER_HEART).scrap(12).primary(AArcanaTags.Items.HEARTS, 1).secondary(Items.NETHERITE_INGOT, 2).level(15));

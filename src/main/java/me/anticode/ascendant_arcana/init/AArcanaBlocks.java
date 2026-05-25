@@ -4,10 +4,10 @@ import me.anticode.ascendant_arcana.AscendantArcana;
 import me.anticode.ascendant_arcana.block.BuddingRestorineBlock;
 import me.anticode.ascendant_arcana.block.CopperEnchantingTableBlock;
 import me.anticode.ascendant_arcana.block.CopperEnchantingTableBlockEntity;
+import me.anticode.ascendant_arcana.block.CrystalizedLavaBlock;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.entity.EnchantingTableBlockEntity;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.datafixer.TypeReferences;
 import net.minecraft.item.*;
@@ -59,6 +59,12 @@ public class AArcanaBlocks {
             Registries.BLOCK_ENTITY_TYPE,
             new Identifier(AscendantArcana.modID, "copper_enchanting_table"),
             BlockEntityType.Builder.create(CopperEnchantingTableBlockEntity::new, COPPER_ENCHANTING_TABLE).build(Util.getChoiceType(TypeReferences.BLOCK_ENTITY, "enchanting_table"))
+    );
+
+    public static final CrystalizedLavaBlock CRYSTALIZED_LAVAL_BLOCK = (CrystalizedLavaBlock) register(
+            new CrystalizedLavaBlock(AbstractBlock.Settings.copy(Blocks.FROSTED_ICE).luminance((state) -> 13).slipperiness(0.6F).allowsSpawning((a, b, c, d) -> false)),
+            "crystalized_lava",
+            false
     );
 
     public static Block register(Block block, String name, boolean shouldRegisterItem) {
