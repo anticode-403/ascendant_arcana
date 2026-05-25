@@ -192,6 +192,7 @@ public abstract class LivingEntityMixin {
     @Inject(method = "applyDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/damage/DamageTracker;onDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"), cancellable = true)
     private void protectiveEcho(DamageSource source, float amount, CallbackInfo ci) {
         if (amount < 5) return;
+        if (source.isIn(DamageTypeTags.BYPASSES_ENCHANTMENTS) || source.isIn(DamageTypeTags.BYPASSES_EFFECTS)) return;
         if (getStatusEffect(AArcanaStatusEffects.ECHOING_DAMAGE) != null) return;
         if (EnchantmentHelper.getEquipmentLevel(AArcanaEnchantments.PROTECTIVE_ECHO, (LivingEntity) (Object) this) == 0) return;
         setStatusEffect(new StatusEffectInstance(AArcanaStatusEffects.ECHOING_DAMAGE, 5, (int)Math.floor(amount / 5)), (LivingEntity)(Object)this);
