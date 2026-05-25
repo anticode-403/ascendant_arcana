@@ -10,15 +10,18 @@ import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.ItemStack;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
 public class TickableAttributeEnchantment extends Enchantment {
     private final boolean isCurse;
     private final Map<EntityAttribute, EntityAttributeModifier> attributeModifiers = Maps.newHashMap();
+    private final EquipmentSlot[] slotTypes;
 
     protected TickableAttributeEnchantment(boolean isCurse, Rarity weight, EnchantmentTarget target, EquipmentSlot[] slotTypes) {
         super(weight, target, slotTypes);
+        this.slotTypes = slotTypes;
         this.isCurse = isCurse;
         initAttributes();
     }
@@ -28,7 +31,7 @@ public class TickableAttributeEnchantment extends Enchantment {
 
     }
 
-    public void onTick(LivingEntity entity, ItemStack stack, int level)
+    public void onTick(LivingEntity entity, ItemStack stack, int level, EquipmentSlot slot)
     {
 
     }
@@ -49,6 +52,7 @@ public class TickableAttributeEnchantment extends Enchantment {
     }
 
     public boolean addAttributes(LivingEntity entity, ItemStack stack, EquipmentSlot slot, int level) {
+        if (Arrays.stream(slotTypes).toList().contains(slot)) return false;
         return AArcanaEnchantmentHelper.addEnchantmentAttributes(this, attributeModifiers, entity, stack, slot, level);
     }
 

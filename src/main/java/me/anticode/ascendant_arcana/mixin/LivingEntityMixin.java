@@ -300,7 +300,7 @@ public abstract class LivingEntityMixin {
                 if(!stack.isEmpty()) {
                     ItemHelper.forEachEnchantment((en, st, lvl)-> {
                         if(en instanceof TickableAttributeEnchantment) {
-                            ((TickableAttributeEnchantment) en).onTick(livingEntity, st, lvl);
+                            ((TickableAttributeEnchantment) en).onTick(livingEntity, st, lvl, slot);
                             if(missingAttributeStack(st) && ((TickableAttributeEnchantment) en).addAttributes(livingEntity, st, slot, lvl)) {
                                 attributeStacks.add(new Pair<>(slot, st));
                             }

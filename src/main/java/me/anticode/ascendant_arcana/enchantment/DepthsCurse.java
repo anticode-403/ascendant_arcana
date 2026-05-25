@@ -13,8 +13,9 @@ public class DepthsCurse extends TickableAttributeEnchantment{
     }
 
     @Override
-    public void onTick(LivingEntity entity, ItemStack stack, int level)
+    public void onTick(LivingEntity entity, ItemStack stack, int level, EquipmentSlot slot)
     {
+        if (!slot.isArmorSlot()) return;
         if(entity instanceof PlayerEntity player)
             if(player.getAbilities().flying)
                 return;
