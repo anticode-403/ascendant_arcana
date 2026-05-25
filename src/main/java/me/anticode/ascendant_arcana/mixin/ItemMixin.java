@@ -6,6 +6,7 @@ import me.anticode.ascendant_arcana.logic.Relics;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -31,6 +32,11 @@ public class ItemMixin {
         if (EnchantmentHelper.getLevel(AArcanaEnchantments.CLEANSE, stack) > 0) {
             int usageTicks = 72000 - remainingUseTicks;
             if (usageTicks >= 20 && !user.getStatusEffects().isEmpty()) {
+                boolean cleanse = false;
+                for (StatusEffectInstance statusEffect : user.getStatusEffects()) {
+                    if (!statusEffect.getEffectType().isBeneficial()) cleanse = true;
+                }
+                if (!cleanse) return;
                 user.clearStatusEffects();
                 player.stopUsingItem();
                 player.getItemCooldownManager().set(stack.getItem(), 200);
