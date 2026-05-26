@@ -19,61 +19,61 @@ import net.minecraft.world.World;
 import java.util.Map;
 
 public class InfusionRecipe implements SmithingRecipe {
-            private final Identifier id;
+    private final Identifier id;
 
-            InfusionRecipe(Identifier id) {
-                this.id = id;
+    InfusionRecipe(Identifier id) {
+        this.id = id;
+    }
+
+    @Override
+    public boolean testTemplate(ItemStack stack) {
+        return stack.isOf(AArcanaItems.INFUSION_SMITHING_TEMPLATE);
+    }
+
+    @Override
+    public boolean testBase(ItemStack stack) {
+        if (stack.isEnchantable() || stack.isDamageable() || stack.getItem() instanceof ArmorItem || stack.getItem() instanceof ToolItem || stack.getItem() instanceof BowItem || stack.getItem() instanceof CrossbowItem) {
+            return RelicHelper.fromNbt(stack.getOrCreateNbt()).size() <= 2;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean testAddition(ItemStack stack) {
+        return stack.isIn(AArcanaTags.Items.RELICS);
+    }
+
+    @Override
+    public boolean matches(Inventory inventory, World world) {
+        if (!(this.testTemplate(inventory.getStack(0)) && this.testBase(inventory.getStack(1)) && this.testAddition(inventory.getStack(2)))) return false;
+        ItemStack baseStack = inventory.getStack(1);
+        Map<Relics, Integer> relicMap = RelicHelper.fromNbt(baseStack.getOrCreateNbt());
+        ItemStack relicStack = inventory.getStack(2);
+        Relics relicType = RelicItem.getRelicType(relicStack);
+        if (relicMap.size() < RelicHelper.getRelicCapacity(baseStack)) {
+            if (relicType == Relics.DURABILITY && baseStack.isDamageable()) return true;
+            if (relicType == Relics.ENCHANTMENT_CAPACITY && (baseStack.isEnchantable() || baseStack.hasEnchantments())) return true;
+            else if ((relicType == Relics.HASTE || relicType == Relics.DAMAGE) && (baseStack.getItem() instanceof ToolItem || baseStack.getItem() instanceof BowItem || baseStack.getItem() instanceof CrossbowItem)) return true;
+            else return relicType == Relics.PROTECTION && baseStack.getItem() instanceof ArmorItem;
+        }
+        else if (relicStack.getItem() instanceof  RelicItem) {
+            if (relicMap.containsKey(relicType)) {
+                return RelicItem.getRelicStrength(relicStack) > relicMap.get(relicType);
             }
+        }
+        return false;
+    }
 
-            @Override
-            public boolean testTemplate(ItemStack stack) {
-                return stack.isOf(AArcanaItems.INFUSION_SMITHING_TEMPLATE);
-            }
-
-            @Override
-            public boolean testBase(ItemStack stack) {
-                if (stack.isEnchantable() || stack.isDamageable() || stack.getItem() instanceof ArmorItem || stack.getItem() instanceof ToolItem || stack.getItem() instanceof BowItem || stack.getItem() instanceof CrossbowItem) {
-                    return RelicHelper.fromNbt(stack.getOrCreateNbt()).size() <= 2;
-                }
-                return false;
-            }
-
-            @Override
-            public boolean testAddition(ItemStack stack) {
-                return stack.isIn(AArcanaTags.Items.RELICS);
-            }
-
-            @Override
-            public boolean matches(Inventory inventory, World world) {
-                if (!(this.testTemplate(inventory.getStack(0)) && this.testBase(inventory.getStack(1)) && this.testAddition(inventory.getStack(2)))) return false;
-                ItemStack baseStack = inventory.getStack(1);
-                Map<Relics, Integer> relicMap = RelicHelper.fromNbt(baseStack.getOrCreateNbt());
-                ItemStack relicStack = inventory.getStack(2);
-                Relics relicType = RelicItem.getRelicType(relicStack);
-                if (relicMap.size() < RelicHelper.getRelicCapacity(baseStack)) {
-                    if (relicType == Relics.DURABILITY && baseStack.isDamageable()) return true;
-                    if (relicType == Relics.ENCHANTMENT_CAPACITY && (baseStack.isEnchantable() || baseStack.hasEnchantments())) return true;
-                    else if ((relicType == Relics.HASTE || relicType == Relics.DAMAGE) && (baseStack.getItem() instanceof ToolItem || baseStack.getItem() instanceof BowItem || baseStack.getItem() instanceof CrossbowItem)) return true;
-                    else return relicType == Relics.PROTECTION && baseStack.getItem() instanceof ArmorItem;
-                }
-                else if (relicStack.getItem() instanceof  RelicItem) {
-                    if (relicMap.containsKey(relicType)) {
-                        return RelicItem.getRelicStrength(relicStack) > relicMap.get(relicType);
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public ItemStack craft(Inventory inventory, DynamicRegistryManager registryManager) {
-                ItemStack newStack = inventory.getStack(1).copy();
-                ItemStack relicStack = inventory.getStack(2).copy();
-                int relicStrength = RelicItem.getRelicStrength(relicStack);
-                Relics relicType = RelicItem.getRelicType(relicStack);
-                Map<Relics, Integer> relicsMap = RelicHelper.fromNbt(newStack.getOrCreateNbt());
-                relicsMap.put(relicType, relicStrength);
-                newStack.getOrCreateNbt().put(RelicHelper.RELICS_KEY, RelicHelper.toNbt(relicsMap));
-                return newStack;
+    @Override
+    public ItemStack craft(Inventory inventory, DynamicRegistryManager registryManager) {
+        ItemStack newStack = inventory.getStack(1).copy();
+        ItemStack relicStack = inventory.getStack(2).copy();
+        int relicStrength = RelicItem.getRelicStrength(relicStack);
+        Relics relicType = RelicItem.getRelicType(relicStack);
+        Map<Relics, Integer> relicsMap = RelicHelper.fromNbt(newStack.getOrCreateNbt());
+        relicsMap.put(relicType, relicStrength);
+        newStack.getOrCreateNbt().put(RelicHelper.RELICS_KEY, RelicHelper.toNbt(relicsMap));
+        return newStack;
     }
 
     @Override
