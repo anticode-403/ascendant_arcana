@@ -62,12 +62,26 @@ public class RelicCraftingRecipe extends SpecialCraftingRecipe {
     }
 
     @Override
-    public ItemStack craft(RecipeInputInventory inventory, DynamicRegistryManager registryManager) {
+    public DefaultedList<Ingredient> getIngredients() {
+        return input;
+    }
+
+    public ItemStack getOutput() {
         ItemStack itemStack = new ItemStack(AArcanaItems.RELIC);
         NbtCompound nbt = itemStack.getOrCreateNbt();
         nbt.putInt(RelicItem.RELIC_STRENGTH_KEY, strength);
         nbt.putInt(RelicItem.RELIC_TYPE_KEY, relic);
         return itemStack;
+    }
+
+    @Override
+    public ItemStack getOutput(DynamicRegistryManager registryManager) {
+        return getOutput();
+    }
+
+    @Override
+    public ItemStack craft(RecipeInputInventory inventory, DynamicRegistryManager registryManager) {
+        return getOutput();
     }
 
     @Override

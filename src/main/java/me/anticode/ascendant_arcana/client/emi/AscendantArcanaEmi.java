@@ -3,15 +3,20 @@ package me.anticode.ascendant_arcana.client.emi;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.recipe.EmiCraftingRecipe;
 import dev.emi.emi.api.render.EmiTexture;
+import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import me.anticode.ascendant_arcana.AscendantArcana;
 import me.anticode.ascendant_arcana.client.emi.recipes.EmiEnchantmentRecipe;
 import me.anticode.ascendant_arcana.init.AArcanaBlocks;
 import me.anticode.ascendant_arcana.init.AArcanaRecipes;
 import me.anticode.ascendant_arcana.recipe.EnchantmentRecipe;
+import me.anticode.ascendant_arcana.recipe.RelicCraftingRecipe;
 import net.minecraft.block.Blocks;
+import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.RecipeManager;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.Identifier;
 
 public class AscendantArcanaEmi implements EmiPlugin {
@@ -29,6 +34,11 @@ public class AscendantArcanaEmi implements EmiPlugin {
         RecipeManager manager = emiRegistry.getRecipeManager();
         for (EnchantmentRecipe recipe : manager.listAllOfType(AArcanaRecipes.ENCHANTMENT_RECIPE_TYPE)) {
             emiRegistry.addRecipe(new EmiEnchantmentRecipe(recipe));
+        }
+        for (CraftingRecipe recipe : manager.listAllOfType(RecipeType.CRAFTING)) {
+            if (recipe instanceof RelicCraftingRecipe relicRecipe) {
+                emiRegistry.addRecipe(new EmiCraftingRecipe(relicRecipe.getIngredients().stream().map(EmiIngredient::of).toList(), EmiStack.of(relicRecipe.getOutput()), relicRecipe.getId(), true));
+            }
         }
     }
 }
