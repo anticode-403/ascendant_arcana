@@ -180,7 +180,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
 
         private void registerEnchantment(TranslationBuilder translationBuilder, Enchantment enchantment, String name, String description) {
             translationBuilder.add(enchantment, name);
-            translationBuilder.add(enchantment.getTranslationKey() + ".description", description);
+            description(translationBuilder, enchantment, description);
         }
 
         private void registerStatusEffect(TranslationBuilder translationBuilder, StatusEffect statusEffect, String name, String description) {
