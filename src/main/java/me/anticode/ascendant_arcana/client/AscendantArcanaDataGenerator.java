@@ -188,6 +188,10 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             translationBuilder.add(statusEffect.getTranslationKey() + ".description", description);
         }
 
+        public <T> void registerTag(TranslationBuilder translationBuilder, TagKey<T> tag, String description) {
+            translationBuilder.add(tag.id().toTranslationKey(), description);
+        }
+
         private void description(TranslationBuilder translationBuilder, Item item, String description) {
             translationBuilder.add(item.getTranslationKey() + ".description", description);
         }
@@ -306,6 +310,9 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             registerStatusEffect(translationBuilder, AArcanaStatusEffects.HOBBLED, "Hobbled", "Slightly reduces movement speed and jump height.");
             registerStatusEffect(translationBuilder, AArcanaStatusEffects.SUNDERED, "Sundered", "Significantly reduces armor and armor toughness.");
             registerStatusEffect(translationBuilder, AArcanaStatusEffects.CROSS_COUNTER, "Cross Counter", "Increases attack damage for the next attack.");
+            // Tags
+            registerTag(translationBuilder, AArcanaTags.Items.HEARTS, "Warden Hearts");
+            registerTag(translationBuilder, AArcanaTags.Items.RELICS, "Relics");
         }
     }
 
