@@ -4,8 +4,16 @@
   "version": "${version}",
   "name": "Ascendant Arcana",
   "description": "A mod that overhauls enchanting and some other forms of Minecraft magic.",
-  "authors": [],
-  "contact": {},
+  "authors": [
+    "anticode"
+  ],
+  "contact": {
+    "email": "rileyanticode@gmail.com",
+    "homepage": "https://modrinth.com/mod/ascendant-arcana",
+    "sources": "https://github.com/anticode-403/ascendant_arcana",
+    "irc": "https://discord.gg/4cDFfDqfDy",
+    "issues": "https://github.com/anticode-403/ascendant_arcana/issues"
+  },
   "license": "All-Rights-Reserved",
   "icon": "assets/ascendant_arcana/icon.png",
   "environment": "*",
