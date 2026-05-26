@@ -189,7 +189,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
         }
 
         public <T> void registerTag(TranslationBuilder translationBuilder, TagKey<T> tag, String description) {
-            translationBuilder.add(tag.id().toTranslationKey(), description);
+            translationBuilder.add("tag." + tag.id().toTranslationKey(), description);
         }
 
         private void description(TranslationBuilder translationBuilder, Item item, String description) {
@@ -313,6 +313,9 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             // Tags
             registerTag(translationBuilder, AArcanaTags.Items.HEARTS, "Warden Hearts");
             registerTag(translationBuilder, AArcanaTags.Items.RELICS, "Relics");
+            registerTag(translationBuilder, AArcanaTags.Blocks.ENCHANTING_TABLES, "Enchanting Tables");
+            // Emi
+            translationBuilder.add("emi.category.ascendant_arcana.enchanting", "Enchanting");
         }
     }
 

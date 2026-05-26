@@ -1,6 +1,7 @@
 package me.anticode.ascendant_arcana.init;
 
 import me.anticode.ascendant_arcana.AscendantArcana;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
@@ -13,6 +14,14 @@ public class AArcanaTags {
 
         private static TagKey<Item> createItemTag(String name) {
             return TagKey.of(RegistryKeys.ITEM, new Identifier(AscendantArcana.modID, name));
+        }
+    }
+
+    public static class Blocks {
+        public static final TagKey<Block> ENCHANTING_TABLES = createBlockTag("enchanting_tables");
+
+        private static TagKey<Block> createBlockTag(String name) {
+            return TagKey.of(RegistryKeys.BLOCK, new Identifier(AscendantArcana.modID, name));
         }
     }
 
