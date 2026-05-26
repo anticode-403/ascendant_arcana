@@ -28,7 +28,7 @@
       "me.anticode.ascendant_arcana.AscendantArcana"
     ],
     "emi": [
-      "me.anticode.ascendant_arcana.client.emi.AscendantArcanaPlugin"
+      "me.anticode.ascendant_arcana.client.emi.AscendantArcanaEmi"
     ]
   },
   "mixins": [

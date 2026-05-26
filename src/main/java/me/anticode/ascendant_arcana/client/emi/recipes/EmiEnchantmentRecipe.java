@@ -6,12 +6,15 @@ import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
-import me.anticode.ascendant_arcana.client.emi.AscendantArcanaPlugin;
+import me.anticode.ascendant_arcana.AscendantArcana;
+import me.anticode.ascendant_arcana.client.emi.AscendantArcanaEmi;
 import me.anticode.ascendant_arcana.init.AArcanaItems;
+import me.anticode.ascendant_arcana.logic.AArcanaEnchantmentHelper;
 import me.anticode.ascendant_arcana.recipe.EnchantmentRecipe;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +44,7 @@ public class EmiEnchantmentRecipe implements EmiRecipe {
 
     @Override
     public EmiRecipeCategory getCategory() {
-        return AscendantArcanaPlugin.ENCHANTING;
+        return AscendantArcanaEmi.ENCHANTING;
     }
 
     @Override
@@ -70,7 +73,7 @@ public class EmiEnchantmentRecipe implements EmiRecipe {
 
     @Override
     public int getDisplayHeight() {
-        return 18;
+        return 27;
     }
 
     @Override
@@ -90,5 +93,35 @@ public class EmiEnchantmentRecipe implements EmiRecipe {
         enchantedBook.addEnchantment(output, 1);
         widgetHolder.addTexture(EmiTexture.EMPTY_ARROW, 59, 1);
         widgetHolder.addSlot(EmiStack.of(enchantedBook, 1), 88, 0);
+
+        // Enchanting Power
+        widgetHolder.addTexture(AscendantArcanaEmi.EMI_SPRITES, 0, 19, 7, 7, 7, 0);
+        int requiredPower = switch (output.getRarity()) {
+            case COMMON -> AscendantArcana.config.minimum_enchanting_power;
+            case UNCOMMON -> AscendantArcana.config.uncommon_enchanting_power;
+            case RARE -> AscendantArcana.config.rare_enchanting_power;
+            case VERY_RARE -> AscendantArcana.config.very_rare_enchanting_power;
+        };
+        Text requiredPowerText = Text.of(String.valueOf(requiredPower));
+        widgetHolder.addText(requiredPowerText, 8, 19, 5592405, false);
+        List<Text> enchantingPowerTooltip = List.of(
+                Text.translatable("gui.emi.ascendant_arcana.enchanting_power")
+        );
+        widgetHolder.addTooltipText(enchantingPowerTooltip, 0, 19, 20, 8);
+
+        // Enchantment Capacity
+        widgetHolder.addTexture(AscendantArcanaEmi.EMI_SPRITES, 27, 19, 9, 7, 14, 0);
+        widgetHolder.addText(Text.of(String.valueOf(AArcanaEnchantmentHelper.getEnchantmentCost(output))), 37, 19, 5592405, false);
+        widgetHolder.addTooltipText(List.of(Text.translatable("gui.emi.ascendant_arcana.capacity_cost")), 27, 19, 20, 8);
+
+        // XP
+        if (!AscendantArcana.config.disable_xp) {
+            widgetHolder.addTexture(AscendantArcanaEmi.EMI_SPRITES, 48, 19, 7, 7, 0, 0);
+            List<Text> levelCostTooltip = List.of(
+                    Text.translatable("gui.emi.ascendant_arcana.level_cost")
+            );
+            widgetHolder.addText(Text.of(String.valueOf(levelCost)), 56, 19, 5592405, false);
+            widgetHolder.addTooltipText(levelCostTooltip, 48, 19, 20, 8);
+        }
     }
 }

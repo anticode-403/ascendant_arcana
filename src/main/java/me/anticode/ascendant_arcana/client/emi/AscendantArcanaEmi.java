@@ -14,11 +14,11 @@ import net.minecraft.block.Blocks;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.util.Identifier;
 
-public class AscendantArcanaPlugin implements EmiPlugin {
-    public static final Identifier ENCHANTING_SPRITE = new Identifier(AscendantArcana.modID, "textures/gui/emi_enchanting.png");
+public class AscendantArcanaEmi implements EmiPlugin {
+    public static final Identifier EMI_SPRITES = new Identifier(AscendantArcana.modID, "textures/gui/emi_elements.png");
     public static final EmiStack ENCHANTING_TABLE = EmiStack.of(Blocks.ENCHANTING_TABLE);
     public static final EmiStack COPPER_ENCHANTING_TABLE = EmiStack.of(AArcanaBlocks.COPPER_ENCHANTING_TABLE);
-    public static final EmiRecipeCategory ENCHANTING = new EmiRecipeCategory(new Identifier(AscendantArcana.modID, "enchanting"), COPPER_ENCHANTING_TABLE, new EmiTexture(ENCHANTING_SPRITE, 0, 0, 16, 16));
+    public static final EmiRecipeCategory ENCHANTING = new EmiRecipeCategory(new Identifier(AscendantArcana.modID, "enchanting"), COPPER_ENCHANTING_TABLE, new EmiTexture(EMI_SPRITES, 0, 0, 16, 16));
 
     @Override
     public void register(EmiRegistry emiRegistry) {

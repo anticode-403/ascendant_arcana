@@ -316,6 +316,9 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             registerTag(translationBuilder, AArcanaTags.Blocks.ENCHANTING_TABLES, "Enchanting Tables");
             // Emi
             translationBuilder.add("emi.category.ascendant_arcana.enchanting", "Enchanting");
+            translationBuilder.add("gui.emi.ascendant_arcana.enchanting_power", "Required Enchanting Table power");
+            translationBuilder.add("gui.emi.ascendant_arcana.level_cost", "XP Level Cost");
+            translationBuilder.add("gui.emi.ascendant_arcana.capacity_cost", "Required Enchantment Capacity");
         }
     }
 
