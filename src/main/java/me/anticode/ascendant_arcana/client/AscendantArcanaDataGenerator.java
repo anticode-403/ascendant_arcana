@@ -216,6 +216,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             translationBuilder.add(AArcanaItems.RELIC, "%1$s Relic of %2$s");
             description(translationBuilder, AArcanaItems.RELIC, "An item that can be infused into tools or armor at a Smithing Table, increasing their potential.");
             translationBuilder.add("item.relics.empty", "Empty Relic");
+            translationBuilder.add("item.relics.unknown", "Unknown Relic");
 
             translationBuilder.add("item.relics.strength.1", "Dormant");
             translationBuilder.add("item.relics.strength.2", "Stirring");

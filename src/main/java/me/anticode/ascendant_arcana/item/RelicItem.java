@@ -29,6 +29,7 @@ public class RelicItem extends Item {
 
     @Override
     public Text getName(ItemStack stack) {
+        if (getRelicStrength(stack) == 0) return Text.translatable("item.relics.unknown");
         return Text.translatable(getTranslationKey(), RelicHelper.getRelicStrengthName(getRelicStrength(stack)), RelicHelper.getRelicTypeName(getRelicType(stack)));
     }
 
@@ -50,6 +51,7 @@ public class RelicItem extends Item {
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         super.appendTooltip(stack, world, tooltip, context);
+        if (getRelicStrength(stack) == 0) return;
         Relics relicType = getRelicType(stack);
         int visualStrength = RelicHelper.getTooltipStrength(relicType, getRelicStrength(stack));
         Text relicName = RelicHelper.getRelicTypeText(relicType);
