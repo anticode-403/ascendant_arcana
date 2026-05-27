@@ -6,6 +6,7 @@ import com.google.gson.JsonParseException;
 import me.anticode.ascendant_arcana.init.AArcanaItems;
 import me.anticode.ascendant_arcana.init.AArcanaRecipes;
 import me.anticode.ascendant_arcana.item.RelicItem;
+import me.anticode.ascendant_arcana.logic.Relics;
 import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -49,7 +50,9 @@ public class RelicCraftingRecipe extends SpecialCraftingRecipe {
                 boolean matchAny = false;
                 for (Ingredient ingredient : input) {
                     if (ingredient.test(itemStack)) {
-                        matchAny = true;
+                        if (itemStack.isOf(AArcanaItems.RELIC)) {
+                            if (RelicItem.getRelicType(itemStack) == Relics.fromId(relic) && RelicItem.getRelicStrength(itemStack) == strength - 1) matchAny = true;
+                        } else matchAny = true;
                     }
                 }
                 if (!matchAny) {

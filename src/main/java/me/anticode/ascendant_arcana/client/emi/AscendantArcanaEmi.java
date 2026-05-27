@@ -53,7 +53,15 @@ public class AscendantArcanaEmi implements EmiPlugin {
         }
         for (CraftingRecipe recipe : manager.listAllOfType(RecipeType.CRAFTING)) {
             if (recipe instanceof RelicCraftingRecipe relicRecipe) {
-                emiRegistry.addRecipe(new EmiCraftingRecipe(relicRecipe.getIngredients().stream().map(EmiIngredient::of).toList(), EmiStack.of(relicRecipe.getOutput()), relicRecipe.getId(), true));
+                List<EmiIngredient> ingredients = relicRecipe.getIngredients().stream().map((ingredient) -> {
+                    if (ingredient.test(new ItemStack(AArcanaItems.RELIC))) {
+                        ItemStack stack = relicRecipe.getOutput().copy();
+                        RelicItem.writeRelicData(stack, RelicItem.getRelicType(stack), RelicItem.getRelicStrength(stack) - 1);
+                        return EmiStack.of(stack);
+                    }
+                    else return EmiIngredient.of(ingredient);
+                }).toList();
+                emiRegistry.addRecipe(new EmiCraftingRecipe(ingredients, EmiStack.of(relicRecipe.getOutput()), relicRecipe.getId(), true));
             }
         }
         for (SmithingRecipe recipe : manager.listAllOfType(RecipeType.SMITHING)) {
