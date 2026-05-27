@@ -10,6 +10,7 @@ import dev.emi.emi.api.stack.EmiStack;
 import me.anticode.ascendant_arcana.AscendantArcana;
 import me.anticode.ascendant_arcana.client.emi.recipes.EmiEnchantmentRecipe;
 import me.anticode.ascendant_arcana.client.emi.recipes.EmiInfusionRecipe;
+import me.anticode.ascendant_arcana.client.emi.recipes.EmiRestorineRepairRecipe;
 import me.anticode.ascendant_arcana.init.AArcanaBlocks;
 import me.anticode.ascendant_arcana.init.AArcanaItems;
 import me.anticode.ascendant_arcana.init.AArcanaRecipes;
@@ -19,11 +20,13 @@ import me.anticode.ascendant_arcana.recipe.EnchantmentRecipe;
 import me.anticode.ascendant_arcana.recipe.InfusionRecipe;
 import me.anticode.ascendant_arcana.recipe.RelicCraftingRecipe;
 import net.minecraft.block.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.SmithingRecipe;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
 public class AscendantArcanaEmi implements EmiPlugin {
@@ -55,6 +58,12 @@ public class AscendantArcanaEmi implements EmiPlugin {
                     RelicItem.writeRelicData(stack, relicType, 1);
                     emiRegistry.addRecipe(new EmiInfusionRecipe(infusionRecipe, stack));
                 }
+            }
+        }
+        for (Item item : Registries.ITEM) {
+            if (emiRegistry.isStackDisabled(EmiStack.of(item))) continue;
+            if (item.getMaxDamage() > 0) {
+                emiRegistry.addRecipe(new EmiRestorineRepairRecipe(EmiStack.of(item), new Identifier(AscendantArcana.modID, "/repair/").withSuffixedPath(Registries.ITEM.getId(item).getPath())));
             }
         }
     }
