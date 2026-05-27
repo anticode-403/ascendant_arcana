@@ -47,8 +47,12 @@ public class InfusionRecipe implements SmithingRecipe {
     public boolean matches(Inventory inventory, World world) {
         if (!(this.testTemplate(inventory.getStack(0)) && this.testBase(inventory.getStack(1)) && this.testAddition(inventory.getStack(2)))) return false;
         ItemStack baseStack = inventory.getStack(1);
-        Map<Relics, Integer> relicMap = RelicHelper.fromNbt(baseStack.getOrCreateNbt());
         ItemStack relicStack = inventory.getStack(2);
+        return matches(baseStack, relicStack);
+    }
+
+    public boolean matches (ItemStack baseStack, ItemStack relicStack) {
+        Map<Relics, Integer> relicMap = RelicHelper.fromNbt(baseStack.getOrCreateNbt());
         Relics relicType = RelicItem.getRelicType(relicStack);
         if (relicMap.size() < RelicHelper.getRelicCapacity(baseStack)) {
             if (relicType == Relics.DURABILITY && baseStack.isDamageable()) return true;
@@ -66,8 +70,11 @@ public class InfusionRecipe implements SmithingRecipe {
 
     @Override
     public ItemStack craft(Inventory inventory, DynamicRegistryManager registryManager) {
-        ItemStack newStack = inventory.getStack(1).copy();
-        ItemStack relicStack = inventory.getStack(2).copy();
+        return getOutput(inventory.getStack(1), inventory.getStack(2));
+    }
+
+    public ItemStack getOutput(ItemStack baseStack, ItemStack relicStack) {
+        ItemStack newStack = baseStack.copy();
         int relicStrength = RelicItem.getRelicStrength(relicStack);
         Relics relicType = RelicItem.getRelicType(relicStack);
         Map<Relics, Integer> relicsMap = RelicHelper.fromNbt(newStack.getOrCreateNbt());

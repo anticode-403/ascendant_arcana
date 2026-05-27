@@ -9,14 +9,21 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import me.anticode.ascendant_arcana.AscendantArcana;
 import me.anticode.ascendant_arcana.client.emi.recipes.EmiEnchantmentRecipe;
+import me.anticode.ascendant_arcana.client.emi.recipes.EmiInfusionRecipe;
 import me.anticode.ascendant_arcana.init.AArcanaBlocks;
+import me.anticode.ascendant_arcana.init.AArcanaItems;
 import me.anticode.ascendant_arcana.init.AArcanaRecipes;
+import me.anticode.ascendant_arcana.item.RelicItem;
+import me.anticode.ascendant_arcana.logic.Relics;
 import me.anticode.ascendant_arcana.recipe.EnchantmentRecipe;
+import me.anticode.ascendant_arcana.recipe.InfusionRecipe;
 import me.anticode.ascendant_arcana.recipe.RelicCraftingRecipe;
 import net.minecraft.block.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.SmithingRecipe;
 import net.minecraft.util.Identifier;
 
 public class AscendantArcanaEmi implements EmiPlugin {
@@ -38,6 +45,16 @@ public class AscendantArcanaEmi implements EmiPlugin {
         for (CraftingRecipe recipe : manager.listAllOfType(RecipeType.CRAFTING)) {
             if (recipe instanceof RelicCraftingRecipe relicRecipe) {
                 emiRegistry.addRecipe(new EmiCraftingRecipe(relicRecipe.getIngredients().stream().map(EmiIngredient::of).toList(), EmiStack.of(relicRecipe.getOutput()), relicRecipe.getId(), true));
+            }
+        }
+        for (SmithingRecipe recipe : manager.listAllOfType(RecipeType.SMITHING)) {
+            if (recipe instanceof InfusionRecipe infusionRecipe) {
+                for (int i = 0; i < Relics.values().length; i++) {
+                    Relics relicType = Relics.fromId(i);
+                    ItemStack stack = new ItemStack(AArcanaItems.RELIC);
+                    RelicItem.writeRelicData(stack, relicType, 1);
+                    emiRegistry.addRecipe(new EmiInfusionRecipe(infusionRecipe, stack));
+                }
             }
         }
     }
