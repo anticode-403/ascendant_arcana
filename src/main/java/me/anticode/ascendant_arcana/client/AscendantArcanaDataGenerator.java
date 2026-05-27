@@ -97,10 +97,6 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
     }
 
     public static class AAModelProvider extends FabricModelProvider {
-//        public static final Model RESTORINE_CROSS = new Model(
-//
-//        );
-
         public AAModelProvider(FabricDataOutput output) {
             super(output);
         }
@@ -328,20 +324,24 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
         }
 
         public static class EnchantmentRecipeProvider implements RecipeJsonProvider {
-            private Identifier id;
-            private Enchantment enchantment;
+            private final Identifier id;
+            private final Enchantment enchantment;
             private int magicalScrapCost;
             private IngredientStack primaryIngredient;
             private IngredientStack secondaryIngredient;
             private int levelCost;
 
             EnchantmentRecipeProvider(Enchantment enchantment) {
-                this.id = Registries.ENCHANTMENT.getId(enchantment).withPrefixedPath("enchantments/");
+                Identifier enchantmentId = Registries.ENCHANTMENT.getId(enchantment);
+                assert enchantmentId != null;
+                this.id = enchantmentId.withPrefixedPath("enchantments/");
                 this.enchantment = enchantment;
             }
 
             EnchantmentRecipeProvider(Enchantment enchantment, int magicalScrapCost, IngredientStack primaryIngredient, IngredientStack secondaryIngredient, int levelCost) {
-                this.id = Registries.ENCHANTMENT.getId(enchantment).withPrefixedPath("enchantments/");
+                Identifier enchantmentId = Registries.ENCHANTMENT.getId(enchantment);
+                assert enchantmentId != null;
+                this.id = enchantmentId.withPrefixedPath("enchantments/");
                 this.enchantment = enchantment;
                 this.magicalScrapCost = magicalScrapCost;
                 this.primaryIngredient = primaryIngredient;
@@ -381,7 +381,9 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
 
             @Override
             public void serialize(JsonObject json) {
-                String enchantmentId = Registries.ENCHANTMENT.getId(enchantment).toString();
+                Identifier enchantmentIdentifier = Registries.ENCHANTMENT.getId(enchantment);
+                if (enchantmentIdentifier == null) return;
+                String enchantmentId = enchantmentIdentifier.toString();
 
                 if (magicalScrapCost != 0) json.addProperty("magical_scrap_cost", magicalScrapCost);
                 else  json.addProperty("magical_scrap_cost", 3);
@@ -436,19 +438,19 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
             }
 
             public RelicRecipeJsonBuilder input(ItemConvertible itemProvider) {
-                return this.input((ItemConvertible)itemProvider, 1);
+                return this.input(itemProvider, 1);
             }
 
             public RelicRecipeJsonBuilder input(ItemConvertible itemProvider, int size) {
                 for(int i = 0; i < size; ++i) {
-                    this.input(Ingredient.ofItems(new ItemConvertible[]{itemProvider}));
+                    this.input(Ingredient.ofItems(itemProvider));
                 }
 
                 return this;
             }
 
             public RelicRecipeJsonBuilder input(Ingredient ingredient) {
-                return this.input((Ingredient)ingredient, 1);
+                return this.input(ingredient, 1);
             }
 
             public RelicRecipeJsonBuilder input(Ingredient ingredient, int size) {
