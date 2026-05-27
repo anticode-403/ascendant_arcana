@@ -12,8 +12,11 @@ import me.anticode.ascendant_arcana.init.AArcanaItems;
 import me.anticode.ascendant_arcana.logic.AArcanaEnchantmentHelper;
 import me.anticode.ascendant_arcana.recipe.EnchantmentRecipe;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentLevelEntry;
+import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +31,7 @@ public class EmiEnchantmentRecipe implements EmiRecipe {
     private final EmiIngredient primaryStack;
     private final EmiIngredient secondaryStack;
     private final Enchantment output;
+    private final EmiIngredient targets;
 
     public EmiEnchantmentRecipe(EnchantmentRecipe recipe) {
         this.id = recipe.getId();
@@ -40,6 +44,8 @@ public class EmiEnchantmentRecipe implements EmiRecipe {
         if (recipe.secondaryIngredientStack != null) {
             this.secondaryStack = EmiIngredient.of(recipe.secondaryIngredientStack.getIngredient(), (long)recipe.secondaryIngredientStack.getCount());
         } else secondaryStack = null;
+
+        this.targets = EmiIngredient.of(Registries.ITEM.stream().filter((item) -> output.isAcceptableItem(new ItemStack(item))).map((item) -> EmiStack.of(new ItemStack(item))).toList());
     }
 
     @Override
@@ -58,12 +64,18 @@ public class EmiEnchantmentRecipe implements EmiRecipe {
         inputs.add(EmiStack.of(AArcanaItems.ENCHANTED_SCRAP, scrapCost));
         if (primaryStack != null) inputs.add(primaryStack);
         if (secondaryStack != null) inputs.add(secondaryStack);
+        inputs.add(targets);
         return inputs;
     }
 
     @Override
     public List<EmiStack> getOutputs() {
-        return List.of();
+        ItemStack book = new ItemStack(Items.ENCHANTED_BOOK);
+        EnchantedBookItem.addEnchantment(book, new EnchantmentLevelEntry(output, 1));
+        List<EmiStack> outputs = new ArrayList<>();
+        outputs.add(EmiStack.of(book));
+        outputs.addAll(targets.getEmiStacks());
+        return outputs;
     }
 
     @Override
@@ -92,7 +104,7 @@ public class EmiEnchantmentRecipe implements EmiRecipe {
         ItemStack enchantedBook = new ItemStack(Items.ENCHANTED_BOOK);
         enchantedBook.addEnchantment(output, 1);
         widgetHolder.addTexture(EmiTexture.EMPTY_ARROW, 59, 1);
-        widgetHolder.addSlot(EmiStack.of(enchantedBook, 1), 88, 0);
+        widgetHolder.addSlot(EmiStack.of(enchantedBook, 1), 88, 0).recipeContext(this);
 
         // Enchanting Power
         widgetHolder.addTexture(AscendantArcanaEmi.EMI_SPRITES, 0, 19, 7, 7, 7, 0);
