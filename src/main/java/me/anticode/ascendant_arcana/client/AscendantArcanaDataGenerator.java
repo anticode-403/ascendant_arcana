@@ -44,6 +44,7 @@ import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -476,6 +477,10 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
                 return AArcanaItems.RELIC;
             }
 
+            public void offerTo(Consumer<RecipeJsonProvider> exporter) {
+                offerTo(exporter, new Identifier(AscendantArcana.modID, Registries.ITEM.getId(getOutputItem()).getPath() + "_" + Relics.fromId(relic).name().toLowerCase() + "_" + strength));
+            }
+
             public void offerTo(Consumer<RecipeJsonProvider> exporter, Identifier recipeId) {
                 this.validate(recipeId);
                 this.advancementBuilder.parent(ROOT).criterion("has_the_recipe", RecipeUnlockedCriterion.create(recipeId)).rewards(net.minecraft.advancement.AdvancementRewards.Builder.recipe(recipeId)).criteriaMerger(CriterionMerger.OR);
@@ -499,7 +504,7 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
 
                 public RelicRecipeJsonProvider(Identifier recipeId, int strength, int relic, String group, CraftingRecipeCategory craftingCategory, List<Ingredient> inputs, Advancement.Builder advancementBuilder, Identifier advancementId) {
                     super(craftingCategory);
-                    this.recipeId = new Identifier(AscendantArcana.modID, recipeId.getPath() + "_" + strength + "_" + relic);
+                    this.recipeId = recipeId;
                     this.strength = strength;
                     this.relic = relic;
                     this.group = group;
@@ -555,30 +560,212 @@ public class AscendantArcanaDataGenerator implements DataGeneratorEntrypoint {
                     .criterion("obtain_lapis", InventoryChangedCriterion.Conditions.items(Items.LAPIS_LAZULI))
                     .offerTo(exporter);
 
+            // DAMAGE RELICS
             RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 1, 0)
                     .input(Items.AMETHYST_SHARD)
                     .input(Items.IRON_INGOT)
                     .criterion("obtain_amethyst", InventoryChangedCriterion.Conditions.items(Items.AMETHYST_SHARD))
                     .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 2, 0)
+                    .input(AArcanaItems.RELIC)
+                    .input(Items.IRON_INGOT, 3)
+                    .input(Items.HONEYCOMB)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 2, 0)
+                    .input(AArcanaItems.RELIC)
+                    .input(AArcanaItems.RELIC)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter, new Identifier(AscendantArcana.modID, "relic_damage_combine_0"));
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 3, 0)
+                    .input(AArcanaItems.RELIC)
+                    .input(Items.TORCHFLOWER_SEEDS, 2)
+                    .input(Items.BONE, 2)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 3, 0)
+                    .input(AArcanaItems.RELIC)
+                    .input(AArcanaItems.RELIC)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter, new Identifier(AscendantArcana.modID, "relic_damage_combine_1"));
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 4, 0)
+                    .input(AArcanaItems.RELIC)
+                    .input(Items.DIAMOND)
+                    .input(Items.BLAZE_POWDER)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 5, 0)
+                    .input(AArcanaItems.RELIC)
+                    .input(AArcanaItems.RELIC)
+                    .input(Items.DIAMOND)
+                    .input(Items.BLAZE_POWDER)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+
+            // DURABILITY RELICS
             RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 1, 1)
                     .input(AArcanaItems.RESTORINE)
                     .input(Items.AMETHYST_SHARD)
                     .criterion("obtain_amethyst", InventoryChangedCriterion.Conditions.items(Items.AMETHYST_SHARD))
                     .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 2, 1)
+                    .input(AArcanaItems.RELIC)
+                    .input(AArcanaItems.RESTORINE, 3)
+                    .input(Items.HONEYCOMB)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 2, 1)
+                    .input(AArcanaItems.RELIC)
+                    .input(AArcanaItems.RELIC)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter, new Identifier(AscendantArcana.modID, "relic_durability_combine_0"));
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 3, 1)
+                    .input(AArcanaItems.RELIC)
+                    .input(AArcanaItems.RESTORINE, 3)
+                    .input(Items.TERRACOTTA, 2)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 3, 1)
+                    .input(AArcanaItems.RELIC)
+                    .input(AArcanaItems.RELIC)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter, new Identifier(AscendantArcana.modID, "relic_durability_combine_1"));
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 4, 1)
+                    .input(AArcanaItems.RELIC)
+                    .input(Items.DIAMOND)
+                    .input(AArcanaItems.RESTORINE, 5)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 5, 1)
+                    .input(AArcanaItems.RELIC)
+                    .input(AArcanaItems.RELIC)
+                    .input(Items.DIAMOND)
+                    .input(AArcanaItems.RESTORINE)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+
+            // PROTECTION RELICS
             RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 1, 2)
                     .input(Items.AMETHYST_SHARD)
                     .input(Items.CLAY_BALL, 2)
                     .criterion("obtain_amethyst", InventoryChangedCriterion.Conditions.items(Items.AMETHYST_SHARD))
                     .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 2, 2)
+                    .input(AArcanaItems.RELIC)
+                    .input(Items.CLAY_BALL, 6)
+                    .input(Items.IRON_NUGGET)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 2, 2)
+                    .input(AArcanaItems.RELIC)
+                    .input(AArcanaItems.RELIC)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter, new Identifier(AscendantArcana.modID, "relic_protection_combine_0"));
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 3, 2)
+                    .input(AArcanaItems.RELIC)
+                    .input(Items.DIAMOND)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 3, 2)
+                    .input(AArcanaItems.RELIC)
+                    .input(AArcanaItems.RELIC)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter, new Identifier(AscendantArcana.modID, "relic_protection_combine_1"));
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 4, 2)
+                    .input(AArcanaItems.RELIC)
+                    .input(Items.DIAMOND)
+                    .input(Items.NETHERITE_SCRAP)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 5, 2)
+                    .input(AArcanaItems.RELIC)
+                    .input(AArcanaItems.RELIC)
+                    .input(Items.DIAMOND)
+                    .input(Items.NETHERITE_SCRAP)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+
+            // HASTE RELICS
             RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 1, 3)
                     .input(Items.AMETHYST_SHARD)
                     .input(Items.GOLD_NUGGET)
                     .criterion("obtain_amethyst", InventoryChangedCriterion.Conditions.items(Items.AMETHYST_SHARD))
                     .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 2, 3)
+                    .input(AArcanaItems.RELIC)
+                    .input(Items.GOLD_INGOT, 2)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 2, 3)
+                    .input(AArcanaItems.RELIC)
+                    .input(AArcanaItems.RELIC)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter, new Identifier(AscendantArcana.modID, "relic_haste_combine_0"));
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 3, 3)
+                    .input(AArcanaItems.RELIC)
+                    .input(Items.GOLD_INGOT, 5)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 3, 3)
+                    .input(AArcanaItems.RELIC)
+                    .input(AArcanaItems.RELIC)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter, new Identifier(AscendantArcana.modID, "relic_haste_combine_1"));
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 4, 3)
+                    .input(AArcanaItems.RELIC)
+                    .input(Items.AMETHYST_SHARD, 3)
+                    .input(Items.GOLD_INGOT, 3)
+                    .input(Items.BLAZE_POWDER)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 5, 3)
+                    .input(AArcanaItems.RELIC)
+                    .input(AArcanaItems.RELIC)
+                    .input(Items.DIAMOND)
+                    .input(Items.GOLD_INGOT)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+
+            // ENCHANTMENT CAPACITY RELICS
             RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 1, 4)
                     .input(Items.LAPIS_LAZULI)
                     .input(Items.AMETHYST_SHARD)
                     .criterion("obtain_amethyst", InventoryChangedCriterion.Conditions.items(Items.AMETHYST_SHARD))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 2, 4)
+                    .input(AArcanaItems.RELIC)
+                    .input(Items.LAPIS_LAZULI, 3)
+                    .input(Items.GOLD_NUGGET, 2)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 2, 4)
+                    .input(AArcanaItems.RELIC)
+                    .input(AArcanaItems.RELIC)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter, new Identifier(AscendantArcana.modID, "relic_enchantment_capacity_combine_0"));
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 3, 4)
+                    .input(AArcanaItems.RELIC)
+                    .input(AArcanaItems.ENCHANTED_SCRAP, 5)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 3, 4)
+                    .input(AArcanaItems.RELIC)
+                    .input(AArcanaItems.RELIC)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter, new Identifier(AscendantArcana.modID, "relic_enchantment_capacity_combine_1"));
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 4, 4)
+                    .input(AArcanaItems.RELIC)
+                    .input(Items.DIAMOND)
+                    .input(Items.LAPIS_LAZULI, 2)
+                    .input(AArcanaItems.ENCHANTED_SCRAP, 5)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
+                    .offerTo(exporter);
+            RelicRecipeJsonBuilder.create(RecipeCategory.MISC, 5, 4)
+                    .input(AArcanaItems.RELIC)
+                    .input(AArcanaItems.RELIC)
+                    .input(Items.DIAMOND)
+                    .input(AArcanaItems.ENCHANTED_SCRAP)
+                    .criterion("obtain_relic", InventoryChangedCriterion.Conditions.items(AArcanaItems.RELIC))
                     .offerTo(exporter);
 
             ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, AArcanaBlocks.COPPER_ENCHANTING_TABLE)
