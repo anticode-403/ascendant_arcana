@@ -1,5 +1,6 @@
 package me.anticode.ascendant_arcana.client.emi;
 
+import com.google.common.collect.Lists;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
@@ -9,6 +10,7 @@ import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import me.anticode.ascendant_arcana.AscendantArcana;
 import me.anticode.ascendant_arcana.client.emi.recipes.EmiEnchantmentRecipe;
+import me.anticode.ascendant_arcana.client.emi.recipes.EmiGrindstoneScrapRecipe;
 import me.anticode.ascendant_arcana.client.emi.recipes.EmiInfusionRecipe;
 import me.anticode.ascendant_arcana.client.emi.recipes.EmiRestorineRepairRecipe;
 import me.anticode.ascendant_arcana.init.AArcanaBlocks;
@@ -20,6 +22,7 @@ import me.anticode.ascendant_arcana.recipe.EnchantmentRecipe;
 import me.anticode.ascendant_arcana.recipe.InfusionRecipe;
 import me.anticode.ascendant_arcana.recipe.RelicCraftingRecipe;
 import net.minecraft.block.Blocks;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.CraftingRecipe;
@@ -28,6 +31,9 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.SmithingRecipe;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
+
+import java.util.List;
+import java.util.function.Consumer;
 
 public class AscendantArcanaEmi implements EmiPlugin {
     public static final Identifier EMI_SPRITES = new Identifier(AscendantArcana.modID, "textures/gui/emi_elements.png");
@@ -61,9 +67,55 @@ public class AscendantArcanaEmi implements EmiPlugin {
             }
         }
         for (Item item : Registries.ITEM) {
+            List<Enchantment> targetedEnchantments = Lists.newArrayList();
+            List<Enchantment> universalEnchantments = Lists.newArrayList();
+            for (Enchantment enchantment : Registries.ENCHANTMENT.stream().toList()) {
+                try {
+                    if (enchantment.isAcceptableItem(ItemStack.EMPTY)) {
+                        universalEnchantments.add(enchantment);
+                        continue;
+                    }
+                } catch (Throwable t) {
+                }
+                targetedEnchantments.add(enchantment);
+            }
             if (emiRegistry.isStackDisabled(EmiStack.of(item))) continue;
             if (item.getMaxDamage() > 0) {
                 emiRegistry.addRecipe(new EmiRestorineRepairRecipe(EmiStack.of(item), new Identifier(AscendantArcana.modID, "/repair/").withSuffixedPath(Registries.ITEM.getId(item).getPath())));
+            }
+
+            ItemStack defaultStack = item.getDefaultStack();
+            int acceptableEnchantments = 0;
+            for (Enchantment e : targetedEnchantments) {
+                if (e.isAcceptableItem(defaultStack) && defaultStack.isEnchantable()
+                        && defaultStack.getItem().isEnchantable(defaultStack)) {
+                    acceptableEnchantments++;
+                }
+            }
+            if (acceptableEnchantments > 0) {
+                for (Enchantment e : universalEnchantments) {
+                    if (e.isAcceptableItem(defaultStack)) {
+                        acceptableEnchantments++;
+                    }
+                }
+                emiRegistry.addRecipe(new EmiGrindstoneScrapRecipe(item, new Identifier(AscendantArcana.modID, "/grindstone/scrap/").withSuffixedPath(Registries.ITEM.getId(item).getPath())));
+            }
+        }
+
+        emiRegistry.removeRecipes((t) -> {
+            Identifier id = t.getId();
+            if (id == null) return false;
+            return id.getPath().contains("grindstone/disenchanting");
+        });
+
+        for (Enchantment e : Registries.ENCHANTMENT.stream().toList()) {
+            if (!e.isCursed()) {
+                int max = Math.min(10, e.getMaxLevel());
+                int min = e.getMinLevel();
+                while (min <= max) {
+                    int level = min;
+                    min++;
+                }
             }
         }
     }

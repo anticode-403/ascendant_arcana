@@ -2,6 +2,7 @@ package me.anticode.ascendant_arcana.logic;
 
 import me.anticode.ascendant_arcana.AscendantArcana;
 import me.anticode.ascendant_arcana.init.AArcanaEnchantments;
+import me.anticode.ascendant_arcana.init.AArcanaItems;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EquipmentSlot;
@@ -156,6 +157,23 @@ public class AArcanaEnchantmentHelper {
             }
         }
         return true;
+    }
+
+    public static ItemStack convertEnchantmentsToScrap(Map<Enchantment, Integer> appliedEnchants) {
+        ItemStack itemStack = new ItemStack(AArcanaItems.ENCHANTED_SCRAP);
+        for (Map.Entry<Enchantment, Integer> entry : appliedEnchants.entrySet()) {
+            int baseCount = switch (entry.getKey().getRarity()) {
+                case COMMON, UNCOMMON -> 1;
+                case RARE -> 3;
+                case VERY_RARE -> 4;
+            };
+            if (entry.getKey().isCursed()) baseCount = 1;
+            else if (entry.getKey().isTreasure()) baseCount += 1;
+            itemStack.increment(baseCount * entry.getValue());
+        }
+
+        if (itemStack.getCount() > itemStack.getMaxCount()) itemStack.setCount(itemStack.getMaxCount());
+        return itemStack;
     }
 
     public static UUID getUUID(String slotID) {

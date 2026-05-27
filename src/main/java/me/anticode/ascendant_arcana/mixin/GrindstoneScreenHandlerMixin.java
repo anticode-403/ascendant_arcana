@@ -1,6 +1,6 @@
 package me.anticode.ascendant_arcana.mixin;
 
-import me.anticode.ascendant_arcana.init.AArcanaItems;
+import me.anticode.ascendant_arcana.logic.AArcanaEnchantmentHelper;
 import me.anticode.ascendant_arcana.logic.RelicHelper;
 import me.anticode.ascendant_arcana.logic.Relics;
 import net.minecraft.enchantment.Enchantment;
@@ -26,23 +26,7 @@ public class GrindstoneScreenHandlerMixin {
             cir.setReturnValue(itemStack);
             cir.cancel();
         } else {
-            ItemStack itemStack = new ItemStack(AArcanaItems.ENCHANTED_SCRAP);
-            for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
-                int baseCount = switch (entry.getKey().getRarity()) {
-                    case COMMON, UNCOMMON -> 1;
-                    case RARE -> 3;
-                    case VERY_RARE -> 4;
-                };
-                if (entry.getKey().isCursed()) baseCount = 1;
-                else if (entry.getKey().isTreasure()) baseCount += 1;
-                itemStack.increment(baseCount * entry.getValue());
-            }
-            for (Map.Entry<Relics, Integer> entry : relics.entrySet()) {
-                itemStack.increment(entry.getValue());
-            }
-
-            if (itemStack.getCount() > itemStack.getMaxCount()) itemStack.setCount(itemStack.getMaxCount());
-            cir.setReturnValue(itemStack);
+            cir.setReturnValue(AArcanaEnchantmentHelper.convertEnchantmentsToScrap(enchantments));
             cir.cancel();
         }
     }
