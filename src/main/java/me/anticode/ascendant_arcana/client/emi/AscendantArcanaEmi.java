@@ -3,16 +3,14 @@ package me.anticode.ascendant_arcana.client.emi;
 import com.google.common.collect.Lists;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
-import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.recipe.EmiCraftingRecipe;
+import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiTexture;
+import dev.emi.emi.api.stack.Comparison;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import me.anticode.ascendant_arcana.AscendantArcana;
-import me.anticode.ascendant_arcana.client.emi.recipes.EmiEnchantmentRecipe;
-import me.anticode.ascendant_arcana.client.emi.recipes.EmiGrindstoneScrapRecipe;
-import me.anticode.ascendant_arcana.client.emi.recipes.EmiInfusionRecipe;
-import me.anticode.ascendant_arcana.client.emi.recipes.EmiRestorineRepairRecipe;
+import me.anticode.ascendant_arcana.client.emi.recipes.*;
 import me.anticode.ascendant_arcana.init.AArcanaBlocks;
 import me.anticode.ascendant_arcana.init.AArcanaItems;
 import me.anticode.ascendant_arcana.init.AArcanaRecipes;
@@ -33,7 +31,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class AscendantArcanaEmi implements EmiPlugin {
     public static final Identifier EMI_SPRITES = new Identifier(AscendantArcana.modID, "textures/gui/emi_elements.png");
@@ -43,6 +40,8 @@ public class AscendantArcanaEmi implements EmiPlugin {
 
     @Override
     public void register(EmiRegistry emiRegistry) {
+        emiRegistry.setDefaultComparison(AArcanaItems.RELIC, Comparison.compareNbt());
+
         emiRegistry.addCategory(ENCHANTING);
         emiRegistry.addWorkstation(ENCHANTING, COPPER_ENCHANTING_TABLE);
         emiRegistry.addWorkstation(ENCHANTING, ENCHANTING_TABLE);
@@ -83,7 +82,7 @@ public class AscendantArcanaEmi implements EmiPlugin {
                         universalEnchantments.add(enchantment);
                         continue;
                     }
-                } catch (Throwable t) {
+                } catch (Throwable ignored) {
                 }
                 targetedEnchantments.add(enchantment);
             }
