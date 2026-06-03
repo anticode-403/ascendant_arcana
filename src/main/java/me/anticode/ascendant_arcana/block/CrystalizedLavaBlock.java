@@ -3,9 +3,6 @@ package me.anticode.ascendant_arcana.block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FrostedIceBlock;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -13,7 +10,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.WorldAccess;
 
 public class CrystalizedLavaBlock extends FrostedIceBlock {
 
@@ -26,11 +23,9 @@ public class CrystalizedLavaBlock extends FrostedIceBlock {
     }
 
     @Override
-    public void afterBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
-        BlockState blockState = world.getBlockState(pos.down());
-        if (blockState.blocksMovement() || blockState.isLiquid()) {
-            world.setBlockState(pos, getLavaState());
-        }
+    public void onBroken(WorldAccess world, BlockPos pos, BlockState state) {
+        super.onBroken(world, pos, state);
+        world.setBlockState(pos, getLavaState(), 0);
     }
 
     @Override
